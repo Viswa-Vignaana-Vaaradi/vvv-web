@@ -72,3 +72,4 @@ viswa-vignaana-vaaradi/
 - `pnpm run check-types`: Check TypeScript types across all apps
 - `pnpm run db:push`: Push schema changes to database
 - `pnpm run db:studio`: Open database studio UI
+"# web" 

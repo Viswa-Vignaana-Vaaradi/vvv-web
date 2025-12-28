@@ -23,6 +23,7 @@
     "zod": "catalog:",
     "@viswa-vignaana-vaaradi/env": "workspace:*"
   },
+  "packageManager": "pnpm@9.0.0",
   "devDependencies": {
     "turbo": "^2.6.3",
     "typescript": "catalog:",
