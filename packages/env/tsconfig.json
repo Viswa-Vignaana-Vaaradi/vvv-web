@@ -1,0 +1,3 @@
+{
+  "extends": "@viswa-vignaana-vaaradi/config/tsconfig.base.json"
+}
