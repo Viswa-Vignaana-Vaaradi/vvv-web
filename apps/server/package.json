@@ -16,15 +16,15 @@
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
-    "@viswa-vignaana-vaaradi/env": "workspace:*",
-    "@viswa-vignaana-vaaradi/auth": "workspace:*",
-    "@viswa-vignaana-vaaradi/db": "workspace:*"
+    "@repo/env": "workspace:*",
+    "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^4.19.2",
     "@types/node": "^22.13.11",
     "typescript": "catalog:",
     "tsdown": "^0.16.5",
-    "@viswa-vignaana-vaaradi/config": "workspace:*"
+    "@repo/config": "workspace:*"
   }
 }

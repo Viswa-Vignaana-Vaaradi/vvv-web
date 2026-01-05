@@ -26,8 +26,8 @@
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
-    "@viswa-vignaana-vaaradi/env": "workspace:*",
-    "@viswa-vignaana-vaaradi/auth": "workspace:*"
+    "@repo/env": "workspace:*",
+    "@repo/auth": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.10",
@@ -37,6 +37,6 @@
     "tailwindcss": "^4.1.10",
     "typescript": "catalog:",
     "@tanstack/react-query-devtools": "^5.91.1",
-    "@viswa-vignaana-vaaradi/config": "workspace:*"
+    "@repo/config": "workspace:*"
   }
 }

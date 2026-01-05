@@ -1,5 +1,5 @@
 {
-  "extends": "@viswa-vignaana-vaaradi/config/tsconfig.base.json",
+  "extends": "@repo/config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",

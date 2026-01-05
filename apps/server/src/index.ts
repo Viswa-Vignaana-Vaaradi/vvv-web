@@ -1,7 +1,7 @@
 import { cors } from "@elysiajs/cors";
 import { node } from "@elysiajs/node";
-import { auth } from "@viswa-vignaana-vaaradi/auth";
-import { env } from "@viswa-vignaana-vaaradi/env/server";
+import { auth } from "@repo/auth";
+import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
 
 const app = new Elysia({ adapter: node() })

@@ -1,6 +1,6 @@
-import { db } from "@viswa-vignaana-vaaradi/db";
-import * as schema from "@viswa-vignaana-vaaradi/db/schema/auth";
-import { env } from "@viswa-vignaana-vaaradi/env/server";
+import { db } from "@repo/db";
+import * as schema from "@repo/db/schema/auth";
+import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 

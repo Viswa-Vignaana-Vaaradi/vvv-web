@@ -1,4 +1,4 @@
-import { env } from "@viswa-vignaana-vaaradi/env/web";
+import { env } from "@repo/env/web";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({

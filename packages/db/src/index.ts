@@ -1,4 +1,4 @@
-import { env } from "@viswa-vignaana-vaaradi/env/server";
+import { env } from "@repo/env/server";
 import { drizzle } from "drizzle-orm/mysql2";
 
 import * as schema from "./schema";

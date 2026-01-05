@@ -1,5 +1,5 @@
 {
-  "name": "@viswa-vignaana-vaaradi/auth",
+  "name": "@repo/auth",
   "type": "module",
   "exports": {
     ".": {
@@ -12,13 +12,13 @@
   "scripts": {},
   "devDependencies": {
     "typescript": "catalog:",
-    "@viswa-vignaana-vaaradi/config": "workspace:*"
+    "@repo/config": "workspace:*"
   },
   "dependencies": {
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
-    "@viswa-vignaana-vaaradi/env": "workspace:*",
-    "@viswa-vignaana-vaaradi/db": "workspace:*"
+    "@repo/env": "workspace:*",
+    "@repo/db": "workspace:*"
   }
 }
