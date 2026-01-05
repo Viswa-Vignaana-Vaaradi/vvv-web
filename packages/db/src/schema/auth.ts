@@ -1,5 +1,14 @@
 import { relations } from "drizzle-orm";
-import { mysqlTable, varchar, text, timestamp, boolean, index } from "drizzle-orm/mysql-core";
+import {
+  mysqlTable,
+  varchar,
+  text,
+  bigint,
+  timestamp,
+  boolean,
+  int,
+  index,
+} from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
   id: varchar("id", { length: 36 }).primaryKey(),
@@ -12,6 +21,7 @@ export const user = mysqlTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  lastLoginMethod: text("last_login_method"),
 });
 
 export const session = mysqlTable(
@@ -72,6 +82,13 @@ export const verification = mysqlTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
+
+export const rateLimit = mysqlTable("rate_limit", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  key: text("key"),
+  count: int("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
+});
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),

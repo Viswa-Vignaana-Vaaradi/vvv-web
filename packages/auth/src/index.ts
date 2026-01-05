@@ -3,6 +3,7 @@ import * as schema from "@repo/db/schema/auth";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { lastLoginMethod } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,12 +13,50 @@ export const auth = betterAuth({
   trustedOrigins: [env.CORS_ORIGIN],
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 3, // 3 days (session is valid for 3 days)
+    updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
+    freshAge: 60 * 60, // 1 hour (the session is considered fresh for 1 hour after creation)
+    cookieCache: {
+      enabled: true,
+      maxAge: 10 * 60, // 10 minutes In seconds
+    },
+    cookieOptions: {
+      domain: env.NODE_ENV === "production" ? "https://www.viswavignanavaaradhi.org/" : "localhost",
+    }
   },
   advanced: {
+    useSecureCookies: true,
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
       httpOnly: true,
     },
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for"]
+    },
   },
+  rateLimit: {
+    storage: "database",
+    window: 10,
+    max: 100
+  },
+  user: {
+    deleteUser: {
+      enabled: true,
+    }
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+    },
+  },
+  plugins: [
+    lastLoginMethod({
+      storeInDatabase: true,
+    })
+  ]
 });
