@@ -147,8 +147,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
       <div className="mt-4 text-center">
         <Button
           variant="link"
-          onClick={onSwitchToSignIn}
-          className="text-indigo-600 hover:text-indigo-800"
+          onClick={() => router.push("/auth/login")}
+          className="text-indigo-600 hover:text-indigo-800 hover:cursor-pointer"
         >
           Already have an account? Sign In
         </Button>
