@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 
 import "../index.css";
 import Header from "@/components/header";
@@ -16,8 +16,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+})
+
 export const metadata: Metadata = {
-  title: "viswa-vignaana-vaaradi",
+  title: "Viswa Vignaana Vaaradi",
   description: "viswa-vignaana-vaaradi",
 };
 
@@ -27,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning className="bg-primary">
+      <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-primary`}>
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh">
             <Header />
