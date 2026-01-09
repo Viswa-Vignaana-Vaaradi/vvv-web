@@ -1,12 +1,11 @@
 import { env } from "@repo/env/server";
-import { drizzle } from "drizzle-orm/mysql2";
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 import * as schema from "./schema";
 
-export const db = drizzle({
-  connection: {
-    uri: env.DATABASE_URL,
-  },
-  schema,
-  mode: "default",
-});
+const pool = new Pool({
+  connectionString: env.DATABASE_URL,
+})
+
+export const db = drizzle(pool, { schema });

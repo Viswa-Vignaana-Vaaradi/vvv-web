@@ -135,7 +135,7 @@ export default function SignUpForm() {
           {(state) => (
             <Button
               type="submit"
-              className="w-full"
+              className="bg-[linear-gradient(90deg,#F1980F_0%,#DB7A04_100%)] text-white font-semibold text-[15px] rounded-[40px] px-12 py-5 font-poppins"
               disabled={!state.canSubmit || state.isSubmitting}
             >
               {state.isSubmitting ? "Submitting..." : "Sign Up"}
