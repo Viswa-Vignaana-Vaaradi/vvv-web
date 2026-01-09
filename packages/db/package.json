@@ -16,15 +16,15 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
+    "@repo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
-    "typescript": "catalog:",
-    "@repo/config": "workspace:*"
+    "typescript": "catalog:"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
-    "mysql2": "^3.14.0",
+    "@repo/env": "workspace:*",
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "@repo/env": "workspace:*"
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.16.3",
+    "zod": "catalog:"
   }
 }

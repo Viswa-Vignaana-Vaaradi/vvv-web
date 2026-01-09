@@ -7,7 +7,7 @@ import { lastLoginMethod } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: "mysql",
+    provider: "pg",
     schema: schema,
   }),
   trustedOrigins: [env.CORS_ORIGIN],
