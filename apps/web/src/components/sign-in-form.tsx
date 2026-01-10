@@ -51,7 +51,7 @@ export default function SignInForm() {
   return (
     <div className="flex flex-row items-center justify-center p-30">
       <div className="bg-[conic-gradient(from_139.69deg_at_40.5%_34.39%,#09786F_0deg,#0E897F_133.8deg,#0F5E61_270.51deg,#09786F_360deg)] text-white font-bold font-poppins text-[45px] leading-12.25 text-wrap w-109.25 h-125.75 rounded-[50px] p-10">
-        Be a Part of Something Meaningful
+        Welcome Back
       </div>
 
       <div className="flex-1 mx-5 mt-10 max-w-md p-6 bg-primary">
