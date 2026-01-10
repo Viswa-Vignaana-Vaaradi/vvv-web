@@ -11,6 +11,8 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     UPLOADTHING_TOKEN: z.string().min(32),
     UPLOADTHING_APP_ID: z.string().min(5),
+    GOOGLE_CLIENT_ID: z.string().min(5),
+    GOOGLE_CLIENT_SECRET: z.string().min(5),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

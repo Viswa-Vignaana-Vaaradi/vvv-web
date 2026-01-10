@@ -3,17 +3,27 @@ import * as schema from "@repo/db/schema/auth";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { lastLoginMethod } from "better-auth/plugins";
+import { lastLoginMethod, username } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: schema,
   }),
+  baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN],
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
+  },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID as string,
+      clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+      redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/google`,
+      accessType: "offline",
+      prompt: "select_account consent",
+    }
   },
   session: {
     expiresIn: 60 * 60 * 24 * 3, // 3 days (session is valid for 3 days)
@@ -55,8 +65,9 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    username(),
     lastLoginMethod({
       storeInDatabase: true,
-    })
+    }),
   ]
 });
