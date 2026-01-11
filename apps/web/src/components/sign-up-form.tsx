@@ -1,4 +1,4 @@
-import { useForm } from "@tanstack/react-form";
+import { FieldApi, useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
@@ -9,6 +9,12 @@ import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
+
+const emailPasswordSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -40,13 +46,28 @@ export default function SignUpForm() {
       );
     },
     validators: {
-      onSubmit: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        email: z.email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
-      }),
+      onSubmit: emailPasswordSchema
     },
   });
+
+  const validateUsername = async ({value, fieldApi}: { value: string, fieldApi: FieldApi; }) => {
+    const syncResult = emailPasswordSchema.shape.name.safeParse(value);
+    if (!syncResult.success) {
+      return;
+    }
+
+    const { data, error } = await authClient.isUsernameAvailable({ username: value });
+
+    if (data?.available) {
+      return undefined;
+    } else if (error) {
+      const errorMessage = typeof error === 'string' ? error : (error as any)?.message || "Username is already taken. Please choose another one";
+      console.log("Sending back the error message:", errorMessage);
+      return errorMessage;
+    } else {
+      return "Unable to determine username availability.";
+    }
+  }
 
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
@@ -76,7 +97,14 @@ export default function SignUpForm() {
           className="space-y-4"
         >
           <div>
-            <form.Field name="name">
+            <form.Field
+              name="name"
+              validators={{
+                // onChange: emailPasswordSchema.shape.name,
+                onChangeAsync: validateUsername,
+                onChangeAsyncDebounceMs: 1000
+              }}
+            >
             {(field) => (
               <div className="space-y-2">
                 <Input
@@ -84,15 +112,26 @@ export default function SignUpForm() {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                  }}
                   placeholder="Username"
                   className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
                 />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
+                {field.state.meta.errors.map((error, index) => (
+                  <p key={index} className="text-red-500">
                     {error?.message}
                   </p>
                 ))}
+                {field.state.meta.isValidating && <p className="text-gray-500">Checking username availability...</p>}
+                {!field.state.meta.isValidating && // 1. Not currently checking
+                 !field.state.meta.errors.length && // 2. No errors present (sync or async)
+                 field.state.value.length >= 2 && // 3. Meets minimum length for an actual username
+                 field.state.meta.isTouched && // 4. User has actually interacted with the field
+                 <p className="text-green-600 text-sm">
+                  Username is available!
+                 </p>
+                }
               </div>
             )}
           </form.Field>
@@ -112,8 +151,8 @@ export default function SignUpForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
                   />
-                  {field.state.meta.errors.map((error) => (
-                    <p key={error?.message} className="text-red-500">
+                  {field.state.meta.errors.map((error, index) => (
+                    <p key={index} className="text-red-500">
                       {error?.message}
                     </p>
                   ))}
@@ -136,8 +175,8 @@ export default function SignUpForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
                   />
-                  {field.state.meta.errors.map((error) => (
-                    <p key={error?.message} className="text-red-500">
+                  {field.state.meta.errors.map((error, index) => (
+                    <p key={index} className="text-red-500">
                       {error?.message}
                     </p>
                   ))}
