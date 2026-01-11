@@ -51,6 +51,7 @@ export default function SignUpForm() {
   });
 
   const validateUsername = async ({value, fieldApi}: { value: string, fieldApi: FieldApi; }) => {
+    // TODO: return errors using FieldApi here
     const syncResult = emailPasswordSchema.shape.name.safeParse(value);
     if (!syncResult.success) {
       return;
