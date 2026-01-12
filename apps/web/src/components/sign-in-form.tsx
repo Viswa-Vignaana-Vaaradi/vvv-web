@@ -57,11 +57,11 @@ export default function SignInForm() {
   return (
     <div className="flex flex-row items-center justify-center p-30">
       <div className="bg-[conic-gradient(from_139.69deg_at_40.5%_34.39%,#09786F_0deg,#0E897F_133.8deg,#0F5E61_270.51deg,#09786F_360deg)] text-white font-bold font-poppins text-[45px] leading-12.25 text-wrap w-109.25 h-125.75 rounded-[50px] p-10">
-        Welcome Back
+        Welcome&nbsp;Back
       </div>
 
       <div className="flex-1 mx-5 mt-10 max-w-md p-6 bg-primary">
-        <h1 className="mb-6 text-center text-[40px] leading-[100%] font-extrabold font-poppins text-black">Hi There!</h1>
+        <h1 className="mb-6 text-center text-[40px] leading-[100%] font-extrabold font-poppins text-black">Hi&nbsp;There!</h1>
 
         <form
           onSubmit={(e) => {
@@ -134,12 +134,12 @@ export default function SignInForm() {
           </div>
           
           <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
+            <div className="absolute inset-0 flex items-center px-8">
               <Separator className="w-full border-t border-gray-300" />
             </div>
             
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 text-muted-foreground bg-card font-poppins">or</span>
+              <span className="px-2 text-muted-foreground bg-primary font-poppins">or</span>
             </div>
           </div>
 
@@ -170,8 +170,7 @@ export default function SignInForm() {
                     fill="#EA4335"
                   />
                   <path d="M1 1h22v22H1z" fill="none" />
-                </svg>
-                
+                </svg>                
                 {state.isSubmitting ? "Submitting..." : "Login with Google"}
               </Button>
             )}
@@ -185,8 +184,14 @@ export default function SignInForm() {
             className="text-[#604D00] font-poppins font-medium text-[12px] leading-[100%] tracking-normal hover:cursor-pointer"
           >
             Don&apos;t have an account?
-            <span className="italic">Sign Up</span>
+            <span className="italic">Sign&nbsp;Up</span>
           </Button>
+        </div>
+
+        <div className="mt-4 font-poppins underline text-[12px] leading-[100%] text-[#604D00] font-medium flex items-center justify-center hover:cursor-pointer"
+          onClick={() => router.push("/auth/forgot-password")}
+        >
+          Forgot&nbsp;Password?
         </div>
       </div>
     </div>

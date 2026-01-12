@@ -1,4 +1,4 @@
-import { FieldApi, useForm } from "@tanstack/react-form";
+import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
@@ -82,12 +82,11 @@ export default function SignUpForm() {
   return (
     <div className="flex flex-row items-center justify-center p-30">
       <div className="bg-[conic-gradient(from_139.69deg_at_40.5%_34.39%,#09786F_0deg,#0E897F_133.8deg,#0F5E61_270.51deg,#09786F_360deg)] text-white font-bold font-poppins text-[45px] leading-12.25 text-wrap w-109.25 h-125.75 rounded-[50px] p-10">
-        Be a Part of Something Meaningful
+        Be&nbsp;a&nbsp;Part&nbsp;of Something Meaningful
       </div>
 
       <div className="flex-1 mx-5 mt-10 max-w-md p-6 bg-primary">
-        <h1 className="mb-6 text-center text-[40px] leading-[100%] font-extrabold font-poppins text-black">Hi There!</h1>
-
+        <h1 className="mb-6 text-center text-[40px] leading-[100%] font-extrabold font-poppins text-black">Hi&nbsp;There!</h1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -121,13 +120,13 @@ export default function SignUpForm() {
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-red-500 font-poppins text-xs">{field.state.meta.errors.join(', ')}</p>
                 )}
-                {field.state.meta.isValidating && <p className="text-gray-500">Checking username availability...</p>}
+                {field.state.meta.isValidating && <p className="text-gray-500">Checking&nbsp;username&nbsp;availability...</p>}
                 {!field.state.meta.isValidating && // 1. Not currently checking
                  !field.state.meta.errors.length && // 2. No errors present (sync or async)
                  field.state.value.length >= 2 && // 3. Meets minimum length for an actual username
                  field.state.meta.isTouched && // 4. User has actually interacted with the field
                   <p className="text-green-600 text-xs font-poppins">
-                    Username is available!
+                    Username&nbsp;is&nbsp;available!
                   </p>
                 }
               </div>
@@ -150,7 +149,7 @@ export default function SignUpForm() {
                     className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
                   />
                   {field.state.meta.errors.map((error, index) => (
-                    <p key={index} className="text-red-500">
+                    <p key={index} className="text-red-500 text-xs font-poppins">
                       {error?.message}
                     </p>
                   ))}
@@ -184,26 +183,26 @@ export default function SignUpForm() {
           </div>
 
           <div className="flex items-center justify-center">
-          <form.Subscribe>
-            {(state) => (
-              <Button
-                type="submit"
-                className="bg-[linear-gradient(90deg,#F1980F_0%,#DB7A04_100%)] text-white font-semibold text-[15px] rounded-[40px] px-12 py-5 font-poppins hover:cursor-pointer w-full"
-                disabled={!state.canSubmit || state.isSubmitting}
-              >
-                {state.isSubmitting ? "Submitting..." : "Sign Up"}
-              </Button>
-            )}
-          </form.Subscribe>
+            <form.Subscribe>
+              {(state) => (
+                <Button
+                  type="submit"
+                  className="bg-[linear-gradient(90deg,#F1980F_0%,#DB7A04_100%)] text-white font-semibold text-[15px] rounded-[40px] px-12 py-5 font-poppins hover:cursor-pointer w-full"
+                  disabled={!state.canSubmit || state.isSubmitting}
+                >
+                  {state.isSubmitting ? "Submitting..." : "Sign Up"}
+                </Button>
+              )}
+            </form.Subscribe>
           </div>
 
           <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
+            <div className="absolute inset-0 flex items-center px-8">
               <Separator className="w-full border-t border-gray-300" />
             </div>
             
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 text-muted-foreground bg-card font-poppins">or</span>
+              <span className="px-2 text-muted-foreground bg-primary font-poppins">or</span>
             </div>
           </div>
 
@@ -248,8 +247,8 @@ export default function SignUpForm() {
             onClick={() => router.push("/auth/login")}
             className="text-[#604D00] font-poppins font-medium text-[12px] leading-[100%] tracking-normal hover:cursor-pointer"
           >
-            Already have an account?
-            <span className="italic">Log In</span>
+            Already&nbsp;have&nbsp;an&nbsp;account?
+            <span className="italic">Log&nbsp;In</span>
           </Button>
         </div>
       </div>

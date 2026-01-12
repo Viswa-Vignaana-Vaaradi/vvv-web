@@ -3,7 +3,7 @@ import * as schema from "@repo/db/schema/auth";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { lastLoginMethod, username } from "better-auth/plugins";
+import { emailOTP, lastLoginMethod, username } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -69,5 +69,15 @@ export const auth = betterAuth({
     lastLoginMethod({
       storeInDatabase: true,
     }),
+    emailOTP({
+      otpLength: 6,
+      expiresIn: 150, // 2.5 minutes
+      allowedAttempts: 5,
+      async sendVerificationOTP(data, ctx) {
+        // TODO: Configure Resend here
+      },
+      sendVerificationOnSignUp: false,
+      disableSignUp: false
+    })
   ]
 });
