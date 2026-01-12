@@ -50,8 +50,7 @@ export default function SignUpForm() {
     },
   });
 
-  const validateUsername = async ({value, fieldApi}: { value: string, fieldApi: FieldApi; }) => {
-    // TODO: return errors using FieldApi here
+  const validateUsername = async ({value}: { value: string }) => {
     const syncResult = emailPasswordSchema.shape.name.safeParse(value);
     if (!syncResult.success) {
       return;
@@ -62,7 +61,7 @@ export default function SignUpForm() {
     if (data?.available) {
       return undefined;
     } else if (error) {
-      const errorMessage = typeof error === 'string' ? error : (error as any)?.message || "Username is already taken. Please choose another one";
+      const errorMessage = "Username is already taken. Please choose another one";
       console.log("Sending back the error message:", errorMessage);
       return errorMessage;
     } else {
@@ -119,19 +118,17 @@ export default function SignUpForm() {
                   placeholder="Username"
                   className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
                 />
-                {field.state.meta.errors.map((error, index) => (
-                  <p key={index} className="text-red-500">
-                    {error?.message}
-                  </p>
-                ))}
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-red-500 font-poppins text-xs">{field.state.meta.errors.join(', ')}</p>
+                )}
                 {field.state.meta.isValidating && <p className="text-gray-500">Checking username availability...</p>}
                 {!field.state.meta.isValidating && // 1. Not currently checking
                  !field.state.meta.errors.length && // 2. No errors present (sync or async)
                  field.state.value.length >= 2 && // 3. Meets minimum length for an actual username
                  field.state.meta.isTouched && // 4. User has actually interacted with the field
-                 <p className="text-green-600 text-sm">
-                  Username is available!
-                 </p>
+                  <p className="text-green-600 text-xs font-poppins">
+                    Username is available!
+                  </p>
                 }
               </div>
             )}
