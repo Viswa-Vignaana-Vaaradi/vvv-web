@@ -1,3 +1,4 @@
+"use client";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Loader from "./loader";
@@ -60,7 +61,7 @@ export default function VerifyOtpForm() {
                     <div>
                         <form.Field name="otp">
                             {(field) => (
-                                <div className="space-y-2">
+                                <div className="space-y-2 flex flex-col items-center mb-4">
                                     <InputOTP 
                                         maxLength={6}
                                         id={field.name}

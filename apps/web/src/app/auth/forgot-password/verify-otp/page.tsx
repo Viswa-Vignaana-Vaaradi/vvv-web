@@ -1,6 +1,6 @@
 import VerifyOtpForm from "@/components/verify-otp"
 
-export const VerifyOtpPage = () => {
+export default function VerifyOtpPage() {
     
     return (
         <VerifyOtpForm />

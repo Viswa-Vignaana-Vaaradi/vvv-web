@@ -4,6 +4,7 @@ import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, lastLoginMethod, username } from "better-auth/plugins";
+import { Resend } from "resend";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -71,10 +72,23 @@ export const auth = betterAuth({
     }),
     emailOTP({
       otpLength: 6,
-      expiresIn: 150, // 2.5 minutes
+      expiresIn: 180, // 3 minutes
       allowedAttempts: 5,
-      async sendVerificationOTP(data, ctx) {
-        // TODO: Configure Resend here
+      // @ts-ignore: Don't know why ts is complaining here all of a sudden
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "forget-password") {
+          const resend = new Resend(env.RESEND_API_KEY as string);
+          const {data, error} = await resend.emails.send({
+            from: "contact@viswavignanavaaradhi.org",
+            to: email,
+            subject: "Reset Password request for Viswa Vignana Vaardhi",
+            html: `<p>Your OTP for resetting your password is: <strong>${otp}</strong></p>`,
+          });
+          console.log(`Email sent successfully to ${email}:`, data);
+          if (error) {
+            console.error("Error sending email:", error);
+          }
+        }
       },
       sendVerificationOnSignUp: false,
       disableSignUp: false
