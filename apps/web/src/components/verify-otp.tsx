@@ -25,7 +25,7 @@ export default function VerifyOtpForm() {
             },
             {
                 onSuccess: () => {
-                    router.push("/auth/forgot-password/reset");
+                    router.push(`/auth/forgot-password/reset?email=${email}&otp=${value.otp}`);
                 },
                 onError: (error) => {
                     console.error(error);
@@ -42,7 +42,7 @@ export default function VerifyOtpForm() {
 
     if (isPending) {
         return <Loader />;
-    }
+    };
 
     return (
         <div className="flex flex-row items-center justify-center p-30">
