@@ -1,6 +1,6 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "./loader";
 import { useForm } from "@tanstack/react-form";
 import z from "zod";
@@ -10,6 +10,8 @@ import { Button } from "./ui/button";
 export default function VerifyOtpForm() {
     const router = useRouter();
     const { isPending } = authClient.useSession();
+    const searchParams  = useSearchParams();
+    const email = searchParams.get("email") || "";
     
     const form = useForm({
         defaultValues: {
@@ -17,7 +19,7 @@ export default function VerifyOtpForm() {
         },
         onSubmit: async ({ value }) => {
             const { data, error } = await authClient.emailOtp.checkVerificationOtp({
-                email: "",
+                email: email,
                 type: "forget-password",
                 otp: value.otp
             },
