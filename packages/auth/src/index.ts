@@ -74,7 +74,6 @@ export const auth = betterAuth({
       otpLength: 6,
       expiresIn: 180, // 3 minutes
       allowedAttempts: 5,
-      // @ts-ignore: Don't know why ts is complaining here all of a sudden
       async sendVerificationOTP({ email, otp, type }) {
         if (type === "forget-password") {
           const resend = new Resend(env.RESEND_API_KEY as string);

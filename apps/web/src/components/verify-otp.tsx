@@ -6,18 +6,39 @@ import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
 
 export default function VerifyOtpForm() {
     const router = useRouter();
     const { isPending } = authClient.useSession();
     const searchParams  = useSearchParams();
     const email = searchParams.get("email") || "";
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [seconds, setSeconds] = useState(180);
+    const [canResend, setCanResend] = useState(false);
+    // TODO: Save the timer to localStorage to persist across page reloads
+
+    useEffect(() => {
+        if (!email) return;
+        if (seconds <= 0) {
+            setCanResend(true);
+            return;
+        }
+
+        const timer = setInterval(() => {
+            setSeconds((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [seconds]);
     
     const form = useForm({
         defaultValues: {
             otp: "",
         },
         onSubmit: async ({ value }) => {
+            setErrorMessage("");
             const { data, error } = await authClient.emailOtp.checkVerificationOtp({
                 email: email,
                 type: "forget-password",
@@ -25,10 +46,14 @@ export default function VerifyOtpForm() {
             },
             {
                 onSuccess: () => {
-                    router.push(`/auth/forgot-password/reset?email=${email}&otp=${value.otp}`);
+                    setSuccessMessage("OTP verified successfully! Redirecting to reset password...");
+                    setTimeout(() => {
+                        router.push(`/auth/forgot-password/reset?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(value.otp)}`);
+                    }, 500);
                 },
                 onError: (error) => {
                     console.error(error);
+                    setErrorMessage(String(error?.response));
                 }
             },
             );
@@ -39,6 +64,26 @@ export default function VerifyOtpForm() {
             })
         },
     });
+
+    const handleResendOtp = async () => {
+        const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+            email: email,
+            type: "forget-password"
+        },
+        {
+            onSuccess: () => {
+                setSuccessMessage("OTP resent successfully!");
+                setSeconds(180);
+                setCanResend(false);
+                console.log("OTP resent successfully");
+            },
+            onError: (error) => {
+                console.error(error);
+                setErrorMessage(String(error?.response));
+            }
+        }    
+    );
+    }
 
     if (isPending) {
         return <Loader />;
@@ -52,6 +97,7 @@ export default function VerifyOtpForm() {
 
             <div className="flex-1 mx-5 mt-10 max-w-md p-6 bg-primary">
                 <h1 className="mb-6 text-center text-[40px] leading-[100%] font-extrabold font-poppins text-black">No&nbsp;Worries!</h1>
+                <h4 className="mb-6 text-center text-[15px] leading-[100%] font-light font-poppins text-black">We&apos;ve sent an OTP to {email}</h4>
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -105,7 +151,24 @@ export default function VerifyOtpForm() {
                             </form.Subscribe>
                         </div>
 
-                        {/*TODO: Implement a timer and handle Resend OTP here*/}
+                        {successMessage && (
+                            <p className="text-xs font-poppins mt-2">{successMessage}</p>
+                        )}
+                        {errorMessage && (
+                            <p className="text-red-500 text-xs font-poppins mt-2">{errorMessage}</p>
+                        )}
+
+                        {canResend ? (
+                            <Button
+                                className="flex justify-center items-center mt-4 font-poppins text-black hover:cursor-pointer"
+                                variant="link"
+                                onClick={handleResendOtp}
+                            >
+                                Resend OTP
+                            </Button>
+                        ) : (
+                            <div className="flex justify-center items-center mt-4 font-poppins">OTP is valid for {seconds} seconds</div>
+                        )}
                     </div>
                 </form>
             </div>

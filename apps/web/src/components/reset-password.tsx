@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import z from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "./loader";
+import { useState } from "react";
 
 export default function ResetPasswordForm() {
     const { isPending } = authClient.useSession();
@@ -14,6 +15,8 @@ export default function ResetPasswordForm() {
     const searchParams = useSearchParams();
     const email = searchParams.get("email") || "";
     const otp = searchParams.get("otp") || "";
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const form = useForm({
         defaultValues: {
@@ -21,6 +24,7 @@ export default function ResetPasswordForm() {
             confirmPassword: "",
         },
         onSubmit: async ({ value }) => {
+            setErrorMessage("");
             const { data, error } = await authClient.emailOtp.resetPassword({
                 email: email,
                 otp: otp,
@@ -28,11 +32,15 @@ export default function ResetPasswordForm() {
             },
             {
                 onSuccess: () => {
+                    setSuccessMessage("Password reset successful! Redirecting to login...");
                     console.log("Password reset successful");
-                    router.push("/auth/login");
+                    setTimeout(() => {
+                        router.push("/auth/login");
+                    }, 500);
                 },
                 onError: (error) => {
                     console.error(error);
+                    setErrorMessage(String(error?.response));
                 }
             },
             );
@@ -101,7 +109,7 @@ export default function ResetPasswordForm() {
                                         id={field.name}
                                         name={field.name}
                                         value={field.state.value}
-                                        placeholder="Confirm Password"
+                                        placeholder="Confirm New Password"
                                         onBlur={field.handleBlur}
                                         onChange={(e) => field.handleChange(e.target.value)}
                                         className="border border-black rounded-[40px] px-6 py-5 font-poppins font-medium text-[#604D004D] text-[25px] leading-[100%]"
@@ -129,6 +137,12 @@ export default function ResetPasswordForm() {
                             )}
                         </form.Subscribe>
                     </div>
+                    {successMessage && (
+                        <p className="text-xs font-poppins mt-2">{successMessage}</p>
+                    )}
+                    {errorMessage && (
+                        <p className="text-red-500 text-xs font-poppins mt-2">{errorMessage}</p>
+                    )}
                 </form>
             </div>
         </div>
