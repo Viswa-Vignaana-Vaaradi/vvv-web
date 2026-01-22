@@ -5,10 +5,13 @@ import z from "zod";
 import Loader from "./loader";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 export default function ForgotPasswordForm () {
     const router = useRouter();
     const { isPending } = authClient.useSession();
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const form = useForm({
         defaultValues: {
@@ -21,10 +24,14 @@ export default function ForgotPasswordForm () {
             },
             {
                 onSuccess: () => {
-                    router.push(`/auth/forgot-password/verify-otp?email=${encodeURIComponent(value.email)}`);
+                    setSuccessMessage("OTP sent successfully! Please check your email.");
+                    setTimeout(() => {
+                        router.push(`/auth/forgot-password/verify-otp?email=${encodeURIComponent(value.email)}`);
+                    });
                 },
                 onError: (error) => {
                     console.error(error);
+                    setErrorMessage(String(error?.response));
                 }
             },
             );
@@ -92,6 +99,13 @@ export default function ForgotPasswordForm () {
                                 )}
                             </form.Subscribe>
                         </div>
+
+                        {successMessage && (
+                            <p className="text-xs font-poppins mt-2">{successMessage}</p>
+                        )}
+                        {errorMessage && (
+                            <p className="text-red-500 text-xs font-poppins mt-2">{errorMessage}</p>
+                        )}
                     </div>
                 </form>
             </div>
