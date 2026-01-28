@@ -5,7 +5,20 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "NEXT_PUBLIC_SERVER_URL",
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "CORS_ORIGIN",
+        "UPLOADTHING_TOKEN",
+        "UPLOADTHING_APP_ID",
+        "RESEND_API_KEY",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
