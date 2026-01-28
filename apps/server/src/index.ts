@@ -4,7 +4,7 @@ import { auth } from "@repo/auth";
 import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
 
-const app = new Elysia({ adapter: node() })
+export default new Elysia({ adapter: node() })
   .use(
     cors({
       origin: env.CORS_ORIGIN,
