@@ -1,4 +1,4 @@
-import VerifyOtpForm from "@/components/verify-otp"
+import VerifyOtpForm from "@/components/verify-otp";
 
 export default function VerifyOtpPage() {
     
