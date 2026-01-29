@@ -9,7 +9,9 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsdown src/index.ts"
+  },
   "devDependencies": {
     "@repo/config": "workspace:*",
     "typescript": "catalog:"

@@ -7,6 +7,9 @@
     "./server": "./src/server.ts",
     "./web": "./src/web.ts"
   },
+  "scripts": {
+    "build": "tsdown src/index.ts"
+  },
   "dependencies": {
     "zod": "catalog:",
     "@t3-oss/env-nextjs": "^0.13.1",
