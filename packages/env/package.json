@@ -8,7 +8,7 @@
     "./web": "./src/web.ts"
   },
   "scripts": {
-    "build": "pnpm exec tsdown src/index.ts"
+    "build": "pnpm exec tsdown src/server.ts src/web.ts"
   },
   "dependencies": {
     "zod": "catalog:",
