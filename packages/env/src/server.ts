@@ -15,6 +15,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(5),
     RESEND_API_KEY: z.string().min(5),
   },
+  client: {},
+  clientPrefix: "",
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 });
