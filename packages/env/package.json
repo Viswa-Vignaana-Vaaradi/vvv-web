@@ -5,16 +5,24 @@
   "type": "module",
   "exports": {
     "./server": {
-      "import": {
+      "types": "./src/server.ts",
+      "import": "./src/server.ts",
+      "require": "./src/server.ts",
+      "default": {
+        "import": {
+          "types": "./dist/web.d.ts",
+          "default": "./dist/web.mjs"
+        },
         "types": "./dist/server.d.ts",
-        "default": "./dist/server.mjs"
-      },
-      "require": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.js"
+        "default": "./dist/server.mjs",
+        "require": "./dist/server.js"
       }
     },
     "./web": {
+      "types": "./src/web.ts",
+      "import": "./src/web.ts",
+      "require": "./src/web.ts",
+      "default": {
       "import": {
         "types": "./dist/web.d.ts",
         "default": "./dist/web.mjs"
@@ -23,10 +31,11 @@
         "types": "./dist/web.d.ts",
         "default": "./dist/web.js"
       }
+      }
     }
   },
   "scripts": {
-    "build": "pnpm exec tsdown src/server.ts src/web.ts"
+    "build": "pnpm exec tsdown src/server.ts src/web.ts --outDir dist"
   },
   "dependencies": {
     "zod": "catalog:",
