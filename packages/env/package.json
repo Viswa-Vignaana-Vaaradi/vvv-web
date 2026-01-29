@@ -4,8 +4,26 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./server": "./src/server.ts",
-    "./web": "./src/web.ts"
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.mjs"
+      },
+      "require": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      }
+    },
+    "./web": {
+      "import": {
+        "types": "./dist/web.d.ts",
+        "default": "./dist/web.mjs"
+      },
+      "require": {
+        "types": "./dist/web.d.ts",
+        "default": "./dist/web.js"
+      }
+    }
   },
   "scripts": {
     "build": "pnpm exec tsdown src/server.ts src/web.ts"
