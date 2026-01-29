@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsdown src/index.ts",
+    "build": "pnpm exec tsdown src/index.ts",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
