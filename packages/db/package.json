@@ -1,6 +1,7 @@
 {
   "name": "@repo/db",
   "type": "module",
+  "main": "./dist/index.mjs",
   "exports": {
     ".": {
       "default": "./src/index.ts"
