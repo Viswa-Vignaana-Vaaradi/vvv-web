@@ -6,10 +6,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@repo/auth": ["../packages/auth/index.ts"],
-      "@repo/db": ["../packages/db/index.ts"],
-      "@repo/env/server": ["../packages/env/server.ts"],
-      "@repo/env/web": ["../packages/env/web.ts"]
+      "@repo/auth": ["../packages/auth/dist/index.mjs"],
+      "@repo/db": ["../packages/db/dist/index.mjs"],
+      "@repo/env/server": ["../packages/env/dist/server.mjs"],
+      "@repo/env/web": ["../packages/env/dist/web.mjs"]
     },
     "jsx": "react-jsx"
   }
