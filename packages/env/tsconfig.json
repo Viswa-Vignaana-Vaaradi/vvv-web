@@ -1,3 +1,10 @@
 {
-  "extends": "@repo/config/tsconfig.base.json"
+  "extends": "@repo/config/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "esnext",
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
