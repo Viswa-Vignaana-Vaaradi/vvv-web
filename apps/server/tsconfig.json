@@ -5,7 +5,11 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@repo/auth": ["../packages/auth/index.ts"],
+      "@repo/db": ["../packages/db/index.ts"],
+      "@repo/env/server": ["../packages/env/server.ts"],
+      "@repo/env/web": ["../packages/env/web.ts"]
     },
     "jsx": "react-jsx"
   }
