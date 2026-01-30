@@ -10,7 +10,7 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": {
-        "types": "./dist/index.d.ts",
+        "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs",
         "require": "./dist/index.js"
       }
