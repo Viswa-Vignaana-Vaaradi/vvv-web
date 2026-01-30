@@ -10,12 +10,12 @@
       "require": "./src/server.ts",
       "default": {
         "import": {
-          "types": "./dist/web.d.ts",
-          "default": "./dist/web.mjs"
+          "types": "./dist/server.mjs",
+          "default": "./dist/server.mjs"
         },
-        "types": "./dist/server.d.ts",
+        "types": "./dist/server.mjs",
         "default": "./dist/server.mjs",
-        "require": "./dist/server.js"
+        "require": "./dist/server.mjs"
       }
     },
     "./web": {
@@ -24,12 +24,12 @@
       "require": "./src/web.ts",
       "default": {
       "import": {
-        "types": "./dist/web.d.ts",
+        "types": "./dist/web.mjs",
         "default": "./dist/web.mjs"
       },
       "require": {
-        "types": "./dist/web.d.ts",
-        "default": "./dist/web.js"
+        "types": "./dist/web.mjs",
+        "default": "./dist/web.mjs"
       }
       }
     }

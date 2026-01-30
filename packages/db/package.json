@@ -11,12 +11,12 @@
       "require": "./src/index.ts",
       "default": {
         "import": {
-          "types": "./dist/index.d.ts",
+          "types": "./dist/index.d.mts",
           "default": "./dist/index.mjs"
         },
         "require": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.js"
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
         }
       }
     },
@@ -26,12 +26,12 @@
       "require": "./src/*.ts",
       "default": {
       "import": {
-        "types": "./dist/*.d.ts",
-        "default": "./dist/*.ts"
+        "types": "./dist/*.d.mts",
+        "default": "./dist/*.mts"
       },
       "require": {
-        "types": "./dist/*.d.ts",
-        "default": "./dist/*.js"
+        "types": "./dist/*.d.mts",
+        "default": "./dist/*.mjs"
       }
     }
     }
