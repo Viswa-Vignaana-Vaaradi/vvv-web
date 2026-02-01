@@ -14,10 +14,12 @@ import { authClient } from "@/lib/auth-client";
 
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { useAuth } from "@/context/auth-context";
 
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
+  const { dispatch } = useAuth();
 
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;
@@ -47,6 +49,7 @@ export default function UserMenu() {
               authClient.signOut({
                 fetchOptions: {
                   onSuccess: () => {
+                    dispatch({ type: "LOGOUT" });
                     router.push("/");
                   },
                 },

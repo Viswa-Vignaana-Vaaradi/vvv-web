@@ -3,16 +3,16 @@ name: Optimus Prime CI
 on:
   push:
     branches:
-      - jarvis
       - main
+      - test
   pull_request:
     branches:
       - main
-      - jarvis
+      - test
 
 jobs:
   build:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: blacksmith-2vcpu-ubuntu-2404
 
     steps:
       - name: Checkout code

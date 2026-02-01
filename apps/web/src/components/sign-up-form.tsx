@@ -9,6 +9,7 @@ import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
+import { useState } from "react";
 
 const emailPasswordSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -19,6 +20,8 @@ const emailPasswordSchema = z.object({
 export default function SignUpForm() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const form = useForm({
     defaultValues: {
@@ -36,11 +39,16 @@ export default function SignUpForm() {
         },
         {
           onSuccess: () => {
-            router.push("/dashboard");
-            toast.success("Sign up successful");
+            setSuccessMessage("Sign up successful! Redirecting to dashboard...");
+            console.log("Sign up successful");
+            setTimeout(() => {
+              router.push("/dashboard");
+            }, 500);
           },
           onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
+            // toast.error(error.error.message || error.error.statusText);
+            console.error(error);
+            setErrorMessage(String(error?.response));
           },
         },
       );
@@ -239,6 +247,13 @@ export default function SignUpForm() {
               </Button>
             )}
           </form.Subscribe>
+
+          {successMessage && (
+            <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
+          )}
+          {errorMessage && (
+            <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
+          )}
         </form>
 
         <div className="mt-4 text-center">

@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
@@ -9,10 +8,15 @@ import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
+import { useState } from "react";
+import { useAuth } from "@/context/auth-context";
 
 export default function SignInForm() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { dispatch } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -26,12 +30,21 @@ export default function SignInForm() {
           password: value.password,
         },
         {
-          onSuccess: () => {
-            router.push("/dashboard");
-            toast.success("Sign in successful");
+          onSuccess: (ctx) => {
+            setSuccessMessage("Sign in successful! Redirecting to dashboard...");
+            console.log("Sign in successful");
+            dispatch({ 
+              type: "LOGIN",
+              payload: ctx.data
+            });
+            setTimeout(() => {
+              router.push("/dashboard");
+            }, 500);
           },
           onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
+            // toast.error(error.error.message || error.error.statusText);
+            console.error(error);
+            setErrorMessage(String(error?.response));
           },
         },
       );
@@ -175,6 +188,13 @@ export default function SignInForm() {
               </Button>
             )}
           </form.Subscribe>
+
+          {successMessage && (
+            <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
+          )}
+          {errorMessage && (
+            <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
+          )}
         </form>
 
         <div className="mt-4 text-center">
