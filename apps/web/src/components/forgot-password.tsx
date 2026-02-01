@@ -25,6 +25,7 @@ export default function ForgotPasswordForm () {
             {
                 onSuccess: () => {
                     setSuccessMessage("OTP sent successfully! Please check your email.");
+                    console.log("OTP sent successfully");
                     setTimeout(() => {
                         router.push(`/auth/forgot-password/verify-otp?email=${encodeURIComponent(value.email)}`);
                     });
@@ -101,10 +102,10 @@ export default function ForgotPasswordForm () {
                         </div>
 
                         {successMessage && (
-                            <p className="text-xs font-poppins mt-2">{successMessage}</p>
+                            <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
                         )}
                         {errorMessage && (
-                            <p className="text-red-500 text-xs font-poppins mt-2">{errorMessage}</p>
+                            <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center-">{errorMessage}</p>
                         )}
                     </div>
                 </form>

@@ -153,10 +153,10 @@ export default function VerifyOtpForm() {
                         </div>
 
                         {successMessage && (
-                            <p className="text-xs font-poppins mt-2">{successMessage}</p>
+                            <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
                         )}
                         {errorMessage && (
-                            <p className="text-red-500 text-xs font-poppins mt-2">{errorMessage}</p>
+                            <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
                         )}
 
                         {canResend ? (
