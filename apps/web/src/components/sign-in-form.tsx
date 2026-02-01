@@ -9,12 +9,14 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { useState } from "react";
+import { useAuth } from "@/context/auth-context";
 
 export default function SignInForm() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const { dispatch } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -28,9 +30,13 @@ export default function SignInForm() {
           password: value.password,
         },
         {
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             setSuccessMessage("Sign in successful! Redirecting to dashboard...");
             console.log("Sign in successful");
+            dispatch({ 
+              type: "LOGIN",
+              payload: ctx.data
+            });
             setTimeout(() => {
               router.push("/dashboard");
             }, 500);
