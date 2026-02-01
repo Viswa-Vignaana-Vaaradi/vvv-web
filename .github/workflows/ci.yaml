@@ -3,12 +3,12 @@ name: Optimus Prime CI
 on:
   push:
     branches:
-      - jarvis
+      - test
       - main
   pull_request:
     branches:
       - main
-      - jarvis
+      - test
 
 jobs:
   build:
