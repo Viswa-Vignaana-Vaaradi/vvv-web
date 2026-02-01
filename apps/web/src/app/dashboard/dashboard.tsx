@@ -1,10 +1,11 @@
 "use client";
-import { authClient } from "@/lib/auth-client";
+
+import { DashboardSidebar } from "./components/dashboard-sidebar";
 
 export default function Dashboard() {
   
   
   return (
-  <></>
+    <DashboardSidebar />
   );
 }

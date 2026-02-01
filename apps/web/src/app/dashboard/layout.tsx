@@ -1,8 +1,8 @@
-import { Sidebar, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AuthProvider } from "@/context/auth-context";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { DashboardSidebar } from "./components/dashboard-sidebar";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
     const session = await authClient.getSession({
@@ -17,14 +17,12 @@ export default async function Layout({ children }: { children: React.ReactNode }
     }
 
     return (
-        <AuthProvider initialSession={session}>
         <SidebarProvider>
-            <Sidebar collapsible="icon" className="top-16 h-[calc(100vh-64px)" />
+            <DashboardSidebar />
             <main className="flex-1 overflow-y-auto">
                 <SidebarTrigger />
                 {children}
             </main>
         </SidebarProvider>
-        </AuthProvider>
     )
 }

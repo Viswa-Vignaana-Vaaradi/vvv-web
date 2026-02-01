@@ -1,6 +1,3 @@
-import { headers } from "next/headers";
-
-import { authClient } from "@/lib/auth-client";
 
 import Dashboard from "./dashboard";
 
