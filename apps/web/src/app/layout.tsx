@@ -5,6 +5,10 @@ import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "../index.css";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
+import { authClient } from "@/lib/auth-client";
+import { headers } from "next/headers";
+
+import type { AuthInitialSessionData, User, Session } from "@/types";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +31,30 @@ export const metadata: Metadata = {
   description: "viswa-vignaana-vaaradi",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const session = await authClient.getSession({
+    fetchOptions: {
+      headers: await headers(),
+      throw: false,
+    },
+  });
+
+  const initialSessionData: AuthInitialSessionData | null =
+    session.data?.user && session.data?.session ? {
+      user: session.data.user as User,
+      session: session.data as Session,
+    }
+    : null;
+
   return (
     <html lang="en" suppressHydrationWarning className="bg-primary">
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-primary`}>
-        <Providers>
+        <Providers initialSession={initialSessionData}>
           <div className="grid grid-rows-[auto_1fr] h-svh">
             <Header />
             {children}
