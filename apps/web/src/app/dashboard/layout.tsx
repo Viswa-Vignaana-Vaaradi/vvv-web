@@ -6,7 +6,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
     return (
         <SidebarProvider>
             <div className="flex min-h-svh">
-                <DashboardSidebar />
                 <main className="flex-1 overflow-y-auto">
                     <SidebarTrigger />
                     {children}
