@@ -1,6 +1,8 @@
 "use client";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/auth-context";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AccountSettingIcon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
 
 export const DashboardSidebar = () => {
     const { state: authState } = useAuth();
@@ -10,7 +12,6 @@ export const DashboardSidebar = () => {
         console.log("User not authenticated or user data missing", authState);
         return <p>Please Log In</p>
     }
-    console.log("DashboardSidebar user:", authState);
 
     const isCollapsed = sidebarState === "collapsed";
 
@@ -23,17 +24,28 @@ export const DashboardSidebar = () => {
                     </p>
                 )}
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="flex gap-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton>
-                            <span>Profile</span>
+                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                           <HugeiconsIcon icon={Profile} size={24} className="" /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
+                        </SidebarMenuButton>
+                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                            <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
+                        </SidebarMenuButton>
+                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                            {/* <Image src="/account-info.svg" alt="Account Info" width={20} height={20} /> */}
+                            <HugeiconsIcon icon={Person} size={24} className="" />
+                            <div className="font-poppins font-semibold size-4.5">Personal</div>
+                        </SidebarMenuButton>
+                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                            <HugeiconsIcon icon={RupeeCircleIcon} /><div className="font-poppins font-semibold size-4.5">Donations</div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarContent>
             <SidebarFooter className="relative">
-                <p>{authState.user?.email}</p>
+                {/* <div className="font-poppins ">Logout</div> */}
             </SidebarFooter>
         </Sidebar>
     );
