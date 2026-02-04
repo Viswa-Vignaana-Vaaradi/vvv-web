@@ -1,11 +1,11 @@
 import {
   pgTable,
   serial,
-  uuid,
   varchar,
   timestamp,
   integer,
   primaryKey,
+  text,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 
@@ -17,7 +17,7 @@ export const roles = pgTable('roles', {
 
 export const memberships = pgTable('memberships', {
   id: serial('id').primaryKey(),
-  userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => user.id).notNull(),
   roleId: integer('role_id').references(() => roles.id, { onDelete: 'restrict' }).notNull(),
   memberCode: varchar('member_code', { length: 20 }).unique().notNull(),
   joinedAt: timestamp('joined_at').defaultNow(),
