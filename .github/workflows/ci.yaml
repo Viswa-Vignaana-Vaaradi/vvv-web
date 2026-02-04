@@ -13,23 +13,21 @@ on:
 jobs:
   build:
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    env:
+      NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+      CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
+      UPLOADTHING_APPI_ID: ${{ secrets.UPLOADTHING_APPI_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Setup env vars
-        env: 
-          NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
-          UPLOADTHING_APPI_ID: ${{ secrets.UPLOADTHING_APPI_ID }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
