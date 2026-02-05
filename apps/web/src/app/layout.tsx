@@ -53,11 +53,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className="bg-primary">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-primary`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-primary`}
+      >
         <Providers initialSession={initialSessionData}>
-          <div className="grid grid-rows-[auto_1fr] h-svh">
+          <div className="grid grid-rows-[auto_1fr] h-screen">
             <Header />
-            {children}
+            <main className="overflow-auto">{children}</main>
           </div>
         </Providers>
       </body>

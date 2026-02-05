@@ -16,10 +16,10 @@ export const DashboardSidebar = () => {
     const isCollapsed = sidebarState === "collapsed";
 
     return (
-        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-16 h-[calc(100vh-64px)] bg-[#FFFFFF]">
+        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-16 bg-[#FFFFFF]">
             <SidebarHeader>
                 {!isCollapsed && (
-                    <p className="flex items-center justify-center font-poppins font-bold size-8.75 leading-8.25 text-[#FF9B00] ml-20 mt-6 whitespace-nowrap">
+                    <p className="flex items-center justify-start font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
                         {"Hi "}{authState.user.name}{" !"}
                     </p>
                 )}
