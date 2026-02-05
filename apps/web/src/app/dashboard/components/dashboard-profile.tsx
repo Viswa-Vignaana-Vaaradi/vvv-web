@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/auth-context";
-import { Image } from "@imagekit/next";
+// import { Image } from "@imagekit/next";
+import Image from "next/image";
 
 export default function DashboardProfile() {
     const { state } = useAuth();
@@ -7,8 +8,8 @@ export default function DashboardProfile() {
     return (
         <div className="ml-80 w-lvh flex justify-items-center gap-4 p-10 border-red-200 border-2 items-center">
             <Image
-                urlEndpoint="https://ik.imagekit.io/vvv"
-                src={state.user?.image || "/default-profile.png"}
+                // urlEndpoint="https://ik.imagekit.io/vvv"
+                src={"/default-profile.jpg"}
                 alt="Profile Picture"
                 width={200}
                 height={200}
