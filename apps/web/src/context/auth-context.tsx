@@ -1,12 +1,15 @@
 "use client";
 
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect, useState } from "react";
 import type {
   AuthInitialSessionData,
   AuthState,
   AuthAction,
   AuthContextType,
+  User,
+  Session,
 } from "@/types";
+import { authClient } from "@/lib/auth-client";
 
 const initialAuthState: AuthState = {
   user: null,
@@ -44,15 +47,60 @@ export function AuthProvider({
   children: React.ReactNode;
   initialSession: AuthInitialSessionData | null;
 }) {
-  const initialStateFromProps: AuthState = initialSession?.user
-    ? {
-        user: initialSession.user,
-        session: initialSession.session,
-        isAuthenticated: true,
-      }
-    : initialAuthState;
 
-  const [state, dispatch] = useReducer(authReducer, initialStateFromProps);
+  const [loadingClientSession, setLoadingClientSession] = useState(true);
+
+  const [state, dispatch] = useReducer(
+    authReducer,
+    initialSession?.user && initialSession?.session
+      ? {
+          user: initialSession.user,
+          session: initialSession.session,
+          isAuthenticated: true,
+        }
+      : initialAuthState
+  );
+
+  useEffect(() => {
+    if (!initialSession?.user && !state.isAuthenticated && loadingClientSession) {
+      const fetchClientSession = async () => {
+        try {
+          const session = await authClient.getSession({
+            fetchOptions: { credentials: "include", throw: false },
+          });
+
+          if (session.data?.user && session.data?.session) {
+            dispatch({
+              type: "LOGIN",
+              payload: {
+                user: session.data.user as User,
+                session: session.data as Session,
+              },
+            });
+          } else {
+            if (state.isAuthenticated) {
+                dispatch({ type: "LOGOUT" });
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch client session:", error);
+          if (state.isAuthenticated) {
+            dispatch({ type: "LOGOUT" });
+          }
+        } finally {
+          setLoadingClientSession(false);
+        }
+      };
+
+      fetchClientSession();
+    } else {
+      setLoadingClientSession(false);
+    }
+  }, [initialSession, state.isAuthenticated, loadingClientSession, dispatch]);
+
+  if (loadingClientSession && !state.isAuthenticated) {
+    return <div>Loading authentication...</div>;
+  }
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
