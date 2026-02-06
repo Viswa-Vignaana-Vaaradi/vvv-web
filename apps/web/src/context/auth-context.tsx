@@ -6,8 +6,6 @@ import type {
   AuthState,
   AuthAction,
   AuthContextType,
-  User,
-  Session,
 } from "@/types";
 
 const initialAuthState: AuthState = {
