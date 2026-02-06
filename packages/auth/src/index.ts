@@ -13,6 +13,11 @@ export const auth = betterAuth({
   }),
   baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN!],
+  logger: {
+    disabled: false,
+    disableColors: false,
+    level: "debug"
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
