@@ -40,7 +40,7 @@ export const auth = betterAuth({
       maxAge: 10 * 60, // 10 minutes In seconds
     },
     cookieOptions: {
-      domain: env.NODE_ENV === "production" ? "https://www.viswavignanavaaradhi.org/" : "localhost",
+      domain: env.NODE_ENV === "production" ? "https://vvv-web-fork-web.vercel.app" : "localhost",
     }
   },
   advanced: {
