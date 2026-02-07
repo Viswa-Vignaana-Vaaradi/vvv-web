@@ -1,15 +1,19 @@
 import { db } from "@repo/db";
-import * as schema from "@repo/db/schema/auth";
+import * as authSchema from "@repo/db/schema/auth";
+import * as coreSchema from "@repo/db/schema/core-schema";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { emailOTP, lastLoginMethod, username } from "better-auth/plugins";
+import { customSession, emailOTP, lastLoginMethod, username } from "better-auth/plugins";
 import { Resend } from "resend";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
-    schema: schema,
+    schema: { 
+    ...authSchema,
+    ...coreSchema
+  },
   }),
   baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN!],
@@ -41,7 +45,7 @@ export const auth = betterAuth({
     },
     cookieOptions: {
       domain: env.NODE_ENV === "production" ? ".viswavignanavaaradhi.org" : "localhost",
-    }
+    },
   },
   advanced: {
     useSecureCookies: true,
@@ -60,6 +64,20 @@ export const auth = betterAuth({
     max: 100
   },
   user: {
+    additionalFields: {
+      locationId: {
+        type: "number",
+        required: false,
+        references: {
+          model: "user_location",
+          field: "id",
+        }
+      },
+      aboutMe: {
+        type: "string",
+        required: false,
+      }
+    },
     deleteUser: {
       enabled: true,
     }
@@ -96,6 +114,19 @@ export const auth = betterAuth({
       },
       sendVerificationOnSignUp: false,
       disableSignUp: false
+    }),
+    customSession(async ({ user, session }) => {
+      const membership = await db.query.memberships.findFirst({
+        where: (memberships, { eq }) => eq(memberships.userId, user.id),
+      });
+
+      return {
+        user: {
+          ...user,
+          userRole: membership?.roleName ?? null
+        },
+        session
+      };
     })
   ]
 });
