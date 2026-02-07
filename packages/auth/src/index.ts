@@ -11,9 +11,9 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: { 
-    ...authSchema,
-    ...coreSchema
-  },
+      ...authSchema,
+      ...coreSchema
+    },
   }),
   baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN!],
@@ -65,14 +65,6 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      locationId: {
-        type: "number",
-        required: false,
-        references: {
-          model: "user_location",
-          field: "id",
-        }
-      },
       aboutMe: {
         type: "string",
         required: false,
