@@ -23,6 +23,8 @@ export const user = pgTable("user", {
   username: text("username").unique(),
   displayUsername: text("display_username"),
   lastLoginMethod: text("last_login_method"),
+  locationId: integer("location_id"),
+  aboutMe: text("about_me"),
 });
 
 export const session = pgTable(

@@ -3,15 +3,18 @@
 import { Separator } from "@/components/ui/separator";
 import DashboardProfile from "./components/dashboard-profile";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/context/auth-context";
 
 export default function Dashboard() {
+  const { state } = useAuth();
+
   return (
     <div className="p-2">
-    <div className="p-4">
-      <DashboardProfile />
-    </div>
-    <Separator className="border-[#00000080]" />
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-20 my-10">
+      <div className="p-6">
+        <DashboardProfile />
+      </div>
+      <Separator className="border-[#00000080]" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-20 my-10">
         <div className="flex flex-col">
           <div className="font-poppins mb-4 font-bold text-[#604D00] text-2xl">
             Donations
@@ -30,7 +33,8 @@ export default function Dashboard() {
           <Card className="bg-white rounded-3xl border-none p-6">
             <CardContent>
               <p className="font-poppins text-base text-gray-700">
-                About Me Content
+                {/* @ts-expect-error: due to better-auth customSession plugin */}
+                {state.user?.aboutMe || "Add About Me"}
               </p>
             </CardContent>
           </Card>

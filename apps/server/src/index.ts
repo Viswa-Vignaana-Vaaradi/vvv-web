@@ -4,8 +4,9 @@ import { auth } from "@repo/auth";
 import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
 import { professionsOptions } from "./routes/profession-options";
+import { getUserLocation } from "./utils/user-location";
 
-export default new Elysia({ adapter: node() })
+const app = new Elysia({ adapter: node() })
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -25,8 +26,11 @@ export default new Elysia({ adapter: node() })
   .get("/", () => "OK")
   .mount(auth.handler)
   .use(professionsOptions)
+  .use(getUserLocation)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");
   });
 
+export type App = typeof app;
+export default app;

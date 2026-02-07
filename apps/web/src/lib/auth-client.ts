@@ -1,6 +1,7 @@
 import { env } from "@repo/env/web";
 import { createAuthClient } from "better-auth/react";
-import { emailOTPClient, lastLoginMethodClient, usernameClient } from "better-auth/client/plugins";
+import { customSessionClient, emailOTPClient, lastLoginMethodClient, usernameClient } from "better-auth/client/plugins";
+import type { auth } from "@repo/auth";
 
 export const authClient = createAuthClient({
   baseURL: env.NEXT_PUBLIC_SERVER_URL,
@@ -16,6 +17,7 @@ export const authClient = createAuthClient({
   plugins: [
     usernameClient(),
     lastLoginMethodClient(),
-    emailOTPClient()
+    emailOTPClient(),
+    customSessionClient<typeof auth>()
   ]
 });
