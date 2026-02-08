@@ -4,9 +4,31 @@ import { Separator } from "@/components/ui/separator";
 import DashboardProfile from "./components/dashboard-profile";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/auth-context";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/eden";
 
 export default function Dashboard() {
   const { state } = useAuth();
+
+  const userId = state.user?.id;
+
+  const { data: aboutMe, isLoading, error } = useQuery({
+    queryKey: ['aboutMe', userId],
+    queryFn: async () => {
+      if (!userId) throw new Error("No User ID");
+
+      const { data, error } = await api["about-me"].get({
+        $query: { userId: userId },
+        $headers: {}
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to fetch location');
+      }
+      return data;
+    },
+    enabled: !!userId,
+  })
 
   return (
     <div className="p-2">
@@ -33,8 +55,7 @@ export default function Dashboard() {
           <Card className="bg-white rounded-3xl border-none p-6">
             <CardContent>
               <p className="font-poppins text-base text-gray-700">
-                {/* @ts-expect-error: due to better-auth customSession plugin */}
-                {state.user?.aboutMe || "Add About Me"}
+                {aboutMe?.aboutMeText || "Add About Me"}
               </p>
             </CardContent>
           </Card>

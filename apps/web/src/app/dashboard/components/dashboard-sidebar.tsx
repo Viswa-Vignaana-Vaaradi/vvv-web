@@ -1,5 +1,5 @@
 "use client";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar, SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/auth-context";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AccountSettingIcon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
@@ -16,15 +16,16 @@ export const DashboardSidebar = () => {
     const isCollapsed = sidebarState === "collapsed";
 
     return (
-        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-16 bg-[#FFFFFF]">
+        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-16 bg-white">
             <SidebarHeader>
                 {!isCollapsed && (
-                    <p className="flex items-center justify-start font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
+                    <p className="flex items-center justify-center font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
                         {"Hi "}{authState.user.name}{" !"}
                     </p>
                 )}
+                <SidebarTrigger />
             </SidebarHeader>
-            <SidebarContent className="flex gap-2">
+            <SidebarContent className="flex gap-2 items-center">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">

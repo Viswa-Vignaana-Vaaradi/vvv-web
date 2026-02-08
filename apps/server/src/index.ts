@@ -4,7 +4,8 @@ import { auth } from "@repo/auth";
 import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
 import { professionsOptions } from "./routes/profession-options";
-import { getUserLocation } from "./utils/user-location";
+import { getUserLocation } from "./user/user-location";
+import { aboutMe } from "./user/about-me";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -27,6 +28,7 @@ const app = new Elysia({ adapter: node() })
   .mount(auth.handler)
   .use(professionsOptions)
   .use(getUserLocation)
+  .use(aboutMe)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

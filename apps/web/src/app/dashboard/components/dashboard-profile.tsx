@@ -31,7 +31,7 @@ export default function DashboardProfile() {
     })
 
     return (
-        <div className="w-full flex gap-4 p-10 items-center">
+        <div className="w-full flex gap-4 px-20 items-center">
             <Image
                 src={state.user?.image || DefaultProfile}
                 alt="Profile Picture"
@@ -56,7 +56,7 @@ export default function DashboardProfile() {
                     : <div className="col-span-1"></div>
                 }
                 
-                <div className="col-span-1 flex items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
+                <div className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
                     Want to be a Patron?
                 </div>
             
@@ -64,12 +64,12 @@ export default function DashboardProfile() {
                     Joined: {joiningDate}
                 </div>
 
-                <div className="col-span-1 flex items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
+                <div className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
                     Want to be a Volunteer?
                 </div>
                 
                 <div className="col-span-1 whitespace-nowrap flex items-center justify-center font-poppins font-semibold size-4.5 leading-8.25 text-[#604D00CC]">
-                    {isLoading ? "Loading location..." : (location && !('error' in location)) ? location.city : ""}
+                    {isLoading ? "Loading location..." : (location && !('error' in location)) ? location.city : "No location"}
                 </div>
             </div>
         </div>
