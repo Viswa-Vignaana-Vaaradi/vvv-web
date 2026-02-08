@@ -35,7 +35,6 @@ export const DashboardSidebar = () => {
                             <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
                         </SidebarMenuButton>
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
-                            {/* <Image src="/account-info.svg" alt="Account Info" width={20} height={20} /> */}
                             <HugeiconsIcon icon={Person} size={24} className="" />
                             <div className="font-poppins font-semibold size-4.5">Personal</div>
                         </SidebarMenuButton>

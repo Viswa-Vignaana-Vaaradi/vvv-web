@@ -6,6 +6,7 @@ import { Elysia } from "elysia";
 import { professionsOptions } from "./routes/profession-options";
 import { getUserLocation } from "./user/user-location";
 import { aboutMe } from "./user/about-me";
+import { userRole } from "./user/user-role";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -29,6 +30,7 @@ const app = new Elysia({ adapter: node() })
   .use(professionsOptions)
   .use(getUserLocation)
   .use(aboutMe)
+  .use(userRole)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

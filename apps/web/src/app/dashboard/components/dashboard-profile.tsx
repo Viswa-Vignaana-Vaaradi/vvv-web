@@ -28,7 +28,25 @@ export default function DashboardProfile() {
             return data;
         },
         enabled: !!userId,
-    })
+    });
+
+    const { data: userRole, isLoading: isUserRoleLoading, error: userRoleError } = useQuery({
+        queryKey: ['userRole', userId],
+        queryFn: async () => {
+            if (!userId) throw new Error("No user ID");
+
+            const { data, error } = await api["user-role"].get({
+                $query: { userId: userId },
+                $headers: {}
+            });
+
+            if (error) {
+                throw new Error(error.message || "Failed to get the user role");
+            }
+            return data;
+        },
+        enabled: !!userId,
+    });
 
     return (
         <div className="w-full flex gap-4 px-20 items-center">
@@ -50,7 +68,7 @@ export default function DashboardProfile() {
                 {state.user?.userRole ?
                     <Card className="col-span-1 border-none flex p-0 items-center justify-center bg-white rounded-[40px] mb-2">
                         <CardContent className="font-semibold leading-[100%] text-[#0E897F]">
-                            {state.user.userRole}
+                            {userRole?.userRole}
                         </CardContent>
                     </Card>
                     : <div className="col-span-1"></div>
