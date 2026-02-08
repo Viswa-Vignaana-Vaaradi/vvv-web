@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/eden";
 
 export default function DashboardProfile() {
-    const { state } = useAuth();
+    const { state, dispatch } = useAuth();
 
     const joiningDate = state.user?.createdAt ? new Date(state.user.createdAt).toLocaleDateString() : "";
     
@@ -43,6 +43,14 @@ export default function DashboardProfile() {
             if (error) {
                 throw new Error(error.message || "Failed to get the user role");
             }
+
+            if (data?.userRole && state.user?.userRole !== data.userRole) {
+                dispatch({
+                    type: "UPDATE_USER",
+                    payload: { userRole: data.userRole } 
+                });
+            }
+
             return data;
         },
         enabled: !!userId,
@@ -68,7 +76,7 @@ export default function DashboardProfile() {
                 {state.user?.userRole ?
                     <Card className="col-span-1 border-none flex p-0 items-center justify-center bg-white rounded-[40px] mb-2">
                         <CardContent className="font-semibold leading-[100%] text-[#0E897F]">
-                            {userRole?.userRole}
+                            {state.user?.userRole}
                         </CardContent>
                     </Card>
                     : <div className="col-span-1"></div>
@@ -87,7 +95,7 @@ export default function DashboardProfile() {
                 </div>
                 
                 <div className="col-span-1 whitespace-nowrap flex items-center justify-center font-poppins font-semibold size-4.5 leading-8.25 text-[#604D00CC]">
-                    {isLoading ? "Loading location..." : (location && !('error' in location)) ? location.city : "No location"}
+                    {isLoading ? "" : (location && !('error' in location)) ? location.city : "No location"}
                 </div>
             </div>
         </div>
