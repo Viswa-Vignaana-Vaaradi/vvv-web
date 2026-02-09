@@ -28,7 +28,7 @@ export default function Dashboard() {
       return data;
     },
     enabled: !!userId,
-  })
+  });
 
   return (
     <div className="p-2">

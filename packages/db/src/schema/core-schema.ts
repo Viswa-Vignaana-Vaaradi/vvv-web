@@ -30,14 +30,10 @@ export const professionOptions = pgTable('profession_options', {
   name: varchar('name', { length: 50 }).unique().notNull(),
 });
 
-export const educationalQualificationOptions = pgTable('educational_qualification_options', {
-  id: serial('id').primaryKey(),
-  name: varchar('name', { length: 100 }).unique().notNull(),
-});
-
 export const involvementAreasOptions = pgTable('involvement_areas_options', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 50 }).unique().notNull(),
+  purpose: varchar('purpose', { length: 100 }).notNull(),
 });
 
 export const interestedAreasOptions = pgTable('interested_areas_options', {
@@ -53,7 +49,6 @@ export const volunteerDetails = pgTable('volunteer_details', {
   contactNumber: varchar('contact_number', { length: 15 }),
   bloodGroup: varchar('blood_group', { length: 5 }),
   collegeName: varchar('college_name', { length: 40 }),
-  educationalQualificationId: integer('educational_qualification_id').references(() => educationalQualificationOptions.id, { onDelete: 'set null' }),
   professionId: integer('profession_id').references(() => professionOptions.id, { onDelete: 'set null' }),
 });
 

@@ -34,8 +34,10 @@ export const DashboardSidebar = () => {
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
                         </SidebarMenuButton>
-                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
-                            <HugeiconsIcon icon={Person} size={24} className="" />
+                        <SidebarMenuButton 
+                            // disabled={authState.user.userRole === null} 
+                        className="p-4 cursor-pointer hover:bg-primary">
+                            <HugeiconsIcon icon={Person} size={24} />
                             <div className="font-poppins font-semibold size-4.5">Personal</div>
                         </SidebarMenuButton>
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">

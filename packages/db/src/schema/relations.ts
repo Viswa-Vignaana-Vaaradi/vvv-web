@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { educationalQualificationOptions, interestedAreasOptions, involvementAreasOptions, memberships, professionOptions, userLocation, volunteerDetails, volunteerInterestedAreas, volunteerInvolvementAreas } from "./core-schema";
+import { interestedAreasOptions, involvementAreasOptions, memberships, professionOptions, userLocation, volunteerDetails, volunteerInterestedAreas, volunteerInvolvementAreas } from "./core-schema";
 import { user } from "./auth";
 
 export const volunteerDetailsRelations = relations(
@@ -8,10 +8,6 @@ export const volunteerDetailsRelations = relations(
     membership: one(memberships, {
       fields: [volunteerDetails.membershipId],
       references: [memberships.id],
-    }),
-    educationalQualification: one(educationalQualificationOptions, {
-      fields: [volunteerDetails.educationalQualificationId],
-      references: [educationalQualificationOptions.id],
     }),
     profession: one(professionOptions, {
       fields: [volunteerDetails.professionId],

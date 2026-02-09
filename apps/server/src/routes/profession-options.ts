@@ -10,6 +10,7 @@ export const professionsOptions = new Elysia({ prefix: "/options/professions" })
                 const session = await auth.api.getSession({
                     headers,
                 });
+                console.log("Session:", session);
 
                 if (!session) return status(401);
 
@@ -21,7 +22,8 @@ export const professionsOptions = new Elysia({ prefix: "/options/professions" })
         }
     })
     .get("/", async () => {
-        return db.query.professionOptions.findMany();
+        const fetchedProfessions = await db.query.professionOptions.findMany();
+        return fetchedProfessions;
     }, {
         auth: true
     })
