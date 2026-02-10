@@ -8,6 +8,7 @@ import { getUserLocation } from "./user/user-location";
 import { aboutMe } from "./user/about-me";
 import { userRole } from "./user/user-role";
 import { involvementAreasOptions } from "./routes/involvement-options";
+import { AreasofInterestOptions } from "./routes/interest-options";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -30,6 +31,7 @@ const app = new Elysia({ adapter: node() })
   .mount(auth.handler)
   .use(professionsOptions)
   .use(involvementAreasOptions)
+  .use(AreasofInterestOptions)
   .use(getUserLocation)
   .use(aboutMe)
   .use(userRole)
