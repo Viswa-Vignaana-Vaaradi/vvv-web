@@ -1,5 +1,6 @@
 'use client';
 import { Checkbox } from "@/components/ui/checkbox";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { SelectItem, SelectValue, Select, SelectContent, SelectGroup, SelectLabel, SelectTrigger } from "@/components/ui/select";
 import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
@@ -323,53 +324,30 @@ export const VolunteerForm = () => {
                     </div>
 
                     <div>
-                        <form.Field name="involvement" mode="array">
+                        <form.Field name="involvement">
                             {(field) => (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    {involvementOptionsLoading ? (
-                                        <p className="text-sm text-muted-foreground">Loading options...</p>
-                                        ) : (
-                                            involvementOptions?.map((option) => {
-                                                const isChecked = field.state.value?.includes(String(option.id));
-                        
-                                                return (
-                                                    <div key={option.id} className="flex items-start space-x-3 space-y-0">
-                                                        <Checkbox
-                                                            id={`involvement-${option.id}`}
-                                                            checked={isChecked}
-                                                            onCheckedChange={(checked) => {
-                                                                const currentValue = field.state.value || [];
-                                                                const stringId = String(option.id);
-                                        
-                                                                if (checked) {
-                                                                    field.handleChange([...currentValue, stringId]);
-                                                                } else {
-                                                                    field.handleChange(
-                                                                        currentValue.filter((id: string) => id !== stringId)
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
-                                                        <div className="grid gap-1.5 leading-none">
-                                                            <label
-                                                                htmlFor={`involvement-${option.id}`}
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-poppins"
-                                                            >
-                                                                {option.name}
-                                                            </label>
-                                                            <p className="text-[12px] text-muted-foreground italic">
-                                                                {option.purpose}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })
-                                        )}
-                                    </div>
+                                <div className="space-y-2">
+                                    <MultiSelect
+                                        placeholder="Select wings of involvement"
+                                        options={involvementOptions?.map((option) => ({
+                                            value: String(option.id),
+                                            label: `${option.name} (${option.purpose})`
+                                        })) || []}
+                                        value={field.state.value}
+                                        onChange={(val) => field.handleChange(val)}
+                                        className="mt-2"
+                                    />
+
+                                    {field.state.meta.errors && (
+                                        <p className="text-[12px] text-red-500 font-poppins">
+                                            {field.state.meta.errors}
+                                        </p>
+                                    )}
+                                </div>
                             )}
                         </form.Field>
                     </div>
-
+                    
                     <div>
 
                     </div>

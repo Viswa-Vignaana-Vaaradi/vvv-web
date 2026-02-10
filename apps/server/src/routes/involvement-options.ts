@@ -9,7 +9,6 @@ export const involvementAreasOptions = new Elysia({ prefix: "/options/involvemen
                 const session = await auth.api.getSession({
                     headers,
                 });
-                console.log("Session:", session);
 
                 if (!session) return status(401);
     

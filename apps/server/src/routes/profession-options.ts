@@ -10,7 +10,6 @@ export const professionsOptions = new Elysia({ prefix: "/options/professions" })
                 const session = await auth.api.getSession({
                     headers,
                 });
-                console.log("Session:", session);
 
                 if (!session) return status(401);
 
