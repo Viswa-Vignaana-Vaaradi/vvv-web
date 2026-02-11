@@ -64,6 +64,7 @@ export const MultiSelect = ({
           <CommandInput placeholder="Search..." className="font-poppins h-9" />
           <CommandList className="max-h-75">
             <CommandEmpty>No results found.</CommandEmpty>
+            <h2 className="font-poppins flex justify-start mt-2 text-sm">Select in the order of priority</h2>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = value.includes(option.value);

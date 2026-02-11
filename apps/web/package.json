@@ -17,6 +17,7 @@
     "@repo/env": "workspace:*",
     "@tanstack/react-form": "^1.27.3",
     "@tanstack/react-query": "^5.90.12",
+    "@tanstack/zod-form-adapter": "^0.42.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "catalog:",
     "class-variance-authority": "^0.7.1",
