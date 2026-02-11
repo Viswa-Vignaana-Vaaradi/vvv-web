@@ -6,7 +6,8 @@ import { api } from "@/lib/eden";
 import { Input } from "@base-ui/react/input"
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
-import z, { boolean } from "zod";
+import { useRouter } from "next/navigation";
+import z from "zod";
 
 interface FormSchema {
     age: number | undefined;
@@ -61,6 +62,12 @@ const formSchema: z.ZodType<FormSchema> = z.object({
 export const VolunteerForm = () => {
     const { state } = useAuth();
     const userId = state.user?.id;
+    const userRole = state.user?.userRole;
+    const router = useRouter();
+
+    if (userRole === "PATRON") {
+        router.push("/dashboard")
+    }
 
     const educationOptions = [
         { value: "Intermediate", label: "Intermediate" },
@@ -157,18 +164,18 @@ export const VolunteerForm = () => {
 
     return (
         <div className="flex w-full min-h-screen gap-6 p-10">
-            <div className="flex-1 border-r">
-                <div className="text-[38px] font-bold text-[#DB7A05] font-poppins leading-8.25">Volunteer</div>
-                <div className="text-[28px] font-bold text-[#604D00] font-poppins leading-8.25 mt-3">Personal Information</div>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.handleSubmit();
+                }}
+                className="flex flex-1 space-y-4 space-x-6"
+            >
+                <div className="flex-1 border-r">
+                    <div className="text-[38px] font-bold text-[#DB7A05] font-poppins leading-8.25">Volunteer</div>
+                    <div className="text-[28px] font-bold text-[#604D00] font-poppins leading-8.25 mt-3">Personal Information</div>
                 
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.handleSubmit();
-                    }}
-                    className="space-y-4"
-                >
                     <div>
                         <form.Field name="age">
                             {(field) => (
@@ -242,7 +249,7 @@ export const VolunteerForm = () => {
                                             required
                                         >
                                             <ComboboxInput placeholder="Profession" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
-                                            <ComboboxContent>
+                                            <ComboboxContent className="font-poppins">
                                                 {isLoading ? (
                                                     <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
                                                         ) : (
@@ -315,7 +322,7 @@ export const VolunteerForm = () => {
                                         required
                                     >
                                         <ComboboxInput placeholder="Blood Group" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
-                                        <ComboboxContent>
+                                        <ComboboxContent className="font-poppins">
                                             <ComboboxItem value="A+">A+</ComboboxItem>
                                             <ComboboxItem value="A-">A-</ComboboxItem>
                                             <ComboboxItem value="B+">B+</ComboboxItem>
@@ -363,7 +370,7 @@ export const VolunteerForm = () => {
                                         required
                                     >
                                         <ComboboxInput placeholder="State" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
-                                        <ComboboxContent>
+                                        <ComboboxContent className="font-poppins">
                                             <ComboboxItem value="Andhra Pradesh">Andhra Pradesh</ComboboxItem>
                                             <ComboboxItem value="Arunachal Pradesh">Arunachal Pradesh</ComboboxItem>
                                             <ComboboxItem value="Assam">Assam</ComboboxItem>
@@ -423,7 +430,6 @@ export const VolunteerForm = () => {
                             )}
                         </form.Field>
                     </div>
-                </form>
             </div>
 
             <div className="flex-1 mt-20">
@@ -439,7 +445,7 @@ export const VolunteerForm = () => {
                                     })) || []}
                                     value={field.state.value}
                                     onChange={(val) => field.handleChange(val)}
-                                    className="mt-2 px-2"
+                                    className="mt-2 px-2 font-poppins"
                                 />
                             </div>
                         )}
@@ -458,7 +464,7 @@ export const VolunteerForm = () => {
                                     })) || []}
                                     value={field.state.value}
                                     onChange={(val) => field.handleChange(val)}
-                                    className="mt-2 px-2"
+                                    className="mt-2 px-2 font-poppins"
                                 />
                             </div>
                         )}
@@ -478,7 +484,7 @@ export const VolunteerForm = () => {
                                     items={educationOptions}
                                 >
                                     <ComboboxInput placeholder="Education" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] mt-4" />
-                                    <ComboboxContent>
+                                    <ComboboxContent className="font-poppins">
                                         {educationOptions.map((opt) => (
                                             <ComboboxItem key={opt.value} value={opt.value}>
                                                 {opt.label}
@@ -490,7 +496,11 @@ export const VolunteerForm = () => {
                         )}
                     </form.Field>
                 </div>
+
+                <p className="mt-10 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
+                <p className="mt-3 font-poppins font-medium text-[14px] leading-8.25 text-[#604D004D]">I confirm that the information provided is true to the best of my knowledge and I am willing to volunteer for viswa vignana vaaradhi</p>
             </div>
+            </form>
         </div>
     )
 }
