@@ -2,16 +2,16 @@ import { auth } from "@repo/auth";
 import { db } from "@repo/db";
 import Elysia from "elysia";
 
-export const AreasofInterestOptions = new Elysia({ prefix: "/options/interest" })
+export const ContributionAmountOptions = new Elysia({ prefix: "/options/contribution-amount" })
     .macro({
         auth: {
             async resolve({ status, request: { headers } }) {
                 const session = await auth.api.getSession({
                     headers,
                 });
-
-                if (!session) return status(401);
         
+                if (!session) return status(401);
+                
                 return {
                     user: session.user,
                     session: session.session
@@ -20,8 +20,8 @@ export const AreasofInterestOptions = new Elysia({ prefix: "/options/interest" }
         }
     })
     .get("/", async () => {
-        const fetchedInterestOptions = await db.query.interestedAreasOptions.findMany();
-        return fetchedInterestOptions;
+        const fetchedAmountOptions = await db.query.contributionAmountOptions.findMany();
+        return fetchedAmountOptions;
     }, {
         auth: true
     })

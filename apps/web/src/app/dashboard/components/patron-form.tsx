@@ -20,6 +20,9 @@ interface FormSchema {
     involvement: string[];
     areaOfInterest: string[];
     contribute: string;
+    frequency: string;
+    amount: string;
+    otherAmount: string;
 }
 
 const formSchema: z.ZodType<FormSchema> = z.object({
@@ -33,8 +36,10 @@ const formSchema: z.ZodType<FormSchema> = z.object({
     contactNumber: z.string().min(10, "Please enter a valid contact number"),
     involvement: z.array(z.string()).min(1, "Please select a valid wings of involvement"),
     areaOfInterest: z.array(z.string()).min(1, "Please select an area of interest"),
-    contribute: z.preprocess((val) => (val === true ? "yes" : "no"), z.string())
-
+    contribute: z.preprocess((val) => (val === true ? "yes" : "no"), z.string()),
+    frequency: z.string().min(2, "Please select a valid contribution frequency"),
+    amount: z.string().min(2, "Please select a valid contribution amount"),
+    otherAmount: z.string().min(2, "Please enter a valid amount")
 }).superRefine((data, ctx) => {
     if (data.profession === "Student" && (!data.collegeName || data.collegeName.length < 5)) {
         ctx.addIssue({
@@ -48,6 +53,13 @@ const formSchema: z.ZodType<FormSchema> = z.object({
             code: z.ZodIssueCode.custom,
             message: "Please specify your profession",
             path: ["otherProfession"],
+        });
+    }
+    if (data.amount === "other" && !data.otherAmount) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please enter a valid amount",
+            path: ["otherAmount"]
         });
     }
 });
@@ -125,6 +137,50 @@ export const PatronForm = () => {
         enabled: !!userId,
     });
 
+    const { data: frequencyOptions, isLoading: frequencyOptionsLoading, error: frequencyOptionsError } = useQuery({
+        queryKey: ['frequencyOptions', userId],
+        queryFn: async () => {
+            if (!userId) throw new Error("No User ID");
+
+            const { data: frequencyOptionsData, error } = await api.options["contribution-frequency"].get({
+                $query: { userId: userId },
+                $headers: {},
+                $fetch: {
+                    credentials: "include"
+                }
+            });
+
+            if (error) {
+                throw new Error(error.message || "Frequency options failed to fetch");
+            }
+
+            return frequencyOptionsData;
+        },
+        enabled: !!userId,
+    });
+
+    const { data: amountOptions, isLoading: amountOptionsLoading, error: amountOptionsError } = useQuery({
+        queryKey: ['amountOptions', userId],
+        queryFn: async () => {
+            if (!userId) throw new Error("No User ID");
+
+            const { data: amountOptionsData, error } = await api.options["contribution-amount"].get({
+                $query: { userId: userId },
+                $headers: {},
+                $fetch: {
+                    credentials: "include"
+                }
+            });
+
+            if (error) {
+                throw new Error(error.message || "Amount options failed to fetch");
+            }
+
+            return amountOptionsData;
+        },
+        enabled: !!userId
+    });
+
     const form = useForm({
         defaultValues: {
             dob: undefined as number | undefined,
@@ -135,6 +191,9 @@ export const PatronForm = () => {
             involvement: [] as string[],
             areaOfInterest: [] as string[],
             contribute: "no",
+            frequency: "",
+            amount: "",
+            otherAmount: ""
         } as FormSchema,
         onSubmit: async ({ value }) => {
 
@@ -155,7 +214,7 @@ export const PatronForm = () => {
                 className="flex flex-1 space-y-4 space-x-6"
             >
                 <div className="flex-1 border-r">
-                    <div className="text-[38px] font-bold text-[#DB7A05] font-poppins leading-8.25">Volunteer</div>
+                    <div className="text-[38px] font-bold text-[#DB7A05] font-poppins leading-8.25">Patron</div>
                     <div className="text-[28px] font-bold text-[#604D00] font-poppins leading-8.25 mt-3">Personal Information</div>
 
                     <div>
@@ -191,7 +250,7 @@ export const PatronForm = () => {
                                                             ))
                                                         )
                                                 }
-                                                <ComboboxItem value="other">Other</ComboboxItem>
+                                                <ComboboxItem value="Other">Other</ComboboxItem>
                                             </ComboboxContent>
                                         </Combobox>
 
@@ -229,7 +288,7 @@ export const PatronForm = () => {
                                                                     });
                                                                 }
                                                             }}
-                                                            className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
+                                                            className="border-0 font-poppins border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
                                                         />
                                                     </div>
                                                 )}
@@ -271,6 +330,89 @@ export const PatronForm = () => {
                             )}
                         </form.Field>
                     </div>
+
+                    <div>
+                    <form.Field name="frequency">
+                        {(field) => (
+                            <div className="space-y-2">
+                                <Combobox
+                                    id={field.name}
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onValueChange={(val) => {
+                                        field.handleChange(val ?? "");
+                                    }}
+                                    required
+                                >
+                                    <ComboboxInput placeholder="Select Contribution Frequency" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
+                                    <ComboboxContent className="font-poppins">
+                                        {frequencyOptionsLoading ? (
+                                            <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
+                                                ) : (
+                                                    frequencyOptions?.map((option) => (
+                                                        <ComboboxItem key={option.id} value={option.frequency}>
+                                                            {option.frequency}
+                                                        </ComboboxItem>
+                                                    ))
+                                                )
+                                        }
+                                    </ComboboxContent>
+                                </Combobox>
+                            </div>
+                        )}
+                    </form.Field>
+                </div>
+
+                <div>
+                    <form.Field name="amount">
+                        {(field) => (
+                            <div className="space-y-2">
+                                <Combobox
+                                    id={field.name}
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onValueChange={(val) => {
+                                        field.handleChange(val ?? "");
+                                    }}
+                                    required
+                                >
+                                    <ComboboxInput placeholder="Select Amount" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
+                                    <ComboboxContent className="font-poppins">
+                                        {amountOptionsLoading ? (
+                                            <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
+                                                ) : (
+                                                    amountOptions?.map((option) => (
+                                                        <ComboboxItem key={option.id} value={option.amount}>
+                                                            ₹ {option.amount}
+                                                        </ComboboxItem>
+                                                    ))
+                                                )
+                                        }
+                                        <ComboboxItem value="Other">Other</ComboboxItem>
+                                    </ComboboxContent>
+                                </Combobox>
+
+                                {field.state.value === "other" && (
+                                    <form.Field name="otherAmount">
+                                        {(field) => (
+                                            <div className="mt-4 font-poppins animate-in fade-in slide-in-from-top-1">
+                                                <Input
+                                                    placeholder="Specify your amount"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    // onBlur={async () => {
+                                                    //     field.handleBlur();
+                                                    // }}
+                                                    className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins"
+                                                />
+                                            </div>
+                                        )}
+                                    </form.Field>
+                                )}
+                            </div>
+                        )}
+                    </form.Field>
+                </div>
                 </div>
 
                 <div className="flex-1 mt-20">

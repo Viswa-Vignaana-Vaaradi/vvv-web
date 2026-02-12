@@ -9,6 +9,8 @@ import { aboutMe } from "./user/about-me";
 import { userRole } from "./user/user-role";
 import { involvementAreasOptions } from "./routes/involvement-options";
 import { AreasofInterestOptions } from "./routes/interest-options";
+import { ContributionFrequencyOptions } from "./routes/contributions-frequency-options";
+import { ContributionAmountOptions } from "./routes/contribution-amount-options";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -32,6 +34,8 @@ const app = new Elysia({ adapter: node() })
   .use(professionsOptions)
   .use(involvementAreasOptions)
   .use(AreasofInterestOptions)
+  .use(ContributionFrequencyOptions)
+  .use(ContributionAmountOptions)
   .use(getUserLocation)
   .use(aboutMe)
   .use(userRole)
