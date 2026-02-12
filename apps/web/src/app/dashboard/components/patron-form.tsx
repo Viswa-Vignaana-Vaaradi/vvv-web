@@ -311,7 +311,6 @@ export const PatronForm = () => {
                         <form.Field name="dob">
                             {(field) => (
                                 <div className="space-y-2">
-                                    <Label htmlFor={field.name} className="font-poppins font-medium text-[14px]">Date of Birth</Label>
                                     <DatePicker />
                                 </div>
                             )}
@@ -496,7 +495,6 @@ export const PatronForm = () => {
                                 type="submit"
                                 className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
                                 disabled={!state.canSubmit || state.isSubmitting}
-                                onSubmit={form.handleSubmit}
                             >
                                 {state.isSubmitting ? "Submitting..." : "Submit"}
                             </Button>

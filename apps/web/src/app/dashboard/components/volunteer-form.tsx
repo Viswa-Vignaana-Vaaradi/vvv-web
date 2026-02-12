@@ -536,7 +536,6 @@ export const VolunteerForm = () => {
                                 type="submit"
                                 className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
                                 disabled={!state.canSubmit || state.isSubmitting}
-                                onSubmit={form.handleSubmit}
                             >
                                 {state.isSubmitting ? "Submitting..." : "Submit"}
                             </Button>

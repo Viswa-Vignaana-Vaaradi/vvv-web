@@ -3,10 +3,12 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, Si
 import { useAuth } from "@/context/auth-context";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AccountSettingIcon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
+import { useRouter } from "next/navigation";
 
 export const DashboardSidebar = () => {
     const { state: authState } = useAuth();
     const { state: sidebarState } = useSidebar();
+    const router = useRouter();
 
     if (!authState || !authState.user) {
         console.log("User not authenticated or user data missing", authState);
@@ -31,12 +33,13 @@ export const DashboardSidebar = () => {
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
                            <HugeiconsIcon icon={Profile} size={24} /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
                         </SidebarMenuButton>
-                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                        <SidebarMenuButton onClick={() => router.push('/dashboard/account')} className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
                         </SidebarMenuButton>
                         <SidebarMenuButton 
-                            // disabled={authState.user.userRole === null} 
-                        className="p-4 cursor-pointer hover:bg-primary">
+                            // disabled={authState.user.userRole === null}
+                            className="p-4 cursor-pointer hover:bg-primary"
+                        >
                             <HugeiconsIcon icon={Person} size={24} />
                             <div className="font-poppins font-semibold size-4.5">Personal</div>
                         </SidebarMenuButton>
