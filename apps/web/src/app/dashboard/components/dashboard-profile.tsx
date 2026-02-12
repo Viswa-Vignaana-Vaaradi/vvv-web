@@ -4,9 +4,11 @@ import DefaultProfile from "../../../public/default-profile.jpg"
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/eden";
+import { useRouter } from "next/navigation";
 
 export default function DashboardProfile() {
     const { state, dispatch } = useAuth();
+    const router = useRouter();
 
     const joiningDate = state.user?.createdAt ? new Date(state.user.createdAt).toLocaleDateString() : "";
     
@@ -83,7 +85,7 @@ export default function DashboardProfile() {
                 }
                 
                 {state.user?.userRole === null ? 
-                    <div className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
+                    <div onClick={() => router.push("/dashboard/personal/patron")} className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
                         Want to be a Patron?
                     </div>
                     : <div className="col-span-1"></div>
@@ -94,7 +96,7 @@ export default function DashboardProfile() {
                 </div>
 
                 {state.user?.userRole === null ? 
-                    <div className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
+                    <div onClick={() => router.push("/dashboard/personal/volunteer")} className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
                         Want to be a Volunteer?
                     </div>
                     : <div className="col-span-1"></div>

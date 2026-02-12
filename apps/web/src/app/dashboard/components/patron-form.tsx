@@ -1,7 +1,10 @@
 'use client';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxLabel } from "@/components/ui/combobox";
 import { DatePicker } from "@/components/ui/date-picker";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
@@ -21,10 +24,10 @@ interface FormSchema {
     contactNumber: string;
     involvement: string[];
     areaOfInterest: string[];
-    contribute: string;
     frequency: string;
     amount: string;
     otherAmount: string;
+    termsAccepted: boolean;
 }
 
 const formSchema: z.ZodType<FormSchema> = z.object({
@@ -38,10 +41,12 @@ const formSchema: z.ZodType<FormSchema> = z.object({
     contactNumber: z.string().min(10, "Please enter a valid contact number"),
     involvement: z.array(z.string()).min(1, "Please select a valid wings of involvement"),
     areaOfInterest: z.array(z.string()).min(1, "Please select an area of interest"),
-    contribute: z.preprocess((val) => (val === true ? "yes" : "no"), z.string()),
     frequency: z.string().min(2, "Please select a valid contribution frequency"),
     amount: z.string().min(2, "Please select a valid contribution amount"),
-    otherAmount: z.string().min(2, "Please enter a valid amount")
+    otherAmount: z.string().min(2, "Please enter a valid amount"),
+    termsAccepted: z.literal(true, {
+        error: () => ({ message: "You must accept the terms and conditions" }),
+    }),
 }).superRefine((data, ctx) => {
     if (data.profession === "Student" && (!data.collegeName || data.collegeName.length < 5)) {
         ctx.addIssue({
@@ -192,10 +197,10 @@ export const PatronForm = () => {
             contactNumber: "",
             involvement: [] as string[],
             areaOfInterest: [] as string[],
-            contribute: "no",
             frequency: "",
             amount: "",
-            otherAmount: ""
+            otherAmount: "",
+            termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
 
@@ -240,7 +245,7 @@ export const PatronForm = () => {
                                             }}
                                             required
                                         >
-                                            <ComboboxInput placeholder="Profession" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
+                                            <ComboboxInput placeholder="Profession" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-53 mt-4" />
                                             <ComboboxContent className="font-poppins">
                                                 {isLoading ? (
                                                     <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
@@ -265,7 +270,7 @@ export const PatronForm = () => {
                                                             value={subField.state.value}
                                                             onChange={(e) => subField.handleChange(e.target.value)}
                                                             onBlur={subField.handleBlur}
-                                                            className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins font-medium text-[14px]"
+                                                            className="border-0 border-b w-53 rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins font-medium text-[14px]"
                                                         />
                                                     </div>
                                                 )}
@@ -290,7 +295,7 @@ export const PatronForm = () => {
                                                                     });
                                                                 }
                                                             }}
-                                                            className="border-0 font-poppins border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
+                                                            className="border-0 font-poppins w-53 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
                                                         />
                                                     </div>
                                                 )}
@@ -306,13 +311,14 @@ export const PatronForm = () => {
                         <form.Field name="dob">
                             {(field) => (
                                 <div className="space-y-2">
+                                    <Label htmlFor={field.name} className="font-poppins font-medium text-[14px]">Date of Birth</Label>
                                     <DatePicker />
                                 </div>
                             )}
                         </form.Field>
                     </div>
                     
-                    <div>
+                    <div className="mt-4">
                         <form.Field name="contactNumber">
                             {(field) => (
                                 <div className="space-y-2">
@@ -323,8 +329,9 @@ export const PatronForm = () => {
                                         placeholder="Contact Number"
                                         onBlur={field.handleBlur}
                                         onChange={(e) => field.handleChange(e.target.value)}
-                                        className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
+                                        className="border-0 w-53 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
                                         required
+                                        type="tel"
                                     />
                                 </div>
                             )}
@@ -344,7 +351,7 @@ export const PatronForm = () => {
                                     }}
                                     required
                                 >
-                                    <ComboboxInput placeholder="Select Contribution Frequency" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
+                                    <ComboboxInput placeholder="Select Contribution Frequency" className="border-0 w-53 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] mt-4" />
                                     <ComboboxContent className="font-poppins">
                                         {frequencyOptionsLoading ? (
                                             <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
@@ -373,10 +380,13 @@ export const PatronForm = () => {
                                     value={field.state.value}
                                     onValueChange={(val) => {
                                         field.handleChange(val ?? "");
+                                        if (val !== "Other") {
+                                            form.setFieldValue('otherAmount', '');
+                                        }
                                     }}
                                     required
                                 >
-                                    <ComboboxInput placeholder="Select Amount" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-43.75 mt-4" />
+                                    <ComboboxInput placeholder="Select Amount" className="border-0 border-b rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0 focus:border-b-2 focus:border-primary font-poppins font-medium text-[14px] w-53 mt-4" />
                                     <ComboboxContent className="font-poppins">
                                         {amountOptionsLoading ? (
                                             <ComboboxItem value="loading" disabled>Loading...</ComboboxItem>
@@ -401,7 +411,7 @@ export const PatronForm = () => {
                                                         placeholder="Specify your amount"
                                                         value={field.state.value}
                                                         onChange={(e) => field.handleChange(e.target.value)}
-                                                        className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins"
+                                                        className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins w-53"
                                                     />
                                                     <InputGroupAddon>
                                                         <HugeiconsIcon icon={RupeeIcon} size={24} />
@@ -456,12 +466,43 @@ export const PatronForm = () => {
                     </form.Field>
                 </div>
 
-                <div>
+                <p className="mt-20 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
+                <form.Field name="termsAccepted">
+                        {(field) => (
+                            <div className="flex flex-row items-start mt-5"> {/* Use items-start to align checkbox and label top */}
+                                <Checkbox
+                                    id={field.name}
+                                    name={field.name}
+                                    checked={field.state.value}
+                                    onCheckedChange={(checked) => field.handleChange(checked)}
+                                    onBlur={field.handleBlur}
+                                    className="mr-2 mt-1" // Added mt-1 to adjust vertical alignment
+                                />
+                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer"> {/* Changed leading-8.25 to leading-6 for better text wrapping */}
+                                    I confirm that the information provided is true to the best of my knowledge and I accept the <a href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
+                                </Label>
+                                {/* {field.state.meta.errors && (
+                                    <div className="text-red-500 text-sm mt-1">{field.state.meta.errors}</div>
+                                )} */}
+                            </div>
+                        )}
+                    </form.Field>
 
-                </div>
-
-                <p className="mt-10 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
-                <p className="mt-3 font-poppins font-medium text-[14px] leading-8.25 text-[#604D004D]">I confirm that the information provided is true to the best of my knowledge and I am willing to volunteer for viswa vignana vaaradhi</p>
+                <form.Subscribe>
+                    {(state) => (
+                        <div>
+                            <Button
+                                variant="outline"
+                                type="submit"
+                                className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
+                                disabled={!state.canSubmit || state.isSubmitting}
+                                onSubmit={form.handleSubmit}
+                            >
+                                {state.isSubmitting ? "Submitting..." : "Submit"}
+                            </Button>
+                        </div>
+                    )}
+                </form.Subscribe>
             </div>
             </form>
         </div>

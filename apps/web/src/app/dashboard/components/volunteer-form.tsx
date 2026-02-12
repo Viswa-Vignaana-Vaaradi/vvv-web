@@ -1,5 +1,8 @@
 'use client';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxLabel } from "@/components/ui/combobox";
+import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
@@ -23,6 +26,7 @@ interface FormSchema {
     involvement: string[];
     areaOfInterest: string[];
     contribute: string;
+    termsAccepted: boolean;
 }
 
 const formSchema: z.ZodType<FormSchema> = z.object({
@@ -41,7 +45,10 @@ const formSchema: z.ZodType<FormSchema> = z.object({
     education: z.string().min(5, "Please select a valid education level"),
     involvement: z.array(z.string()).min(1, "Please select a valid wings of involvement"),
     areaOfInterest: z.array(z.string()).min(1, "Please select an area of interest"),
-    contribute: z.preprocess((val) => (val === true ? "yes" : "no"), z.string())
+    contribute: z.preprocess((val) => (val === true ? "yes" : "no"), z.string()),
+    termsAccepted: z.literal(true, {
+        error: () => ({ message: "You must accept the terms and conditions" }),
+    }),
 }).superRefine((data, ctx) => {
     if (data.profession === "Student" && (!data.collegeName || data.collegeName.length < 5)) {
         ctx.addIssue({
@@ -153,6 +160,7 @@ export const VolunteerForm = () => {
             involvement: [] as string[],
             areaOfInterest: [] as string[],
             contribute: "no",
+            termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
 
@@ -420,6 +428,7 @@ export const VolunteerForm = () => {
                                         onChange={(e) => field.handleChange(e.target.value)}
                                         className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
                                         required
+                                        type="tel"
                                     />
                                     {/* {field.state.meta.errors.map((error) => (
                                         <p key={error?.message} className="text-red-500">
@@ -497,8 +506,43 @@ export const VolunteerForm = () => {
                     </form.Field>
                 </div>
 
-                <p className="mt-10 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
-                <p className="mt-3 font-poppins font-medium text-[14px] leading-8.25 text-[#604D004D]">I confirm that the information provided is true to the best of my knowledge and I am willing to volunteer for viswa vignana vaaradhi</p>
+                <p className="mt-20 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
+                <form.Field name="termsAccepted">
+                        {(field) => (
+                            <div className="flex flex-row items-start mt-5"> {/* Use items-start to align checkbox and label top */}
+                                <Checkbox
+                                    id={field.name}
+                                    name={field.name}
+                                    checked={field.state.value}
+                                    onCheckedChange={(checked) => field.handleChange(checked)}
+                                    onBlur={field.handleBlur}
+                                    className="mr-2 mt-1" // Added mt-1 to adjust vertical alignment
+                                />
+                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer"> {/* Changed leading-8.25 to leading-6 for better text wrapping */}
+                                    I confirm that the information provided is true to the best of my knowledge and I accept the <a href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
+                                </Label>
+                                {/* {field.state.meta.errors && (
+                                    <div className="text-red-500 text-sm mt-1">{field.state.meta.errors}</div>
+                                )} */}
+                            </div>
+                        )}
+                    </form.Field>
+
+                <form.Subscribe>
+                    {(state) => (
+                        <div>
+                            <Button
+                                variant="outline"
+                                type="submit"
+                                className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
+                                disabled={!state.canSubmit || state.isSubmitting}
+                                onSubmit={form.handleSubmit}
+                            >
+                                {state.isSubmitting ? "Submitting..." : "Submit"}
+                            </Button>
+                        </div>
+                    )}
+                </form.Subscribe>
             </div>
             </form>
         </div>
