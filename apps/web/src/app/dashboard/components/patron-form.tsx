@@ -1,11 +1,13 @@
 'use client';
-import { Calendar } from "@/components/ui/calendar";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxLabel } from "@/components/ui/combobox";
 import { DatePicker } from "@/components/ui/date-picker";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
 import { Input } from "@base-ui/react/input"
+import { RupeeIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -309,8 +311,6 @@ export const PatronForm = () => {
                             )}
                         </form.Field>
                     </div>
-
-                    <div className="text-[28px] font-bold text-[#604D00] font-poppins leading-8.25 mt-3">Contact Information</div>
                     
                     <div>
                         <form.Field name="contactNumber">
@@ -392,19 +392,21 @@ export const PatronForm = () => {
                                     </ComboboxContent>
                                 </Combobox>
 
-                                {field.state.value === "other" && (
+                                {field.state.value === "Other" && (
                                     <form.Field name="otherAmount">
                                         {(field) => (
                                             <div className="mt-4 font-poppins animate-in fade-in slide-in-from-top-1">
-                                                <Input
-                                                    placeholder="Specify your amount"
-                                                    value={field.state.value}
-                                                    onChange={(e) => field.handleChange(e.target.value)}
-                                                    // onBlur={async () => {
-                                                    //     field.handleBlur();
-                                                    // }}
-                                                    className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins"
-                                                />
+                                                <InputGroup>
+                                                    <InputGroupInput 
+                                                        placeholder="Specify your amount"
+                                                        value={field.state.value}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                        className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins"
+                                                    />
+                                                    <InputGroupAddon>
+                                                        <HugeiconsIcon icon={RupeeIcon} size={24} />
+                                                    </InputGroupAddon>
+                                                </InputGroup>
                                             </div>
                                         )}
                                     </form.Field>
@@ -434,7 +436,7 @@ export const PatronForm = () => {
                         )}
                     </form.Field>
                 </div>
-                    
+                
                 <div>
                     <form.Field name="areaOfInterest">
                         {(field) => (

@@ -29,7 +29,7 @@ export const DashboardSidebar = () => {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
-                           <HugeiconsIcon icon={Profile} size={24} className="" /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
+                           <HugeiconsIcon icon={Profile} size={24} /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
                         </SidebarMenuButton>
                         <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
