@@ -45,6 +45,7 @@ export const interestedAreasOptions = pgTable('interested_areas_options', {
 
 export const volunteerDetails = pgTable('volunteer_details', {
   id: serial('id').primaryKey(),
+  fullName: varchar('full_name').notNull(),
   membershipId: integer('membership_id').references(() => memberships.id, { onDelete: 'cascade' }).unique().notNull(),
   age: integer('age'),
   gender: varchar('gender', { length: 10 }),
@@ -86,6 +87,7 @@ export const userLocation = pgTable("user_location", {
 
 export const patronDetails = pgTable('patron_details', {
   id: serial('id').primaryKey(),
+  fullName: varchar("full_name").notNull(),
   dob: integer('dob').notNull(),
   membershipId: integer('membership_id')
     .references(() => memberships.id, { onDelete: 'cascade' })

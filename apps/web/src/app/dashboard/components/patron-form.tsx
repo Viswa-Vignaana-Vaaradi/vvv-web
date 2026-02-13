@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import z from "zod";
 
 interface FormSchema {
+    fullName: string;
     dob: number | undefined;
     profession: string;
     collegeName: string;
@@ -31,6 +32,7 @@ interface FormSchema {
 }
 
 const formSchema: z.ZodType<FormSchema> = z.object({
+    fullName: z.string().min(2, "Please enter your full name"),
     dob: z.preprocess(
         (val) => (val === "" || val === null ? undefined : Number(val)),
         z.union([z.number().min(6, "Invalid date format"), z.undefined()])
@@ -190,6 +192,7 @@ export const PatronForm = () => {
 
     const form = useForm({
         defaultValues: {
+            fullName: state.user?.name,
             dob: undefined as number | undefined,
             profession: "",
             collegeName: "",
@@ -223,6 +226,26 @@ export const PatronForm = () => {
                 <div className="flex-1 border-r">
                     <div className="text-[38px] font-bold text-[#DB7A05] font-poppins leading-8.25">Patron</div>
                     <div className="text-[28px] font-bold text-[#604D00] font-poppins leading-8.25 mt-3">Personal Information</div>
+
+                    <div>
+                        <form.Field name="fullName">
+                            {(field) => (
+                                <div className="space-y-2 flex flex-row items-center">
+                                    <Input
+                                        id={field.name}
+                                        name={field.name}
+                                        type="text"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        placeholder="Full Name"
+                                        className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
+                                        required
+                                    />
+                                    <div className="font-poppins text-[14px] text-[#604D00]/50">(Will be used in certificates)</div>
+                                </div>
+                            )}
+                        </form.Field>
+                    </div>
 
                     <div>
                         <form.Field name="profession">
