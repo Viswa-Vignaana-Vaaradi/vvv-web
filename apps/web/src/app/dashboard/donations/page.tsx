@@ -1,5 +1,7 @@
-export default async function DonationsPage () {
+import { DonationsPage } from "../components/donations-page";
+
+export default async function DonationsRoute () {
     return (
-        <div></div>
+        <DonationsPage />
     )
 }

@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth-context";
 import Image from "next/image";
-import DefaultProfile from "../../../public/default-profile.jpg"
+import DefaultProfile from "../../../public/default-profile.jpg";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/eden";

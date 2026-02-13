@@ -43,7 +43,7 @@ export const DashboardSidebar = () => {
                             <HugeiconsIcon icon={Person} size={24} />
                             <div className="font-poppins font-semibold size-4.5">Personal</div>
                         </SidebarMenuButton>
-                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                        <SidebarMenuButton onClick={() => router.push("/dashboard/donations")} className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={RupeeCircleIcon} /><div className="font-poppins font-semibold size-4.5">Donations</div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
