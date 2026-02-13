@@ -30,7 +30,7 @@ export const DashboardSidebar = () => {
             <SidebarContent className="flex gap-2 items-center">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton className="p-4 cursor-pointer hover:bg-primary">
+                        <SidebarMenuButton onClick={() => router.push("/dashboard")} className="p-4 cursor-pointer hover:bg-primary">
                            <HugeiconsIcon icon={Profile} size={24} /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
                         </SidebarMenuButton>
                         <SidebarMenuButton onClick={() => router.push('/dashboard/account')} className="p-4 cursor-pointer hover:bg-primary">
@@ -38,6 +38,7 @@ export const DashboardSidebar = () => {
                         </SidebarMenuButton>
                         <SidebarMenuButton 
                             // disabled={authState.user.userRole === null}
+                            // TODO: implement redirect based on userRole
                             className="p-4 cursor-pointer hover:bg-primary"
                         >
                             <HugeiconsIcon icon={Person} size={24} />
