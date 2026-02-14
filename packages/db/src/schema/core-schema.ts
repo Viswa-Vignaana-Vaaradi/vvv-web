@@ -11,6 +11,7 @@ import {
   boolean,
   numeric,
   uniqueIndex,
+  date,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 
@@ -92,12 +93,11 @@ export const userLocation = pgTable("user_location", {
 export const patronDetails = pgTable('patron_details', {
   id: serial('id').primaryKey(),
   fullName: varchar("full_name", { length: 100 }).notNull(),
-  dob: integer('dob').notNull(),
+  dob: timestamp('dob', { mode: 'date' }).notNull(),
   membershipId: integer('membership_id')
     .references(() => memberships.id, { onDelete: 'cascade' })
     .notNull()
     .unique(),
-  address: text('address'),
   contactNumber: varchar("contact_number", { length: 15 }).notNull(),
   professionId: integer('profession_id').references(() => professionOptions.id, { onDelete: 'set null' }),
 });

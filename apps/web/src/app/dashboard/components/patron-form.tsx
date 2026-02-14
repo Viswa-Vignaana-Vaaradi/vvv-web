@@ -18,7 +18,7 @@ import z from "zod";
 
 interface FormSchema {
     fullName: string;
-    dob: number | undefined;
+    dob: Date | undefined;
     profession: string;
     collegeName: string;
     otherProfession: string;
@@ -33,10 +33,7 @@ interface FormSchema {
 
 const formSchema: z.ZodType<FormSchema> = z.object({
     fullName: z.string().min(2, "Please enter your full name"),
-    dob: z.preprocess(
-        (val) => (val === "" || val === null ? undefined : Number(val)),
-        z.union([z.number().min(6, "Invalid date format"), z.undefined()])
-    ),
+    dob: z.union([z.date(), z.undefined()]).nullable().transform(val => val || undefined).refine(val => val !== undefined, "Date of birth is required"),
     profession: z.string().min(2, "Please select a profession"),
     collegeName: z.string().default(""),
     otherProfession: z.string().default(""),
@@ -50,24 +47,25 @@ const formSchema: z.ZodType<FormSchema> = z.object({
         error: () => ({ message: "You must accept the terms and conditions" }),
     }),
 }).superRefine((data, ctx) => {
-    if (data.profession === "Student" && (!data.collegeName || data.collegeName.length < 5)) {
+    const professionOptionName = data.profession;
+    if (professionOptionName === "Student" && (!data.collegeName || data.collegeName.length < 5)) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Please input a valid college name",
             path: ["collegeName"],
         });
     }
-    if (data.profession === "other" && !data.otherProfession) {
+    if (professionOptionName === "Other" && !data.otherProfession) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Please specify your profession",
             path: ["otherProfession"],
         });
     }
-    if (data.amount === "other" && !data.otherAmount) {
+    if (data.amount === "Other" && (!data.otherAmount || !/^\d+(\.\d{1,2})?$/.test(data.otherAmount))) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Please enter a valid amount",
+            message: "Please enter a valid amount (e.g., 100 or 100.50)",
             path: ["otherAmount"]
         });
     }
@@ -193,7 +191,7 @@ export const PatronForm = () => {
     const form = useForm({
         defaultValues: {
             fullName: "",
-            dob: undefined as number | undefined,
+            dob: undefined,
             profession: "",
             collegeName: "",
             otherProfession: "",
@@ -206,7 +204,28 @@ export const PatronForm = () => {
             termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
-
+            await api.patron.submit.post({
+                fullName: value.fullName,
+                dob: value.dob as Date,
+                profession: value.profession,
+                collegeName: value.collegeName,
+                otherProfession: value.otherProfession,
+                contactNumber: value.contactNumber,
+                involvement: value.involvement,
+                areaOfInterest: value.areaOfInterest,
+                frequency: value.frequency,
+                amount: value.amount,
+                otherAmount: value.otherAmount,
+                termsAccepted: value.termsAccepted,
+                $query: {
+                    userId: userId!
+                },
+                $headers: {},
+                $fetch: {
+                    credentials: "include"
+                }
+            },
+        )
         },
         validators: {
             onSubmit: formSchema as StandardSchemaV1<FormSchema, FormSchema>,
@@ -334,7 +353,12 @@ export const PatronForm = () => {
                         <form.Field name="dob">
                             {(field) => (
                                 <div className="space-y-2">
-                                    <DatePicker />
+                                    <DatePicker
+                                        selected={field.state.value}
+                                        onSelect={(date) => field.handleChange(date || undefined)}
+                                        onBlur={field.handleBlur}
+                                    />
+                                    
                                 </div>
                             )}
                         </form.Field>
