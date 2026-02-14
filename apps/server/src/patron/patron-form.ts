@@ -1,4 +1,4 @@
-import generateMemberCode from "@/utils/member-code-generator";
+import generateMemberCode from "../utils/member-code-generator";
 import { auth } from "@repo/auth";
 import { db } from "@repo/db";
 import { memberships, patronDetails, patronInterestedAreas, patronInvolvementAreas, professionOptions } from "@repo/db/schema/core-schema";
