@@ -127,7 +127,57 @@ export const contributionFrequencyOptions = pgTable('contribution_frequency_opti
 export const contributionAmountOptions = pgTable("contribution_amount_options", {
   id: serial('id').primaryKey(),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+  razorpayPlanId: varchar('razorpay_plan_id', { length: 100 }).unique()
 });
+
+export const subscriptions = pgTable("subscriptions", {
+  id: serial('id').primaryKey(),
+  userId: text("user_id").references(() => user.id, { onDelete: 'set null' }),
+  razorpaySubscriptionId: varchar('razorpay_subscription_id', { length: 50 }).unique().notNull(),
+  
+  amountId: integer('amount_id').references(() => contributionAmountOptions.razorpayPlanId, { onDelete: 'restrict' }).notNull(),
+  frequencyId: integer('frequency_id').references(() => contributionFrequencyOptions.id).notNull(),
+  
+  status: varchar('status', { length: 20 }).notNull(),
+  currentStart: timestamp('current_start'),
+  currentEnd: timestamp('current_end'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const transactions = pgTable('transactions', { 
+  id: serial('id').primaryKey(),
+  userId: text('user_id').references(() => user.id).notNull(),
+
+  razorpayPaymentId: varchar('razorpay_payment_id', { length: 255 }).unique().notNull(),
+  razorpayOrderId: varchar('razorpay_order_id', { length: 255 }),
+  razorpaySubscriptionId: varchar('razorpay_subscription_id', { length: 255 }),
+
+  amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+  status: varchar('status', { length: 20 }).notNull(),
+
+  receiptNumber: varchar('receipt_number', { length: 50 }).unique().notNull(),
+  invoiceUrl: text('invoice_url'),
+
+  createdAt: timestamp('created_at').defaultNow(),
+}, (t) => [
+  index("user_transactions_idx").on(t.userId)
+]);
+
+export const planMappings = pgTable('plan_mappings', {
+  id: serial('id').primaryKey(),
+  amountId: integer('amount_id')
+    .references(() => contributionAmountOptions.id, { onDelete: 'cascade' })
+    .notNull(),
+  frequencyId: integer('frequency_id')
+    .references(() => contributionFrequencyOptions.id, { onDelete: 'cascade' })
+    .notNull(),
+  razorpayPlanId: varchar('razorpay_plan_id', { length: 255 }).unique().notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+}, (t) => [
+  uniqueIndex('unique_plan_combination').on(t.amountId, t.frequencyId)
+]);
+
 
 export const patronContributions = pgTable('patron_contributions', {
   id: serial('id').primaryKey(),
