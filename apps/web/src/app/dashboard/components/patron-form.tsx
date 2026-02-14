@@ -12,8 +12,9 @@ import { Input } from "@base-ui/react/input"
 import { RupeeIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import z from "zod";
 
 interface FormSchema {
@@ -76,9 +77,13 @@ export const PatronForm = () => {
     const userId = state.user?.id;
     const userRole = state.user?.userRole;
     const router = useRouter();
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const queryClient = useQueryClient();
 
     if (userRole === "VOLUNTEER") {
         router.push("/dashboard");
+        return null;
     }
 
     const { data, isLoading, error } = useQuery({
@@ -188,23 +193,13 @@ export const PatronForm = () => {
         enabled: !!userId
     });
 
-    const form = useForm({
-        defaultValues: {
-            fullName: "",
-            dob: undefined,
-            profession: "",
-            collegeName: "",
-            otherProfession: "",
-            contactNumber: "",
-            involvement: [] as string[],
-            areaOfInterest: [] as string[],
-            frequency: "",
-            amount: "",
-            otherAmount: "",
-            termsAccepted: false
-        } as FormSchema,
-        onSubmit: async ({ value }) => {
-            await api.patron.submit.post({
+    const mutation = useMutation({
+        mutationFn: async (value: FormSchema) => {
+            if (!userId) {
+                throw new Error("User ID is missing. Please log in again.");
+            }
+
+            const { data, error } = await api.patron.submit.post({
                 fullName: value.fullName,
                 dob: value.dob as Date,
                 profession: value.profession,
@@ -224,8 +219,56 @@ export const PatronForm = () => {
                 $fetch: {
                     credentials: "include"
                 }
-            },
-        )
+            });
+
+            if (error) {
+                throw new Error(error.message || "An unknown API error occurred.");
+            }
+            return data;
+        },
+        onSuccess: async (data, variables) => {
+            setErrorMessage('');
+            setSuccessMessage("Registration Successful!");
+
+            queryClient.invalidateQueries({ queryKey: ['userMemberships', userId] });
+            queryClient.invalidateQueries({ queryKey: ['userRole', userId] });
+
+            const contribuationData = (data.frequency !== "" && data.amount !== "" ) || (data.amount === "Other" && data.otherAmount !== "");
+
+            if (contribuationData) {
+                setSuccessMessage("Initiating Payment process...");
+                const amount = data.amount === "Other" ? data.otherAmount : data.amount;
+
+                //TODO: Call payment gateway API
+            } else {
+                form.reset();
+                router.push('/dashboard');
+            }
+        },
+        onError: (error: Error) => {
+            setSuccessMessage("");
+            console.error(error);
+            setErrorMessage(error.message || "An unexpected error occurred during submission.");
+        }
+    })
+
+    const form = useForm({
+        defaultValues: {
+            fullName: "",
+            dob: undefined,
+            profession: "",
+            collegeName: "",
+            otherProfession: "",
+            contactNumber: "",
+            involvement: [] as string[],
+            areaOfInterest: [] as string[],
+            frequency: "",
+            amount: "",
+            otherAmount: "",
+            termsAccepted: false
+        } as FormSchema,
+        onSubmit: async ({ value }) => {
+            mutation.mutate(value);
         },
         validators: {
             onSubmit: formSchema as StandardSchemaV1<FormSchema, FormSchema>,
@@ -261,6 +304,11 @@ export const PatronForm = () => {
                                         required
                                     />
                                     <div className="font-poppins text-[14px] text-[#604D00]/50">(Will be used in certificates)</div>
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -302,6 +350,11 @@ export const PatronForm = () => {
                                                 <ComboboxItem value="Other">Other</ComboboxItem>
                                             </ComboboxContent>
                                         </Combobox>
+                                        {field.state.meta.errors.map((error) => (
+                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                {error?.message}
+                                            </p>
+                                        ))}
 
                                         {isStudent && (
                                             <form.Field name="collegeName">
@@ -314,6 +367,11 @@ export const PatronForm = () => {
                                                             onBlur={subField.handleBlur}
                                                             className="border-0 border-b w-53 rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins font-medium text-[14px]"
                                                         />
+                                                        {field.state.meta.errors.map((error) => (
+                                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                                {error?.message}
+                                                            </p>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </form.Field>
@@ -339,6 +397,11 @@ export const PatronForm = () => {
                                                             }}
                                                             className="border-0 font-poppins w-53 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
                                                         />
+                                                        {field.state.meta.errors.map((error) => (
+                                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                                {error?.message}
+                                                            </p>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </form.Field>
@@ -358,7 +421,11 @@ export const PatronForm = () => {
                                         onSelect={(date) => field.handleChange(date || undefined)}
                                         onBlur={field.handleBlur}
                                     />
-                                    
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -379,6 +446,11 @@ export const PatronForm = () => {
                                         required
                                         type="tel"
                                     />
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -411,6 +483,11 @@ export const PatronForm = () => {
                                         }
                                     </ComboboxContent>
                                 </Combobox>
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -448,6 +525,12 @@ export const PatronForm = () => {
                                     </ComboboxContent>
                                 </Combobox>
 
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
+
                                 {field.state.value === "Other" && (
                                     <form.Field name="otherAmount">
                                         {(field) => (
@@ -463,6 +546,11 @@ export const PatronForm = () => {
                                                         <HugeiconsIcon icon={RupeeIcon} size={24} />
                                                     </InputGroupAddon>
                                                 </InputGroup>
+                                                {field.state.meta.errors.map((error) => (
+                                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                                        {error?.message}
+                                                    </p>
+                                                ))}
                                             </div>
                                         )}
                                     </form.Field>
@@ -483,53 +571,65 @@ export const PatronForm = () => {
                                         options={involvementOptions?.map((option) => ({
                                             value: String(option.id),
                                             label: `${option.name} (${option.purpose})`
-                                    })) || []}
-                                    value={field.state.value}
-                                    onChange={(val) => field.handleChange(val)}
-                                    className="mt-2 px-2 font-poppins"
-                                />
-                            </div>
-                        )}
-                    </form.Field>
-                </div>
+                                        })) || []}
+                                        value={field.state.value}
+                                        onChange={(val) => field.handleChange(val)}
+                                        className="mt-2 px-2 font-poppins"
+                                    />
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+                        </form.Field>
+                    </div>
                 
-                <div>
-                    <form.Field name="areaOfInterest">
-                        {(field) => (
-                            <div className="space-y-2">
-                                <MultiSelect
-                                    placeholder="Select areas of interest"
-                                    options={interestOptions?.map((option) => ({
-                                        value: String(option.id),
-                                        label: `${option.name}`
-                                    })) || []}
-                                    value={field.state.value}
-                                    onChange={(val) => field.handleChange(val)}
-                                    className="mt-2 px-2 font-poppins"
-                                />
-                            </div>
-                        )}
-                    </form.Field>
-                </div>
+                    <div>
+                        <form.Field name="areaOfInterest">
+                            {(field) => (
+                                <div className="space-y-2">
+                                    <MultiSelect
+                                        placeholder="Select areas of interest"
+                                        options={interestOptions?.map((option) => ({
+                                            value: String(option.id),
+                                            label: `${option.name}`
+                                        })) || []}
+                                        value={field.state.value}
+                                        onChange={(val) => field.handleChange(val)}
+                                        className="mt-2 px-2 font-poppins"
+                                    />
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+                        </form.Field>
+                    </div>
 
-                <p className="mt-20 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
-                <form.Field name="termsAccepted">
+                    <p className="mt-20 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
+                    <form.Field name="termsAccepted">
                         {(field) => (
-                            <div className="flex flex-row items-start mt-5"> {/* Use items-start to align checkbox and label top */}
+                            <div className="flex flex-row items-start mt-5">
                                 <Checkbox
                                     id={field.name}
                                     name={field.name}
                                     checked={field.state.value}
                                     onCheckedChange={(checked) => field.handleChange(checked)}
                                     onBlur={field.handleBlur}
-                                    className="mr-2 mt-1" // Added mt-1 to adjust vertical alignment
+                                    className="mr-2 mt-1"
                                 />
-                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer"> {/* Changed leading-8.25 to leading-6 for better text wrapping */}
+                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer">
                                     I confirm that the information provided is true to the best of my knowledge and I accept the <a href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
                                 </Label>
-                                {/* {field.state.meta.errors && (
-                                    <div className="text-red-500 text-sm mt-1">{field.state.meta.errors}</div>
-                                )} */}
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -549,6 +649,12 @@ export const PatronForm = () => {
                     )}
                 </form.Subscribe>
             </div>
+            {successMessage && (
+                <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
+            )}
+            {errorMessage && (
+                <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
+            )}
             </form>
         </div>
     )

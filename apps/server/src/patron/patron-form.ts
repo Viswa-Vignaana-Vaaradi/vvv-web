@@ -4,6 +4,27 @@ import { db } from "@repo/db";
 import { memberships, patronDetails, patronInterestedAreas, patronInvolvementAreas, professionOptions } from "@repo/db/schema/core-schema";
 import Elysia, { t } from "elysia";
 
+const SuccessResponse = t.Object({
+  success: t.Literal(true),
+  message: t.String(),
+  memberCode: t.String(),
+  membershipDetails: t.Object({
+    id: t.Number(),
+    userId: t.String(),
+    roleName: t.String(),
+    memberCode: t.String(),
+    joinedAt: t.Date().nullable(),
+  }),
+  frequency: t.String(),
+  amount: t.String(),
+  otherAmount: t.String(),
+});
+
+const APIErrorResponse = t.Object({
+  success: t.Literal(false),
+  error: t.String(),
+});
+
 export const PatronForm = new Elysia({ prefix: "/patron/submit" })
     .macro({
         auth: {
@@ -113,21 +134,27 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
                 return {
                     memberCode: newMembership.memberCode,
                     membershipDetails: newMembership,
+                    frequency: body.frequency,
+                    amount: body.amount,
+                    otherAmount: body.otherAmount
                 };
             });
 
             set.status = 201;
             return {
                 success: true,
-                code: result.memberCode,
+                message: "Registration successful!",
+                memberCode: result.memberCode,
                 membershipDetails: result.membershipDetails,
+                frequency: result.frequency,
+                amount: result.amount,
+                otherAmount: result.otherAmount,
             };
         } catch (error: any) {
             if (error.code === '23505') {
                 set.status = 409;
-                return { error: "Conflict: Member code already generated. Please try again." };
+                return { success: false, error: "Error in generating member code. Please try again." };
             }
-
             console.error("Patron form submission error:", error);
             set.status = 500;
             return { error: error.message || "Internal Server Error" };
@@ -149,5 +176,12 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
             amount: t.String(),
             otherAmount: t.String(),
             termsAccepted: t.Boolean()
-        })
+        }),
+        response: {
+            201: SuccessResponse,
+            400: APIErrorResponse,
+            401: APIErrorResponse,
+            409: APIErrorResponse,
+            500: APIErrorResponse,
+        },
     })

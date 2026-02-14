@@ -8,8 +8,9 @@ import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
 import { Input } from "@base-ui/react/input"
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import z from "zod";
 
 interface FormSchema {
@@ -73,6 +74,9 @@ export const VolunteerForm = () => {
     const userId = state.user?.id;
     const userRole = state.user?.userRole;
     const router = useRouter();
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const queryClient = useQueryClient();
 
     if (userRole === "PATRON") {
         router.push("/dashboard")
@@ -147,26 +151,13 @@ export const VolunteerForm = () => {
         enabled: !!userId,
     });
 
-    const form = useForm({
-        defaultValues: {
-            fullName: "",
-            age: undefined as number | undefined,
-            profession: "",
-            collegeName: "",
-            otherProfession: "",
-            gender: "",
-            contactNumber: "",
-            bloodGroup: "",
-            city: "",
-            state: "",
-            education: "",
-            involvement: [] as string[],
-            areaOfInterest: [] as string[],
-            contribute: "no",
-            termsAccepted: false
-        } as FormSchema,
-        onSubmit: async ({ value }) => {
-            await api.volunteer.submit.post({
+    const mutation = useMutation({
+        mutationFn: async (value: FormSchema) => {
+            if (!userId) {
+                throw new Error("User ID is missing. Please log in again");
+            }
+
+            const { data, error } = await api.volunteer.submit.post({
                 fullName: value.fullName,
                 age: value.age!,
                 profession: value.profession,
@@ -189,8 +180,56 @@ export const VolunteerForm = () => {
                 $fetch: {
                     credentials: "include"
                 }
-            },
-        )
+            });
+
+            if (error) {
+                throw new Error(error.message || "An unknown API error occurred.");
+            }
+            return data;
+        },
+        onSuccess: async (data, variables) => {
+            setErrorMessage('');
+            setSuccessMessage("Registration Successful!");
+
+            queryClient.invalidateQueries({ queryKey: ['userMemberships', userId] });
+            queryClient.invalidateQueries({ queryKey: ['userRole', userId] });
+
+            const contribuationData = data.wantsToContribute;
+
+            if (contribuationData) {
+                // TODO: Call the payment gateway API
+            } else {
+                form.reset();
+                router.push('/dashboard');
+            }
+        },
+        onError: (error: Error) => {
+            setSuccessMessage("");
+            console.error(error);
+            setErrorMessage(error.message || "An unexpected error occurred during submission.");
+        }
+    })
+
+    const form = useForm({
+        defaultValues: {
+            fullName: "",
+            age: undefined as number | undefined,
+            profession: "",
+            collegeName: "",
+            otherProfession: "",
+            gender: "",
+            contactNumber: "",
+            bloodGroup: "",
+            city: "",
+            state: "",
+            education: "",
+            involvement: [] as string[],
+            areaOfInterest: [] as string[],
+            contribute: "no",
+            termsAccepted: false
+        } as FormSchema,
+        onSubmit: async ({ value }) => {
+            
         },
         validators: {
             onSubmit: formSchema as StandardSchemaV1<FormSchema, FormSchema>,
@@ -226,6 +265,11 @@ export const VolunteerForm = () => {
                                         required
                                     />
                                     <div className="font-poppins text-[14px] text-[#604D00]/50">(Will be used in certificates)</div>
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -249,11 +293,11 @@ export const VolunteerForm = () => {
                                         className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-4 leading-8.25"
                                         required
                                     />
-                                    {/* {field.state.meta.errors.map((error) => (
-                                        <p key={error?.message} className="text-red-500">
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
                                             {error?.message}
                                         </p>
-                                    ))} */}
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -277,6 +321,11 @@ export const VolunteerForm = () => {
                                             <ComboboxItem value="Prefer not to say">Prefer not to say</ComboboxItem>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -323,6 +372,11 @@ export const VolunteerForm = () => {
                                                 <ComboboxItem value="other">Other</ComboboxItem>
                                             </ComboboxContent>
                                         </Combobox>
+                                        {field.state.meta.errors.map((error) => (
+                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                {error?.message}
+                                            </p>
+                                        ))}
 
                                         {isStudent && (
                                             <form.Field name="collegeName">
@@ -335,6 +389,11 @@ export const VolunteerForm = () => {
                                                             onBlur={subField.handleBlur}
                                                             className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary font-poppins font-medium text-[14px]"
                                                         />
+                                                        {field.state.meta.errors.map((error) => (
+                                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                                {error?.message}
+                                                            </p>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </form.Field>
@@ -360,6 +419,11 @@ export const VolunteerForm = () => {
                                                             }}
                                                             className="border-0 border-b rounded-none shadow-none px-0 focus-visible:ring-0 focus-visible:border-primary"
                                                         />
+                                                        {field.state.meta.errors.map((error) => (
+                                                            <p key={error?.message} className="text-red-500 font-poppins">
+                                                                {error?.message}
+                                                            </p>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </form.Field>
@@ -393,6 +457,11 @@ export const VolunteerForm = () => {
                                             <ComboboxItem value="O-">O-</ComboboxItem>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -413,6 +482,11 @@ export const VolunteerForm = () => {
                                         className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
                                         required
                                     />
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -461,6 +535,11 @@ export const VolunteerForm = () => {
                                             <ComboboxItem value="West Bengal">West Bengal</ComboboxItem>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
+                                            {error?.message}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
 
@@ -482,11 +561,11 @@ export const VolunteerForm = () => {
                                         required
                                         type="tel"
                                     />
-                                    {/* {field.state.meta.errors.map((error) => (
-                                        <p key={error?.message} className="text-red-500">
+                                    {field.state.meta.errors.map((error) => (
+                                        <p key={error?.message} className="text-red-500 font-poppins">
                                             {error?.message}
                                         </p>
-                                    ))} */}
+                                    ))}
                                 </div>
                             )}
                         </form.Field>
@@ -508,6 +587,11 @@ export const VolunteerForm = () => {
                                     onChange={(val) => field.handleChange(val)}
                                     className="mt-2 px-2 font-poppins"
                                 />
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -527,6 +611,11 @@ export const VolunteerForm = () => {
                                     onChange={(val) => field.handleChange(val)}
                                     className="mt-2 px-2 font-poppins"
                                 />
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -553,6 +642,11 @@ export const VolunteerForm = () => {
                                         ))}
                                     </ComboboxContent>
                                 </Combobox>
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -561,21 +655,23 @@ export const VolunteerForm = () => {
                 <p className="mt-20 font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Declaration</p>
                 <form.Field name="termsAccepted">
                         {(field) => (
-                            <div className="flex flex-row items-start mt-5"> {/* Use items-start to align checkbox and label top */}
+                            <div className="flex flex-row items-start mt-5">
                                 <Checkbox
                                     id={field.name}
                                     name={field.name}
                                     checked={field.state.value}
                                     onCheckedChange={(checked) => field.handleChange(checked)}
                                     onBlur={field.handleBlur}
-                                    className="mr-2 mt-1" // Added mt-1 to adjust vertical alignment
+                                    className="mr-2 mt-1"
                                 />
-                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer"> {/* Changed leading-8.25 to leading-6 for better text wrapping */}
+                                <Label htmlFor={field.name} className="font-poppins font-medium text-[14px] leading-6 text-[#604D004D] cursor-pointer">
                                     I confirm that the information provided is true to the best of my knowledge and I accept the <a href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
                                 </Label>
-                                {/* {field.state.meta.errors && (
-                                    <div className="text-red-500 text-sm mt-1">{field.state.meta.errors}</div>
-                                )} */}
+                                {field.state.meta.errors.map((error) => (
+                                    <p key={error?.message} className="text-red-500 font-poppins">
+                                        {error?.message}
+                                    </p>
+                                ))}
                             </div>
                         )}
                     </form.Field>
@@ -595,6 +691,12 @@ export const VolunteerForm = () => {
                     )}
                 </form.Subscribe>
             </div>
+            {successMessage && (
+                <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
+            )}
+            {errorMessage && (
+                <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
+            )}
             </form>
         </div>
     )

@@ -4,6 +4,25 @@ import { db } from "@repo/db";
 import { memberships, professionOptions, userLocation, volunteerDetails, volunteerInterestedAreas, volunteerInvolvementAreas } from "@repo/db/schema/core-schema";
 import Elysia, { t } from "elysia";
 
+const SuccessResponse = t.Object({
+  success: t.Literal(true),
+  message: t.String(),
+  memberCode: t.String(),
+  membershipDetails: t.Object({
+    id: t.Number(),
+    userId: t.String(),
+    roleName: t.String(),
+    memberCode: t.String(),
+    joinedAt: t.Date().nullable(),
+  }),
+  wantsToContribute: t.Boolean(),
+});
+
+const APIErrorResponse = t.Object({
+  success: t.Literal(false),
+  error: t.String(),
+});
+
 export const VolunteerForm = new Elysia({ prefix: "/volunteer/submit" })
     .macro({
         auth: {
@@ -127,23 +146,26 @@ export const VolunteerForm = new Elysia({ prefix: "/volunteer/submit" })
                 return {
                     memberCode: newMembership.memberCode,
                     membershipDetails: newMembership,
+                    wantsToContribute: body.contribute === "yes",
                 };
             });
 
             set.status = 201;
             return {
                 success: true,
-                code: result.memberCode,
+                message: "Registration successful!",
+                memberCode: result.memberCode,
                 membershipDetails: result.membershipDetails,
+                wantsToContribute: result.wantsToContribute,
             };
         } catch(error: any) {
             if (error.code === '23505') {
                 set.status = 409;
-                return { error: "Conflict: Member code already generated. Please try again." };
+                return { success: false, error: "Error in generating member code. Please try again." };
             }
-        
+            console.error("Volunteer form submission error:", error);
             set.status = 500;
-            return { error: error.message || "Internal Server Error" };
+            return { success: false, error: error.message || "Internal Server Error during registration." };
         }
     }, {
         query: t.Object({
@@ -165,5 +187,12 @@ export const VolunteerForm = new Elysia({ prefix: "/volunteer/submit" })
             areaOfInterest: t.Array(t.String()),
             contribute: t.String(),
             termsAccepted: t.Boolean()
-        })
-    })
+        }),
+        response: {
+            201: SuccessResponse,
+            400: APIErrorResponse,
+            401: APIErrorResponse,
+            409: APIErrorResponse,
+            500: APIErrorResponse,
+        },
+    });
