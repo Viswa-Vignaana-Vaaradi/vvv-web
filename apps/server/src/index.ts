@@ -4,7 +4,15 @@ import { auth } from "@repo/auth";
 import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
 import { professionsOptions } from "./routes/profession-options";
-import { getUserLocation } from "./utils/user-location";
+import { getUserLocation } from "./user/user-location";
+import { aboutMe } from "./user/about-me";
+import { userRole } from "./user/user-role";
+import { involvementAreasOptions } from "./routes/involvement-options";
+import { AreasofInterestOptions } from "./routes/interest-options";
+import { ContributionFrequencyOptions } from "./routes/contributions-frequency-options";
+import { ContributionAmountOptions } from "./routes/contribution-amount-options";
+import { VolunteerForm } from "./volunteer/volunteer-form";
+import { PatronForm } from "./patron/patron-form";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -26,7 +34,15 @@ const app = new Elysia({ adapter: node() })
   .get("/", () => "OK")
   .mount(auth.handler)
   .use(professionsOptions)
+  .use(involvementAreasOptions)
+  .use(AreasofInterestOptions)
+  .use(ContributionFrequencyOptions)
+  .use(ContributionAmountOptions)
   .use(getUserLocation)
+  .use(aboutMe)
+  .use(userRole)
+  .use(VolunteerForm)
+  .use(PatronForm)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

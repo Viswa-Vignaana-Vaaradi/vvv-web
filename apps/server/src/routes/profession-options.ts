@@ -21,7 +21,8 @@ export const professionsOptions = new Elysia({ prefix: "/options/professions" })
         }
     })
     .get("/", async () => {
-        return db.query.professionOptions.findMany();
+        const fetchedProfessions = await db.query.professionOptions.findMany();
+        return fetchedProfessions;
     }, {
         auth: true
     })
