@@ -192,7 +192,7 @@ export const PatronForm = () => {
 
     const form = useForm({
         defaultValues: {
-            fullName: state.user?.name,
+            fullName: "",
             dob: undefined as number | undefined,
             profession: "",
             collegeName: "",

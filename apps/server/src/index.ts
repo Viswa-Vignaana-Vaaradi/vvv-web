@@ -11,6 +11,7 @@ import { involvementAreasOptions } from "./routes/involvement-options";
 import { AreasofInterestOptions } from "./routes/interest-options";
 import { ContributionFrequencyOptions } from "./routes/contributions-frequency-options";
 import { ContributionAmountOptions } from "./routes/contribution-amount-options";
+import { VolunteerForm } from "./volunteer/volunteer-form";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -39,6 +40,7 @@ const app = new Elysia({ adapter: node() })
   .use(getUserLocation)
   .use(aboutMe)
   .use(userRole)
+  .use(VolunteerForm)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

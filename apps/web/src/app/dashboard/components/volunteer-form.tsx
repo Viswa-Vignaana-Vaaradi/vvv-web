@@ -149,7 +149,7 @@ export const VolunteerForm = () => {
 
     const form = useForm({
         defaultValues: {
-            fullName: state.user?.name,
+            fullName: "",
             age: undefined as number | undefined,
             profession: "",
             collegeName: "",
@@ -166,7 +166,31 @@ export const VolunteerForm = () => {
             termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
-
+            await api.volunteer.submit.post({
+                fullName: value.fullName,
+                age: value.age!,
+                profession: value.profession,
+                collegeName: value.collegeName,
+                otherProfession: value.otherProfession,
+                gender: value.gender,
+                contactNumber: value.contactNumber,
+                bloodGroup: value.bloodGroup,
+                city: value.city,
+                state: value.state,
+                education: value.education,
+                involvement: value.involvement,
+                areaOfInterest: value.areaOfInterest,
+                contribute: value.contribute,
+                termsAccepted: value.termsAccepted,
+                $query: {
+                    userId: userId!
+                },
+                $headers: {},
+                $fetch: {
+                    credentials: "include"
+                }
+            },
+        )
         },
         validators: {
             onSubmit: formSchema as StandardSchemaV1<FormSchema, FormSchema>,
@@ -214,7 +238,7 @@ export const VolunteerForm = () => {
                                     <Input
                                         id={field.name}
                                         name={field.name}
-                                        type="text"
+                                        type="number"
                                         value={field.state.value}
                                         placeholder="Age"
                                         onBlur={field.handleBlur}
@@ -264,6 +288,7 @@ export const VolunteerForm = () => {
                                 const studentOption = data?.find((opt) => opt.name === "Student");
                                 console.log("Student Option var:", studentOption);
                                 const isStudent = String(field.state.value) === String(studentOption?.name);
+                                const isOtherProfession = field.state.value === "other";
 
                                 return (
                                     <div className="space-y-2">
@@ -275,6 +300,10 @@ export const VolunteerForm = () => {
                                                 field.handleChange(val ?? "");
                                                 if (studentOption && val !== String(studentOption.id)) {
                                                     form.setFieldValue('collegeName', '');
+                                                }
+
+                                                if (val !== "other") {
+                                                    form.setFieldValue('otherProfession', '');
                                                 }
                                             }}
                                             required

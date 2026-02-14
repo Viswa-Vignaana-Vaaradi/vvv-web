@@ -10,6 +10,7 @@ import {
   index,
   boolean,
   numeric,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 
@@ -25,7 +26,9 @@ export const memberships = pgTable('memberships', {
   roleName: varchar('role_name').references(() => roles.name, { onDelete: 'restrict' }).notNull(),
   memberCode: varchar('member_code', { length: 20 }).unique().notNull(),
   joinedAt: timestamp('joined_at').defaultNow(),
-});
+}, (t) => [
+  uniqueIndex('unique_user_role').on(t.userId, t.roleName)
+]);
 
 export const professionOptions = pgTable('profession_options', {
   id: serial('id').primaryKey(),
@@ -45,14 +48,15 @@ export const interestedAreasOptions = pgTable('interested_areas_options', {
 
 export const volunteerDetails = pgTable('volunteer_details', {
   id: serial('id').primaryKey(),
-  fullName: varchar('full_name').notNull(),
+  fullName: varchar('full_name', { length: 100 }).notNull(),
   membershipId: integer('membership_id').references(() => memberships.id, { onDelete: 'cascade' }).unique().notNull(),
   age: integer('age'),
   gender: varchar('gender', { length: 10 }),
-  contactNumber: varchar('contact_number', { length: 15 }),
+  contactNumber: varchar("contact_number", { length: 15 }).notNull(),
   bloodGroup: varchar('blood_group', { length: 5 }),
   collegeName: varchar('college_name', { length: 40 }),
   professionId: integer('profession_id').references(() => professionOptions.id, { onDelete: 'set null' }),
+  education: varchar('education', { length: 50 })
 });
 
 export const volunteerInvolvementAreas = pgTable('volunteer_involvement_areas', {
@@ -87,14 +91,14 @@ export const userLocation = pgTable("user_location", {
 
 export const patronDetails = pgTable('patron_details', {
   id: serial('id').primaryKey(),
-  fullName: varchar("full_name").notNull(),
+  fullName: varchar("full_name", { length: 100 }).notNull(),
   dob: integer('dob').notNull(),
   membershipId: integer('membership_id')
     .references(() => memberships.id, { onDelete: 'cascade' })
     .notNull()
     .unique(),
   address: text('address'),
-  contactNumber: integer("contact_number").notNull(),
+  contactNumber: varchar("contact_number", { length: 15 }).notNull(),
   professionId: integer('profession_id').references(() => professionOptions.id, { onDelete: 'set null' }),
 });
 
@@ -117,12 +121,12 @@ export const patronInterestedAreas = pgTable('patron_interested_areas', {
 
 export const contributionFrequencyOptions = pgTable('contribution_frequency_options', {
   id: serial('id').primaryKey(),
-  frequency: text("frequency").notNull()
+  frequency: text("frequency").notNull().unique()
 });
 
 export const contributionAmountOptions = pgTable("contribution_amount_options", {
   id: serial('id').primaryKey(),
-  amount: integer('amount').notNull()
+  amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
 });
 
 export const patronContributions = pgTable('patron_contributions', {
