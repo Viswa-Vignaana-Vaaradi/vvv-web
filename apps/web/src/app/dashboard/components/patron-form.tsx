@@ -88,6 +88,7 @@ export const PatronForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const queryClient = useQueryClient();
+    const { dispatch } = useAuth();
 
     if (userRole === "VOLUNTEER") {
         router.push("/dashboard");
@@ -234,9 +235,17 @@ export const PatronForm = () => {
             }
             return data;
         },
-        onSuccess: async (data, variables) => {
+        onSuccess: async ( ctx, data, variables) => {
             setErrorMessage('');
             setSuccessMessage("Registration Successful!");
+
+            dispatch({
+                type: "UPDATE_USER",
+                payload: {
+                    userRole: ctx.membershipDetails?.roleName,
+                    memberCode: ctx.membershipDetails?.memberCode
+                },
+            })
 
             queryClient.invalidateQueries({ queryKey: ['userMemberships', userId] });
             queryClient.invalidateQueries({ queryKey: ['userRole', userId] });
