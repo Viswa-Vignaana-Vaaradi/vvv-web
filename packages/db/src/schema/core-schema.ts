@@ -120,13 +120,13 @@ export const patronInterestedAreas = pgTable('patron_interested_areas', {
 );
 
 export const contributionFrequencyOptions = pgTable('contribution_frequency_options', {
-  id: serial('id').primaryKey(),
-  frequency: text("frequency").notNull().unique()
+  id: serial('id'),
+  frequency: text("frequency").notNull().primaryKey()
 });
 
 export const contributionAmountOptions = pgTable("contribution_amount_options", {
-  id: serial('id').primaryKey(),
-  amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+  id: serial('id'),
+  amount: numeric('amount', { precision: 10, scale: 2 }).notNull().primaryKey(),
   razorpayPlanId: varchar('razorpay_plan_id', { length: 100 }).unique()
 });
 
@@ -135,8 +135,8 @@ export const subscriptions = pgTable("subscriptions", {
   userId: text("user_id").references(() => user.id, { onDelete: 'set null' }),
   razorpaySubscriptionId: varchar('razorpay_subscription_id', { length: 50 }).unique().notNull(),
   
-  amountId: integer('amount_id').references(() => contributionAmountOptions.razorpayPlanId, { onDelete: 'restrict' }).notNull(),
-  frequencyId: integer('frequency_id').references(() => contributionFrequencyOptions.id).notNull(),
+  amountId: varchar('amount_id').references(() => contributionAmountOptions.razorpayPlanId, { onDelete: 'restrict' }).notNull(),
+  frequency: text('frequency_id').references(() => contributionFrequencyOptions.frequency).notNull(),
   
   status: varchar('status', { length: 20 }).notNull(),
   currentStart: timestamp('current_start'),
@@ -166,16 +166,16 @@ export const transactions = pgTable('transactions', {
 
 export const planMappings = pgTable('plan_mappings', {
   id: serial('id').primaryKey(),
-  amountId: integer('amount_id')
-    .references(() => contributionAmountOptions.id, { onDelete: 'cascade' })
+  amount: numeric('amount')
+    .references(() => contributionAmountOptions.amount, { onDelete: 'cascade' })
     .notNull(),
-  frequencyId: integer('frequency_id')
-    .references(() => contributionFrequencyOptions.id, { onDelete: 'cascade' })
+  frequency: text('frequency')
+    .references(() => contributionFrequencyOptions.frequency, { onDelete: 'cascade' })
     .notNull(),
   razorpayPlanId: varchar('razorpay_plan_id', { length: 255 }).unique().notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 }, (t) => [
-  uniqueIndex('unique_plan_combination').on(t.amountId, t.frequencyId)
+  uniqueIndex('unique_plan_combination').on(t.amount, t.frequency)
 ]);
 
 
@@ -184,12 +184,12 @@ export const patronContributions = pgTable('patron_contributions', {
   patronDetailId: integer('patron_detail_id')
     .references(() => patronDetails.id, { onDelete: 'cascade' })
     .notNull()
-    .unique(), // Assuming a patron has one primary contribution setup
-  frequencyId: integer('frequency_id')
-    .references(() => contributionFrequencyOptions.id, { onDelete: 'restrict' })
+    .unique(),
+  frequency: text('frequency')
+    .references(() => contributionFrequencyOptions.frequency, { onDelete: 'restrict' })
     .notNull(),
-  amountId: integer('amount_id')
-    .references(() => contributionAmountOptions.id, { onDelete: 'restrict' })
+  amount: numeric('amount', { precision: 10, scale: 2 })
+    .references(() => contributionAmountOptions.amount, { onDelete: 'restrict' })
     .notNull(),
   startDate: timestamp('start_date').defaultNow(),
   nextContributionDate: timestamp('next_contribution_date'),

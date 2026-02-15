@@ -17,8 +17,8 @@ export async function syncPlans() {
       // 1. Check mapping table for this specific combination
       const existingMapping = await db.query.planMappings.findFirst({
         where: (m, { eq, and }) => and(
-          eq(m.amountId, amt.id),
-          eq(m.frequencyId, freq.id)
+          eq(m.amount, amt.amount),
+          eq(m.frequency, freq.frequency)
         )
       });
 
@@ -39,8 +39,8 @@ export async function syncPlans() {
 
           // 3. Insert into mapping table
           await db.insert(planMappings).values({
-            amountId: amt.id,
-            frequencyId: freq.id,
+            amount: amt.amount,
+            frequency: freq.frequency,
             razorpayPlanId: plan.id
           });
             

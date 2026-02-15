@@ -31,81 +31,81 @@ export const CheckoutRoutes = new Elysia({ prefix: '/payments/checkout' })
             }
         }
     })
-    .post("/create", async ({ query, body, set }) => {
-        const { amountId, frequencyId, isRecurring } = body;
+    .post("/", async ({ query, body, set }) => {
+        const { amount, frequency, otherAmount } = body;
         const { userId } = query;
 
         try {
-            // 1. Recurring Payment (Subscription) logic
-            if (isRecurring) {
-                if (!frequencyId) throw new Error("Frequency is required for subscriptions");
+        let finalAmount: number;
 
-                // Find the specific Plan ID for this Amount + Frequency combination
-                const mapping = await db.query.planMappings.findFirst({
-                    where: (m, { eq, and }) => and(
-                        eq(m.amountId, amountId),
-                        eq(m.frequencyId, frequencyId)
-                    )
-                });
+        // 1. Determine the Amount
+        if (amount === "Other") {
+            finalAmount = Number(otherAmount);
+        } else {
+            // Try to find the record in DB
+            const amountRecord = await db.query.contributionAmountOptions.findFirst({
+                where: (amt, { eq }) => eq(amt.amount, amount)
+            });
+            
+            // If DB record exists, use it; otherwise, try to parse the 'amount' string directly
+            finalAmount = amountRecord ? Number(amountRecord.amount) : Number(amount);
+        }
 
-                if (!mapping) {
-                    set.status = 404;
-                    return { error: "This payment plan has not been synced yet." };
-                }
+        // Critical Check: Is finalAmount actually a valid number?
+        if (isNaN(finalAmount) || finalAmount <= 0) {
+            set.status = 400;
+            return { error: "A valid payment amount is required" };
+        }
 
-                const subscription = await razorpay.subscriptions.create({
-                    plan_id: mapping.razorpayPlanId,
-                    customer_notify: 1,
-                    total_count: 60, // e.g., 5 years
-                    notes: {
-                        userId: userId,
-                        type: 'subscription'
-                    }
-                });
+        const isOneTime = !frequency || frequency.toLowerCase().includes("one-time") || amount === "Other";
 
-                return { 
-                    type: 'subscription', 
-                    subscriptionId: subscription.id,
-                    key: process.env.RAZORPAY_KEY_ID 
-                };
+        // 2. Subscription Logic
+        if (!isOneTime) {
+            // Subscriptions MUST have a mapped Plan ID in your system
+            const mapping = await db.query.planMappings.findFirst({
+                where: (m, { eq, and }) => and(eq(m.amount, amount), eq(m.frequency, frequency!))
+            });
+
+            if (!mapping?.razorpayPlanId) {
+                set.status = 400;
+                return { error: "Subscription plan not found for this combination" };
             }
 
-            // 2. One-time Payment (Order) logic
-            const amountRecord = await db.query.contributionAmountOptions.findFirst({
-                where: (amt, { eq }) => eq(amt.id, amountId)
+            const subscription = await razorpay.subscriptions.create({
+                plan_id: mapping.razorpayPlanId,
+                customer_notify: 1,
+                total_count: 12,
+                notes: { userId, type: "subscription" }
             });
 
-            if (!amountRecord) throw new Error("Invalid amount selected");
-
-            const order = await razorpay.orders.create({
-                amount: Math.round(Number(amountRecord.amount) * 100), // Convert to paise
-                currency: "INR",
-                receipt: `receipt_${Date.now()}`,
-                notes: {
-                    userId: userId,
-                    type: 'one_time'
-                }
-            });
-
-            return { 
-                type: 'order', 
-                orderId: order.id, 
-                amount: order.amount,
-                key: process.env.RAZORPAY_KEY_ID 
-            };
-
-        } catch (error: any) {
-            set.status = 500;
-            return { error: error.message || "Failed to create checkout session" };
+            return { type: "subscription", id: subscription.id };
         }
+
+        // 3. One-Time Payment Logic
+        const order = await razorpay.orders.create({
+            amount: Math.round(finalAmount * 100), // Razorpay expects paise
+            currency: "INR",
+            notes: {
+                userId,
+                type: 'one-time'
+            }
+        });
+
+        return { type: 'order', id: order.id };
+
+    } catch (error: any) {
+        set.status = 500;
+        return { error: error.message || "Failed to create checkout session" };
+    }
+
     }, {
         auth: true,
         query: t.Object({
             userId: t.String(),
         }),
         body: t.Object({
-            amountId: t.Number(),
-            isRecurring: t.Boolean(),
-            frequencyId: t.Optional(t.Number()), // Only needed if isRecurring is true
+            amount: t.String(),
+            frequency: t.Optional(t.String()),
+            otherAmount: t.String()
         })
     });
