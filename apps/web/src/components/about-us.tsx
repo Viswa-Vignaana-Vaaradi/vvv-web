@@ -5,6 +5,7 @@ import Approach from "../public/appraoch.svg";
 import Image from "next/image";
 
 export const AboutUs = () => {
+    
     return (
         <div className="flex flex-col pb-10 items-center bg-[#FFFBEB]">
             <div className="mt-10 font-poppins font-bold text-[#604D00] text-[45px] leading-12.25">Who We Are & What We Do</div>

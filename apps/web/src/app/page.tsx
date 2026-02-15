@@ -3,6 +3,7 @@
 import { AboutUs } from "@/components/about-us";
 import { Hero } from "@/components/hero-section";
 import { Missions } from "@/components/missions";
+import { NumbersSection } from "@/components/numbers-section";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <AboutUs />
       <Missions />
+      <NumbersSection />
     </div>
   );
 }
