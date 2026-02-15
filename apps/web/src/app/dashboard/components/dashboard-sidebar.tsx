@@ -12,7 +12,7 @@ export const DashboardSidebar = () => {
 
     if (!authState || !authState.user) {
         console.log("User not authenticated or user data missing", authState);
-        return <p>Please Log In</p>
+        router.push('/');
     }
 
     const isCollapsed = sidebarState === "collapsed";
@@ -22,7 +22,7 @@ export const DashboardSidebar = () => {
             <SidebarHeader>
                 {!isCollapsed && (
                     <p className="flex items-center justify-center font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
-                        {"Hi "}{authState.user.name}{" !"}
+                        {"Hi "}{authState.user?.name}{" !"}
                     </p>
                 )}
                 <SidebarTrigger />
