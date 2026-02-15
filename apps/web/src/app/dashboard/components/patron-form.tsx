@@ -266,6 +266,7 @@ export const PatronForm = () => {
                         amount: data.amount === "Other" ? Number(data.otherAmount) * 100 : undefined,
                         currency: "INR",
                         name: data.fullName,
+                        frequency: data.frequency,
                         ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
                         handler: function ( response: any) {
                             console.log("Payment ID: ", response.razorpay_payment_id);

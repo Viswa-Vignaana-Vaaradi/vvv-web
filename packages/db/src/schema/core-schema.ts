@@ -181,6 +181,7 @@ export const planMappings = pgTable('plan_mappings', {
 
 export const patronContributions = pgTable('patron_contributions', {
   id: serial('id').primaryKey(),
+  userId: text("user_id").references(() => user.id, { onDelete: "no action" }),
   patronDetailId: integer('patron_detail_id')
     .references(() => patronDetails.id, { onDelete: 'cascade' })
     .notNull()
