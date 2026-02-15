@@ -1,13 +1,26 @@
 "use client";
 
+import { AboutUs } from "@/components/about-us";
+import { ContactUs } from "@/components/contact-us";
+import { GalleryIntro } from "@/components/gallery-intro";
+import { Hero } from "@/components/hero-section";
+import { Missions } from "@/components/missions";
+import { NumbersSection } from "@/components/numbers-section";
+import { Reason } from "@/components/reason";
+import { Separator } from "@/components/ui/separator";
+
 export default function Home() {
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">Viswa Vignana Vaaradi</pre>
-      <div className="grid gap-6">
-        {/* <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-        </section> */}
+    <div className="scroll-smooth">
+      <Hero />
+      <div id="about"><AboutUs /></div>
+      <div id="missions"><Missions /></div>
+      <NumbersSection />
+      <div id="gallery"><GalleryIntro /></div>
+      <div id="contact" className="px-10 bg-white">
+        <ContactUs />
+        <Separator />
+        <Reason />
       </div>
     </div>
   );

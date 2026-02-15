@@ -137,7 +137,7 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
                     patronDetailId: details.id,
                     frequency: body.frequency,
                     amount: body.amount,
-                    customAmount: body.otherAmount,
+                    customAmount: body.otherAmount || null,
                     isActive: false
                 })
 

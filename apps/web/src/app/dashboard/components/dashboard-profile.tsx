@@ -58,6 +58,28 @@ export default function DashboardProfile() {
         enabled: !!userId,
     });
 
+    const { data: memberCode, error: memberCodeError, isLoading: memberCodeLoading } = useQuery({
+        queryKey: ["usercode", userId],
+        queryFn: async () => {
+            if (!userId) throw new Error("No user ID");
+
+            const { data, error } = await api.user["member-code"].get({
+                $query: { userId: userId },
+                $headers: {},
+                $fetch: {
+                    credentials: "include"
+                }
+            })
+
+            if (error) {
+                throw new Error(error.message || "Failed to get the user role");
+            }
+
+            return data;
+        },
+        enabled: !!userId,
+    })
+
     return (
         <div className="w-full flex gap-4 px-20 items-center">
             <Image
@@ -88,7 +110,14 @@ export default function DashboardProfile() {
                     <div onClick={() => router.push("/dashboard/personal/patron")} className="col-span-1 flex hover:cursor-pointer items-center underline italic font-poppins size-3.25 leading-[100%] text-[13px] whitespace-nowrap">
                         Want to be a Patron?
                     </div>
-                    : <div className="col-span-1"></div>
+                    : <div className="col-span-1 font-poppins font-bold text-[#0E897F]">
+                        {memberCodeLoading 
+                            ? "Loading..." 
+                            : (memberCode && !('error' in memberCode)) 
+                            ? memberCode.memberCode
+                            : ""
+                        }
+                        </div>
                 }
             
                 <div className="col-span-1 whitespace-nowrap flex items-center justify-center font-poppins font-semibold size-4.5 leading-8.25 text-[#604D00CC]">
@@ -103,7 +132,7 @@ export default function DashboardProfile() {
                 }
                 
                 <div className="col-span-1 whitespace-nowrap flex items-center justify-center font-poppins font-semibold size-4.5 leading-8.25 text-[#604D00CC]">
-                    {isLoading ? "" : (location && !('error' in location)) ? location.city : "No location"}
+                    {isLoading ? "" : (location && !('error' in location)) ? location.city : ""}
                 </div>
             </div>
         </div>

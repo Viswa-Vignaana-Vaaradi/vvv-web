@@ -7,6 +7,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { useAuth } from "@/context/auth-context";
 import { api } from "@/lib/eden";
 import { Input } from "@base-ui/react/input"
+import { env } from "@repo/env/web";
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -77,6 +78,7 @@ export const VolunteerForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const queryClient = useQueryClient();
+    const { dispatch } = useAuth();
 
     if (userRole === "PATRON") {
         router.push("/dashboard")
@@ -187,17 +189,70 @@ export const VolunteerForm = () => {
             }
             return data;
         },
-        onSuccess: async (data, variables) => {
+        onSuccess: async ( ctx, data, variables) => {
             setErrorMessage('');
             setSuccessMessage("Registration Successful!");
+
+            dispatch({
+                type: "UPDATE_USER",
+                payload: {
+                    userRole: ctx.membershipDetails?.roleName,
+                    memberCode: ctx.membershipDetails?.memberCode
+                },
+            });
 
             queryClient.invalidateQueries({ queryKey: ['userMemberships', userId] });
             queryClient.invalidateQueries({ queryKey: ['userRole', userId] });
 
-            const contribuationData = data.wantsToContribute;
+            const contribuationData = ctx.wantsToContribute;
 
             if (contribuationData) {
-                // TODO: Call the payment gateway API
+                setSuccessMessage("Initiating Payment process...");
+
+                try {
+                    const { data: checkoutSession, error } = await api.payments.checkout.post({
+                        amount: "100",
+                        frequency: "Monthly",
+                        otherAmount: "",
+                        $query: { userId: userId! },
+                        $headers: {},
+                        $fetch: {
+                            credentials: "include"
+                        }
+                    });
+                
+                    if (error) throw new Error(error.message);
+                
+                    const options = {
+                        key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                        amount: 99 * 100,
+                        currency: "INR",
+                        name: data.fullName,
+                        frequency: "Monthly",
+                        ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
+                        handler: function ( response: any) {
+                            console.log("Payment ID: ", response.razorpay_payment_id);
+                            setSuccessMessage("Payment is successful!! Redirecting...");
+                            router.push('/dashboard');  
+                        },
+                        prefill: {
+                            name: data.fullName,
+                            contact: data.contactNumber,
+                            email: state.user?.email
+                        }
+                    };
+                
+                    const rzp = new (window).Razorpay(options);
+                
+                    rzp.on('payment.failed', function (response: any) {
+                        setErrorMessage("Payment failed:" + response.error.description);
+                    });
+                
+                    rzp.open();
+                } catch (error: any) {
+                    console.error(error);
+                    setErrorMessage(error.message || "Could not initiate payment");
+                }
             } else {
                 form.reset();
                 router.push('/dashboard');
@@ -229,7 +284,8 @@ export const VolunteerForm = () => {
             termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
-            
+            console.log("submitting", value)
+            mutation.mutate(value);
         },
         validators: {
             onSubmit: formSchema as StandardSchemaV1<FormSchema, FormSchema>,
@@ -335,9 +391,7 @@ export const VolunteerForm = () => {
                         <form.Field name="profession">
                             {(field) => {
                                 const studentOption = data?.find((opt) => opt.name === "Student");
-                                console.log("Student Option var:", studentOption);
                                 const isStudent = String(field.state.value) === String(studentOption?.name);
-                                const isOtherProfession = field.state.value === "other";
 
                                 return (
                                     <div className="space-y-2">
@@ -683,7 +737,7 @@ export const VolunteerForm = () => {
                                 variant="outline"
                                 type="submit"
                                 className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
-                                disabled={!state.canSubmit || state.isSubmitting}
+                                disabled={mutation.isPending || !form.state.canSubmit}
                             >
                                 {state.isSubmitting ? "Submitting..." : "Submit"}
                             </Button>

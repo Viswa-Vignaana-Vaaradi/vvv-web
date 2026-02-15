@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { useState } from "react";
+import { useAuth } from "@/context/auth-context";
 
 const emailPasswordSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -22,6 +23,11 @@ export default function SignUpForm() {
   const { isPending } = authClient.useSession();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const { state, dispatch } = useAuth();
+  
+  if (state.isAuthenticated) {
+    router.push("/dashboard")
+  }
 
   const form = useForm({
     defaultValues: {

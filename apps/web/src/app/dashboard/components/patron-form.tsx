@@ -36,7 +36,7 @@ interface FormSchema {
     areaOfInterest: string[];
     frequency: string;
     amount: string;
-    otherAmount: string;
+    otherAmount?: string;
     termsAccepted: boolean;
 }
 
@@ -51,7 +51,7 @@ const formSchema: z.ZodType<FormSchema> = z.object({
     areaOfInterest: z.array(z.string()).min(1, "Please select an area of interest"),
     frequency: z.string().min(2, "Please select a valid contribution frequency"),
     amount: z.string().min(2, "Please select a valid contribution amount"),
-    otherAmount: z.string().min(2, "Please enter a valid amount"),
+    otherAmount: z.string().optional(),
     termsAccepted: z.literal(true, {
         error: () => ({ message: "You must accept the terms and conditions" }),
     }),
@@ -219,7 +219,7 @@ export const PatronForm = () => {
                 areaOfInterest: value.areaOfInterest,
                 frequency: value.frequency,
                 amount: value.amount,
-                otherAmount: value.otherAmount,
+                otherAmount: value.otherAmount!,
                 termsAccepted: value.termsAccepted,
                 $query: {
                     userId: userId!
@@ -245,7 +245,7 @@ export const PatronForm = () => {
                     userRole: ctx.membershipDetails?.roleName,
                     memberCode: ctx.membershipDetails?.memberCode
                 },
-            })
+            });
 
             queryClient.invalidateQueries({ queryKey: ['userMemberships', userId] });
             queryClient.invalidateQueries({ queryKey: ['userRole', userId] });
@@ -285,6 +285,7 @@ export const PatronForm = () => {
                         prefill: {
                             name: data.fullName,
                             contact: data.contactNumber,
+                            email: state.user?.email
                         }
                     };
 
@@ -309,7 +310,7 @@ export const PatronForm = () => {
             console.error(error);
             setErrorMessage(error.message || "An unexpected error occurred during submission.");
         }
-    })
+    });
 
     const form = useForm({
         defaultValues: {
@@ -327,6 +328,7 @@ export const PatronForm = () => {
             termsAccepted: false
         } as FormSchema,
         onSubmit: async ({ value }) => {
+            console.log("submitting", value)
             mutation.mutate(value);
         },
         validators: {
@@ -381,7 +383,6 @@ export const PatronForm = () => {
                         <form.Field name="profession">
                             {(field) => {
                                 const studentOption = data?.find((opt) => opt.name === "Student");
-                                console.log("Student Option var:", studentOption);
                                 const isStudent = String(field.state.value) === String(studentOption?.name);
 
                                 return (
@@ -711,7 +712,7 @@ export const PatronForm = () => {
                                 variant="outline"
                                 type="submit"
                                 className="bg-linear-to-r mt-20 from-[#DB7A04] to-[#F1980F] text-white hover:text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins hover:cursor-pointer"
-                                disabled={!state.canSubmit || state.isSubmitting}
+                                disabled={mutation.isPending || !form.state.canSubmit}
                             >
                                 {state.isSubmitting ? "Submitting..." : "Submit"}
                             </Button>

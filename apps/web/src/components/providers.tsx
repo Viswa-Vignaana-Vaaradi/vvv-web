@@ -5,6 +5,7 @@ import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 import type { AuthInitialSessionData } from "@/types";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ImageKitProvider } from "@imagekit/next";
 
 export default function Providers({ children, initialSession }: { children: React.ReactNode, initialSession: AuthInitialSessionData | null }) {
   const queryClient = new QueryClient();
@@ -12,10 +13,12 @@ export default function Providers({ children, initialSession }: { children: Reac
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider initialSession={initialSession}>
-          {children}
-        <Toaster richColors />
-        </AuthProvider>
+        <ImageKitProvider urlEndpoint="https://ik.imagekit.io/vvv">
+          <AuthProvider initialSession={initialSession}>
+              {children}
+            <Toaster richColors />
+          </AuthProvider>
+        </ImageKitProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

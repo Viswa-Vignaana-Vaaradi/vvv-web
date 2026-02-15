@@ -16,7 +16,12 @@ export default function SignInForm() {
   const { isPending } = authClient.useSession();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { dispatch } = useAuth();
+  const { state, dispatch } = useAuth();
+
+  if (state.isAuthenticated) {
+    router.push("/dashboard")
+  }
+  
 
   const form = useForm({
     defaultValues: {

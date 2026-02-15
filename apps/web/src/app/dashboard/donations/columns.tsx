@@ -1,29 +1,31 @@
 "use client";
-
 import { type ColumnDef } from "@tanstack/react-table";
 
 export type Payment = {
-    id: string
-    date: string
-    amount: number
-    receipt: string
-}
+    id: string;
+    sNo: number;
+    date: string;
+    amount: number;
+    receipt: string;
+};
 
 export const columns: ColumnDef<Payment>[] = [
     {
-        accessorKey: "S.No",
-        header: "S.No"
+        accessorKey: "sNo",
+        header: "S.No.",
     },
     {
-        accessorKey: "Date",
-        header: "Date"
+        accessorKey: "date",
+        header: "Date",
     },
     {
-        accessorKey: "Amount",
-        header: "Amount"
+        accessorKey: "amount",
+        header: "Amount (₹)",
+        cell: ({ row }) => `₹${row.original.amount}`,
     },
-    {
-        accessorKey: "Receipt",
-        header: "Receipt"
-    }
-]
+    // Receipt is hidden/commented as requested
+    /* {
+        accessorKey: "receipt",
+        header: "Receipt",
+    } */
+];
