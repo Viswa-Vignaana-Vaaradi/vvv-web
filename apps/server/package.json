@@ -10,8 +10,12 @@
     "sync-plans": "tsx ./src/scripts/plan-sync.ts"
   },
   "dependencies": {
+    "@axiomhq/js": "^1.4.0",
     "@elysiajs/cors": "^1.3.3",
     "@elysiajs/node": "^1.3.1",
+    "@elysiajs/opentelemetry": "^1.4.10",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.212.0",
+    "@opentelemetry/sdk-trace-node": "^2.5.1",
     "@repo/auth": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",

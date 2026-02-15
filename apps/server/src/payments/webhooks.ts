@@ -2,10 +2,18 @@ import { Elysia } from "elysia";
 import { db, eq, and, desc } from "@repo/db";
 import { patronContributions, transactions, subscriptions, } from "@repo/db/schema/core-schema";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils.js";
+import { axiom } from "@/utils/axiom";
 
 export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
     .post("/", async ({ body, headers, set }) => {
         const signature = headers['x-razorpay-signature'];
+
+        axiom.ingest('webhook-logs', [{ 
+            event: 'received', 
+            headers, 
+            body: JSON.stringify(body).slice(0, 500) // Log snippet
+        }]);
+
         const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
         const isValid = validateWebhookSignature(
@@ -23,6 +31,10 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
 
         try {
             await db.transaction(async (tx) => {
+                axiom.ingest('webhook-logs', [{ 
+                    type: 'db_transaction_start', 
+                    razorpay_event: (body as any).event 
+                }]);
                 
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
                 if (event === "order.paid") {
@@ -118,9 +130,15 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 }
             });
 
+            await axiom.flush();
             return { received: true };
 
         } catch (error: any) {
+            axiom.ingest('webhook-logs', [{ 
+                level: 'error', 
+                message: error.message, 
+                stack: error.stack 
+            }]);
             console.error("Webhook DB Error:", error);
             set.status = 500;
             return { error: "Internal processing failed" };

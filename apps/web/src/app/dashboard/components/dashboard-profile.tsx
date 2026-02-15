@@ -90,6 +90,8 @@ export default function DashboardProfile() {
                     </div>
                     : <div className="col-span-1"></div>
                 }
+
+                
             
                 <div className="col-span-1 whitespace-nowrap flex items-center justify-center font-poppins font-semibold size-4.5 leading-8.25 text-[#604D00CC]">
                     Joined: {joiningDate}
