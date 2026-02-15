@@ -25,6 +25,7 @@
     "elysia": "^1.3.21",
     "puppeteer-core": "^24.37.3",
     "razorpay": "^2.9.6",
+    "resend": "^6.8.0",
     "zod": "catalog:"
   },
   "devDependencies": {

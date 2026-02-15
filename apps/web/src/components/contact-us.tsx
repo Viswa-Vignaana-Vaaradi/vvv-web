@@ -8,7 +8,8 @@ import Image from "next/image"
 import Office from "../public/office.svg";
 import Email from "../public/email.svg";
 import Phone from "../public/phone.svg";
-import { Separator } from "./ui/separator"
+import { Separator } from "./ui/separator";
+import { api } from "@/lib/eden"
 
 export const ContactUs = () => {
     const form = useForm({
@@ -18,7 +19,13 @@ export const ContactUs = () => {
             message: ""
         },
         onSubmit: async ({ value }) => {
-
+            await api["contact-us"].post({
+                name: value.email,
+                email: value.email,
+                message: value.message,
+                $query: {},
+                $headers: {},
+            })
         },
         validators: {
             onSubmit: z.object({
@@ -109,7 +116,7 @@ export const ContactUs = () => {
                     <div className="flex items-center justify-center">
                     <Button
                         type="submit"
-                        className="bg-[#F1980F] border-[0.6px] border-[#CCCCCC] border-solid text-white font-poppins font-bold py-5 px-5 rounded-[40px] transition-all"
+                        className="bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer border-[0.6px] border-[#CCCCCC] border-solid text-white font-poppins font-bold py-5 px-5 rounded-[40px] transition-all"
                     >
                         Send Message
                     </Button>
@@ -152,14 +159,14 @@ export const ContactUs = () => {
                         <div className="space-y-1">
                             <p className="font-poppins font-bold text-[16px] leading-tight text-[#604D00]">Phone Number</p>
                             <p className="font-poppins font-medium text-[12px] leading-tight text-[#604D00]/70">
-                                +91 99999 888765
+                                +91 90109 37358
                             </p>
                         </div>
                     </div>
 
                     <Separator />
 
-                    <div className="flex flex-col  items-center">
+                    <div className="flex flex-col items-center">
                         <div className="font-poppins font-medium text-[10px] leading-[100%] text-[#604D0066]/60 italic">Our Team typically responds with in 24-48 Hrs,</div>
                         <div className="font-poppins font-medium text-[10px] leading-[100%] text-[#604D0066]/60 italic">Please be patient.</div>
                     </div>

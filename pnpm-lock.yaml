@@ -78,6 +78,9 @@ importers:
       razorpay:
         specifier: ^2.9.6
         version: 2.9.6
+      resend:
+        specifier: ^6.8.0
+        version: 6.8.0
       zod:
         specifier: 'catalog:'
         version: 4.2.1

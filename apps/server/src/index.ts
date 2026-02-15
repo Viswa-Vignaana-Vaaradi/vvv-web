@@ -15,6 +15,7 @@ import { VolunteerForm } from "./volunteer/volunteer-form";
 import { PatronForm } from "./patron/patron-form";
 import { CheckoutRoutes } from "./payments/checkout";
 import { WebhookRoutes } from "./payments/webhooks";
+import { ContactUs } from "./routes/contact-us";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -47,6 +48,7 @@ const app = new Elysia({ adapter: node() })
   .use(PatronForm)
   .use(CheckoutRoutes)
   .use(WebhookRoutes)
+  .use(ContactUs)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

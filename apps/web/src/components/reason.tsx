@@ -25,7 +25,7 @@ export const Reason = () => {
             <div className="mt-4 font-poppins">
                 <Button
                     onClick={() => router.push("/auth/signup")}
-                    className="bg-[#F1980F] border-[0.6px] p-6 rounded-[30px] border-[#CCCCCC] font-bold text-[18px] leading-8.25 text-white"
+                    className="bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer border-[0.6px] p-6 rounded-[30px] border-[#CCCCCC] font-bold text-[18px] leading-8.25 text-white"
                 >
                     Join Us!
                     <Image
