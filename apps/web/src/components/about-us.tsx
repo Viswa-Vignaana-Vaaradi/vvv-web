@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const AboutUs = () => {
     return (
-        <div className="flex flex-col items-center bg-[#FFFBEB]">
+        <div className="flex flex-col pb-10 items-center bg-[#FFFBEB]">
             <div className="mt-10 font-poppins font-bold text-[#604D00] text-[45px] leading-12.25">Who We Are & What We Do</div>
             <div className="font-poppins font-medium text-[17px] leading-[100%] text-center px-10 mt-8 text-[#604D00]">Viswa Vignana Vaaradhi is a community-driven non-profit organisation uplifting rural communities through education, legal awareness, nutrition, mental health, and livelihoods, empowering people with knowledge, support, and opportunities to build self-reliant futures.</div>
 
