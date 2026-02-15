@@ -13,7 +13,7 @@ const SuccessResponse = t.Object({
     userId: t.String(),
     roleName: t.String(),
     memberCode: t.String(),
-    joinedAt: t.Date().nullable(),
+    joinedAt: t.Date(),
   }),
   wantsToContribute: t.Boolean(),
 });
@@ -168,6 +168,7 @@ export const VolunteerForm = new Elysia({ prefix: "/volunteer/submit" })
             return { success: false, error: error.message || "Internal Server Error during registration." };
         }
     }, {
+        auth: true,
         query: t.Object({
             userId: t.String(),
         }),

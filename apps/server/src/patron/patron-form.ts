@@ -13,7 +13,7 @@ const SuccessResponse = t.Object({
     userId: t.String(),
     roleName: t.String(),
     memberCode: t.String(),
-    joinedAt: t.Date().nullable(),
+    joinedAt: t.Date(),
   }),
   frequency: t.String(),
   amount: t.String(),
@@ -160,6 +160,7 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
             return { error: error.message || "Internal Server Error" };
         }
     }, {
+        auth: true,
         query: t.Object({
             userId: t.String(),
         }),

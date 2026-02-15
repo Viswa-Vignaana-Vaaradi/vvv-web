@@ -17,8 +17,8 @@ export async function syncPlans() {
       // 1. Check mapping table for this specific combination
       const existingMapping = await db.query.planMappings.findFirst({
         where: (m, { eq, and }) => and(
-            eq(m.amountId, amt.id),
-            eq(m.frequencyId, freq.id)
+          eq(m.amountId, amt.id),
+          eq(m.frequencyId, freq.id)
         )
       });
 
@@ -52,3 +52,13 @@ export async function syncPlans() {
     }
   }
 }
+
+syncPlans()
+  .then(() => {
+    console.log("✨ All plans synced successfully");
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error("💥 Sync failed:", err);
+    process.exit(1);
+  });
