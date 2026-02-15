@@ -214,7 +214,7 @@ export default function SignUpForm() {
             </div>
           </div>
 
-          <form.Subscribe>
+          {/* <form.Subscribe>
             {(state) => (
               <Button
                 variant="outline"
@@ -246,7 +246,7 @@ export default function SignUpForm() {
               {state.isSubmitting ? "Submitting..." : "Signup with Google"}
               </Button>
             )}
-          </form.Subscribe>
+          </form.Subscribe> */}
 
           {successMessage && (
             <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>

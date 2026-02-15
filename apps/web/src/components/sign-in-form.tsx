@@ -156,7 +156,7 @@ export default function SignInForm() {
             </div>
           </div>
 
-          <form.Subscribe>
+          {/* <form.Subscribe>
             {(state) => (
               <Button
                 variant="outline"
@@ -187,7 +187,7 @@ export default function SignInForm() {
                 {state.isSubmitting ? "Submitting..." : "Login with Google"}
               </Button>
             )}
-          </form.Subscribe>
+          </form.Subscribe> */}
 
           {successMessage && (
             <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>

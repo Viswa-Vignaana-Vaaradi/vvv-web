@@ -336,7 +336,10 @@ export const PatronForm = () => {
 
     return (
         <div className="flex w-full min-h-screen gap-6 p-10">
-            <Script src="https://checkout.razorpay.com" />
+            <Script
+                src="https://checkout.razorpay.com/v1/checkout.js"
+                strategy="beforeInteractive"
+            />
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -682,8 +685,10 @@ export const PatronForm = () => {
                                 <Checkbox
                                     id={field.name}
                                     name={field.name}
-                                    checked={field.state.value}
-                                    onCheckedChange={(checked) => field.handleChange(checked)}
+                                    checked={field.state.value === true}
+                                    onCheckedChange={(c) =>
+                                        field.handleChange(c === true)
+                                    }
                                     onBlur={field.handleBlur}
                                     className="mr-2 mt-1"
                                 />
