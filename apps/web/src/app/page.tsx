@@ -11,18 +11,17 @@ import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
-    <div>
+    <div className="scroll-smooth">
       <Hero />
-      <AboutUs />
-      <Missions />
+      <div id="about"><AboutUs /></div>
+      <div id="missions"><Missions /></div>
       <NumbersSection />
-      <GalleryIntro />
-      <div className="px-10 bg-white">
+      <div id="gallery"><GalleryIntro /></div>
+      <div id="contact" className="px-10 bg-white">
         <ContactUs />
         <Separator />
         <Reason />
       </div>
-
     </div>
   );
 }

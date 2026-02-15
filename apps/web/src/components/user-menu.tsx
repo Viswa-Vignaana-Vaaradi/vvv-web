@@ -28,21 +28,22 @@ export default function UserMenu() {
   if (!session) {
     return (
       <Link href="/auth/login">
-        <Button className="cursor-pointer" variant="outline">Sign In</Button>
+        <Button className="text-white font-poppins bg-gradient-to-r from-[rgba(204,204,204,0.5)] to-[rgba(255,255,255,0.5)] font-semibold text-[17px] leading-[100%] border-[0.5px] border-white rounded-[40px]" variant="outline">Sign In</Button>
       </Link>
     );
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" />}>
+      <DropdownMenuTrigger render={<Button variant="outline" className="text-white bg-gradient-to-r from-[rgba(204,204,204,0.5)] to-[rgba(255,255,255,0.5)] font-semibold text-[17px] leading-[100%] border-[0.5px] border-white rounded-[40px]" />}>
         {session.user.name}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-card">
+      <DropdownMenuContent className="bg-card font-poppins">
         <DropdownMenuGroup>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/dashboard")}>Dashboard</DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
             onClick={() => {
