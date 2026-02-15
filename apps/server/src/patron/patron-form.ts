@@ -1,7 +1,7 @@
 import generateMemberCode from "../utils/member-code-generator";
 import { auth } from "@repo/auth";
 import { db } from "@repo/db";
-import { memberships, patronDetails, patronInterestedAreas, patronInvolvementAreas, professionOptions } from "@repo/db/schema/core-schema";
+import { memberships, patronContributions, patronDetails, patronInterestedAreas, patronInvolvementAreas, professionOptions } from "@repo/db/schema/core-schema";
 import Elysia, { t } from "elysia";
 
 const SuccessResponse = t.Object({
@@ -13,8 +13,10 @@ const SuccessResponse = t.Object({
     userId: t.String(),
     roleName: t.String(),
     memberCode: t.String(),
-    joinedAt: t.Date().nullable(),
+    joinedAt: t.Date(),
   }),
+  fullName: t.String(),
+  contactNumber: t.String(),
   frequency: t.String(),
   amount: t.String(),
   otherAmount: t.String(),
@@ -131,9 +133,19 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
                     );
                 }
 
+                await tx.insert(patronContributions).values({
+                    patronDetailId: details.id,
+                    frequency: body.frequency,
+                    amount: body.amount,
+                    customAmount: body.otherAmount,
+                    isActive: false
+                })
+
                 return {
                     memberCode: newMembership.memberCode,
                     membershipDetails: newMembership,
+                    fullName: body.fullName,
+                    contactNumber: body.contactNumber,
                     frequency: body.frequency,
                     amount: body.amount,
                     otherAmount: body.otherAmount
@@ -146,9 +158,11 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
                 message: "Registration successful!",
                 memberCode: result.memberCode,
                 membershipDetails: result.membershipDetails,
-                frequency: result.frequency,
-                amount: result.amount,
-                otherAmount: result.otherAmount,
+                fullName: body.fullName,
+                contactNumber: body.contactNumber,
+                frequency: body.frequency,
+                amount: body.amount,
+                otherAmount: body.otherAmount,
             };
         } catch (error: any) {
             if (error.code === '23505') {
@@ -160,6 +174,7 @@ export const PatronForm = new Elysia({ prefix: "/patron/submit" })
             return { error: error.message || "Internal Server Error" };
         }
     }, {
+        auth: true,
         query: t.Object({
             userId: t.String(),
         }),

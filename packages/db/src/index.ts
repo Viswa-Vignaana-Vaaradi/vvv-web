@@ -9,3 +9,5 @@ const pool = new Pool({
 })
 
 export const db = drizzle(pool, { schema });
+
+export { eq, and, desc, asc } from "drizzle-orm";

@@ -15,7 +15,15 @@ import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Script from 'next/script';
 import z from "zod";
+import { env } from "@repo/env/web";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 interface FormSchema {
     fullName: string;
@@ -239,7 +247,49 @@ export const PatronForm = () => {
                 setSuccessMessage("Initiating Payment process...");
                 const amount = data.amount === "Other" ? data.otherAmount : data.amount;
 
-                //TODO: Call payment gateway API
+                try {
+                    const { data: checkoutSession, error } = await api.payments.checkout.post({
+                        amount: data.amount ?? "",
+                        frequency: data.frequency,
+                        otherAmount: data.otherAmount ?? "",
+                        $query: { userId: userId! },
+                        $headers: {},
+                        $fetch: {
+                            credentials: "include"
+                        }
+                    });
+
+                    if (error) throw new Error(error.message);
+
+                    const options = {
+                        key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                        amount: data.amount === "Other" ? Number(data.otherAmount) * 100 : undefined,
+                        currency: "INR",
+                        name: data.fullName,
+                        frequency: data.frequency,
+                        ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
+                        handler: function ( response: any) {
+                            console.log("Payment ID: ", response.razorpay_payment_id);
+                            setSuccessMessage("Payment is successful!! Redirecting...");
+                            router.push('/dashboard');  
+                        },
+                        prefill: {
+                            name: data.fullName,
+                            contact: data.contactNumber,
+                        }
+                    };
+
+                    const rzp = new (window).Razorpay(options);
+
+                    rzp.on('payment.failed', function (response: any) {
+                        setErrorMessage("Payment failed:" + response.error.description);
+                    })
+
+                    rzp.open();
+                } catch (error: any) {
+                    console.error(error);
+                    setErrorMessage(error.message || "Could not initiate payment");
+                }
             } else {
                 form.reset();
                 router.push('/dashboard');
@@ -277,6 +327,7 @@ export const PatronForm = () => {
 
     return (
         <div className="flex w-full min-h-screen gap-6 p-10">
+            <Script src="https://checkout.razorpay.com" />
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -466,6 +517,11 @@ export const PatronForm = () => {
                                     value={field.state.value}
                                     onValueChange={(val) => {
                                         field.handleChange(val ?? "");
+                                        if (val === "Other") {
+                                            form.setFieldValue('frequency', 'One-Time');
+                                        } else {
+                                            form.setFieldValue('otherAmount', '');
+                                        }
                                     }}
                                     required
                                 >
