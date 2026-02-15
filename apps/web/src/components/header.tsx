@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 export default function Header() {
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "About Us", href: "#about" },
-    { label: "Missions", href: "#missions" },
-    { label: "Gallery", href: "#gallery" },
-    { label: "Contact", href: "#contact" },
+    { label: "About Us", href: "/#about" },
+    { label: "Missions", href: "/#missions" },
+    { label: "Gallery", href: "/#gallery" },
+    { label: "Contact", href: "/#contact" },
   ] as const;
   const router = useRouter();
 
