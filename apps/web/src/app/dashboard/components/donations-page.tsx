@@ -1,56 +1,73 @@
 'use client';
+import { DataTable } from "@/components/ui/data-table";
+import { columns } from "../donations/columns";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import GreenHeart from "../../../public/green-heart.svg";
-import { Button } from "@/components/ui/button";
-import { columns } from "../donations/columns";
-import { DataTable } from "@/components/ui/data-table";
+import { useAuth } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/eden";
 
 export const DonationsPage = () => {
-    const { data, isLoading, error } = useQuery({
-        queryKey: ["donation-data"],
-        queryFn: () => {
+    const { state } = useAuth();
+    const userId = state.user?.id;
 
-        }
+    const { data, isLoading } = useQuery({
+        queryKey: ["donation-history", userId],
+        queryFn: async () => {
+            const { data, error } = await api.user.donations.history.get({
+                $query: { userId: userId! }
+            });
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        enabled: !!userId,
     });
 
     return (
         <div className="flex flex-col w-full min-h-screen gap-6 p-10">
-            <div className="font-poppins font-bold text-[28px] leading-8.25 text-[#604D00]">Donation Information</div>
+            {/* <div className="font-poppins font-bold text-[28px] leading-tight text-[#604D00]">
+                Donation Information
+            </div> */}
 
-            <div className="flex flex-row justify-around w-full rounded-[40px] p-6 bg-white">
-                <Image
-                    src={GreenHeart}
-                    height="30"
-                    width="30"
-                    alt="Green-Heart"
-                />
+            {/* TOP CARD: Active Subscription */}
+            {/*TODO: Integrate payments api here */}
+            {/* <div className="flex flex-row items-center justify-around w-full rounded-[40px] p-8 bg-white shadow-sm border border-gray-100">
+                <Image src={GreenHeart} height="40" width="40" alt="Green-Heart" />
 
                 <div className="flex flex-row items-center">
-                    <div className="font-poppins font-medium text-[35px] leading-[100%] text-[#604D00]">Rs.500</div>
-                    <div className="font-poppins font-medium text-[15px] leading-[100%] text-[#604D00]/50">/Month</div>
+                    <div className="font-poppins font-medium text-[35px] text-[#604D00]">
+                        ₹{data?.subscription?.amount || 0}
+                    </div>
+                    <div className="font-poppins font-medium text-[15px] text-[#604D00]/50 ml-1">
+                        /{data?.subscription?.frequency}
+                    </div>
                 </div>
 
-                <div className="font-poppins font-medium text-[15px] leading-[100%] text-[#604D00]/50 ">
-                    Next: {/*TODO: Integrate the donation api here*/}
+                <div className="font-poppins font-medium text-[15px] text-[#604D00]/50">
+                    Next: <span className="text-[#604D00]">{data?.subscription?.nextDate}</span>
                 </div>
 
-                <Button
-                    className="font-poppins font-semibold text-[18px] leading-[100%] text-white bg-linear-to-r from-[#F1980F] to-[#DB7A04] rounded-[40px] w-30 py-5"
-                    // TODO: onClick, redirect to the payment gateway here
-                >
+                <Button className="font-poppins font-semibold text-[18px] text-white bg-gradient-to-r from-[#F1980F] to-[#DB7A04] rounded-[40px] px-10 py-6 hover:opacity-90 transition-all">
                     PAY
                 </Button>
+            </div> */}
+
+            <div className="font-poppins font-bold text-[25px] mt-12 text-[#604D00]">
+                Donation History
             </div>
 
-            <div className="font-poppins font-bold text-[25px] leading-8.25 text-[#604D00] mt-12">Donation History</div>
-
-            {/*TODO: Integrate the donations api here */}
-
-            {/* <DataTable columns={columns} 
-                // @ts-expect-error: yet to implement donations data here
-                data={data}
-            /> */}
+            {/* DATA TABLE */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                {isLoading ? (
+                    <div className="p-10 text-center text-gray-400 font-poppins">Loading history...</div>
+                ) : (
+                    <DataTable
+                        columns={columns} 
+                        data={data?.history || []} 
+                    />
+                )}
+            </div>
         </div>
-    )
-}
+    );
+};
