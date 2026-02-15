@@ -17,6 +17,7 @@ import { CheckoutRoutes } from "./payments/checkout";
 import { WebhookRoutes } from "./payments/webhooks";
 import { ContactUs } from "./routes/contact-us";
 import { memberCode } from "./user/member-code";
+import { DonationsAmount } from "./user/donations-amount";
 
 const app = new Elysia({ adapter: node() })
   .use(
@@ -51,6 +52,7 @@ const app = new Elysia({ adapter: node() })
   .use(WebhookRoutes)
   .use(ContactUs)
   .use(memberCode)
+  .use(DonationsAmount)
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");
