@@ -37,7 +37,7 @@ export const getUserLocation = new Elysia({ prefix: "/location" })
             };
         }
         set.status = 200;
-            return location;
+        return location;
     }, {
         query: t.Object({
             userId: t.String()

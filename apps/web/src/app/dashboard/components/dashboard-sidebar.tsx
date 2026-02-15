@@ -36,14 +36,14 @@ export const DashboardSidebar = () => {
                         <SidebarMenuButton onClick={() => router.push('/dashboard/account')} className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
                         </SidebarMenuButton>
-                        <SidebarMenuButton 
+                        {/* <SidebarMenuButton
                             // disabled={authState.user.userRole === null}
                             // TODO: implement redirect based on userRole
                             className="p-4 cursor-pointer hover:bg-primary"
                         >
                             <HugeiconsIcon icon={Person} size={24} />
                             <div className="font-poppins font-semibold size-4.5">Personal</div>
-                        </SidebarMenuButton>
+                        </SidebarMenuButton> */}
                         <SidebarMenuButton onClick={() => router.push("/dashboard/donations")} className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={RupeeCircleIcon} /><div className="font-poppins font-semibold size-4.5">Donations</div>
                         </SidebarMenuButton>

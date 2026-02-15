@@ -1,7 +1,7 @@
 'use client';
 import Dashboard from "./dashboard";
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
 
   return (
     <div>
