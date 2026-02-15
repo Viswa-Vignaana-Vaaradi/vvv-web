@@ -2,7 +2,7 @@ import { authClient } from "@/lib/auth-client";
 
 export type BetterAuthInferredSession = typeof authClient.$Infer.Session;
 
-export type User = BetterAuthInferredSession["user"];
+export type User = BetterAuthInferredSession["user"] & { memberCode?: string };;
 
 export type Session = Omit<BetterAuthInferredSession, "user">;
 
