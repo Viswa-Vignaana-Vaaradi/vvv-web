@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { db, eq, and, desc } from "@repo/db";
 import { patronContributions, transactions, subscriptions, } from "@repo/db/schema/core-schema";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils.js";
-import { axiom } from "@/utils/axiom";
+import { axiom } from "../utils/axiom";
 
 export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
     .post("/", async ({ body, headers, set }) => {
