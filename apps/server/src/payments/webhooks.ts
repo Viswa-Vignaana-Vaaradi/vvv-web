@@ -9,8 +9,8 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
         const isValid = validateWebhookSignature(
-            JSON.stringify(body), 
-            signature as string, 
+            JSON.stringify(body),
+            signature as string,
             secret
         );
 
