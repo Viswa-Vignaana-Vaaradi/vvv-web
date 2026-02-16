@@ -54,6 +54,11 @@ export const DonationSection = () => {
             return data;
         },
         onSuccess: (checkoutSession, variables) => {
+            if (typeof window === 'undefined' || !window.Razorpay) {
+                setErrorMessage("Payment gateway is still loading. Please try again in a moment.");
+                return;
+            }
+
             const options = {
                 key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: variables.amount === "Other" 
@@ -75,7 +80,7 @@ export const DonationSection = () => {
                 }
             };
 
-            const rzp = new (window).Razorpay(options);
+            const rzp = new window.Razorpay(options);
                 
             rzp.on('payment.failed', function (response: any) {
                 setErrorMessage("Payment failed:" + response.error.description);
@@ -117,7 +122,7 @@ export const DonationSection = () => {
         <div className="bg-[#FFFBEB] px-30 py-20 gap-4 items-center flex flex-row font-poppins">
             <Script
                 src="https://checkout.razorpay.com/v1/checkout.js"
-                strategy="beforeInteractive"
+                strategy="lazyOnload"
             />
             <div className="flex-1">
                 <div className="text-[#604D00] font-bold text-[42px] leading-[130%]">
