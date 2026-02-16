@@ -100,7 +100,7 @@ export const CheckoutRoutes = new Elysia({ prefix: '/payments/checkout' })
     }
 
     }, {
-        auth: true,
+        // auth: true,
         query: t.Object({
             userId: t.String(),
         }),
