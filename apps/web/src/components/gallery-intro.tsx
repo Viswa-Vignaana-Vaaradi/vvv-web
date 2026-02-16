@@ -45,10 +45,10 @@ export const GalleryIntro = () => {
                     />
                 </div>
 
-                <Button onClick={() => router.push('/auth/signup')} className="mt-10 font-poppins rounded-[40px] bg-[#F1980F] px-4 py-4 text-sm text-white">
+                {/* <Button onClick={() => router.push('/auth/signup')} className="mt-10 font-poppins rounded-[40px] bg-[#F1980F] px-4 py-4 text-sm text-white">
                     View More
                     <HugeiconsIcon icon={ArrowRight02FreeIcons} size={24} />
-                </Button>
+                </Button> */}
             </div>
         </div>
     )
