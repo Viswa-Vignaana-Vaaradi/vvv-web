@@ -99,6 +99,7 @@ export const DonationSection = () => {
             customAmount: ""
         },
         onSubmit: async ({ value }) => {
+            setSuccessMessage("Opening Payment Page...")
             mutation.mutate(value);
         },
         validators: {
@@ -300,6 +301,13 @@ export const DonationSection = () => {
                             Donate Now <Image src={WhiteLove} width={20} height={20} alt="Love" />
                         </Button>
                     </div>
+
+                    {successMessage && (
+                <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
+            )}
+            {errorMessage && (
+                <p className="text-red-500 text-xs font-poppins mt-2 flex justify-center items-center">{errorMessage}</p>
+            )}
                 </form>
             </div>
         </div>
