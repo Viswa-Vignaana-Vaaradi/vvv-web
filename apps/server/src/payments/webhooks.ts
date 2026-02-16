@@ -10,7 +10,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         const signature = headers['x-razorpay-signature'];
         const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
-        axiom.ingest('webhook-logs', [{ 
+        axiom.ingest('vvv-web-logs', [{ 
             event: 'received', 
             headers, 
             body: JSON.stringify(body).slice(0, 500) // Log snippet
@@ -31,7 +31,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
 
         try {
             await db.transaction(async (tx) => {
-                axiom.ingest('webhook-logs', [{ 
+                axiom.ingest('vvv-web-logs', [{ 
                     type: 'db_transaction_start', 
                     razorpay_event: (body as any).event 
                 }]);
@@ -39,11 +39,13 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
                 if (event === "order.paid") {
                     const order = payload.order.entity;
+                    const email = order.notes.email;
                     const payment = payload.payment.entity;
                     const userId = order.notes.userId;
 
                      await tx.insert(transactions).values({
                         userId: userId,
+                        guestEmail: !userId ? email : null,
                         razorpayPaymentId: payment.id,
                         razorpayOrderId: order.id,
                         amount: String(order.amount / 100),
@@ -65,11 +67,13 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 // CASE 2: NEW SUBSCRIPTION ACTIVATED
                 if (event === "subscription.activated") {
                     const sub = payload.subscription.entity;
+                    const email = sub.notes.email;
                     const userId = sub.notes.userId;
                     const frequency = sub.notes.frequency || "Monthly";
 
                     await tx.insert(subscriptions).values({
                         userId: userId,
+                        guestEmail: !userId ? email : null,
                         razorpaySubscriptionId: sub.id,
                         amountId: sub.plan_id,
                         frequency: frequency,
@@ -90,12 +94,14 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 // CASE 3: RECURRING MONTHLY CHARGE SUCCESSFUL
                 if (event === "subscription.charged") {
                     const sub = payload.subscription.entity;
+                    const email = sub.notes.email;
                     const payment = payload.payment.entity;
                     const userId = sub.notes.userId;
 
                     // 1. Log the new monthly transaction
                     await tx.insert(transactions).values({
                         userId: userId,
+                        guestEmail: !userId ? email : null,
                         razorpayPaymentId: payment.id,
                         razorpaySubscriptionId: sub.id,
                         amount: String(payment.amount / 100),
@@ -134,7 +140,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
             return { received: true };
 
         } catch (error: any) {
-            axiom.ingest('webhook-logs', [{ 
+            axiom.ingest('vvv-web-logs', [{
                 level: 'error', 
                 message: error.message, 
                 stack: error.stack 

@@ -75,7 +75,7 @@ export const CheckoutRoutes = new Elysia({ prefix: '/payments/checkout' })
                 plan_id: mapping.razorpayPlanId,
                 customer_notify: 1,
                 total_count: 12,
-                notes: { userId, type: "subscription" }
+                notes: { userId: userId ?? null, email: body.email ?? null, type: "subscription" }
             });
 
             return { type: "subscription", id: subscription.id };
@@ -86,7 +86,8 @@ export const CheckoutRoutes = new Elysia({ prefix: '/payments/checkout' })
             amount: Math.round(finalAmount * 100), // Razorpay expects paise
             currency: "INR",
             notes: {
-                userId,
+                userId: userId ?? null,
+                email: body.email ?? null,
                 type: 'one-time'
             }
         });
@@ -105,6 +106,7 @@ export const CheckoutRoutes = new Elysia({ prefix: '/payments/checkout' })
         }),
         body: t.Object({
             amount: t.String(),
+            email: t.Optional(t.String()),
             frequency: t.Optional(t.String()),
             otherAmount: t.String()
         })

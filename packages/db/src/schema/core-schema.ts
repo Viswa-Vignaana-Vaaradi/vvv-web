@@ -133,6 +133,7 @@ export const contributionAmountOptions = pgTable("contribution_amount_options", 
 export const subscriptions = pgTable("subscriptions", {
   id: serial('id').primaryKey(),
   userId: text("user_id").references(() => user.id, { onDelete: 'set null' }),
+  guestEmail: varchar('guest_email', { length: 255 }),
   razorpaySubscriptionId: varchar('razorpay_subscription_id', { length: 50 }).unique().notNull(),
   
   amountId: varchar('amount_id').references(() => contributionAmountOptions.razorpayPlanId, { onDelete: 'restrict' }).notNull(),
@@ -147,7 +148,8 @@ export const subscriptions = pgTable("subscriptions", {
 
 export const transactions = pgTable('transactions', { 
   id: serial('id').primaryKey(),
-  userId: text('user_id').references(() => user.id).notNull(),
+  userId: text('user_id').references(() => user.id),
+  guestEmail: varchar('guest_email', { length: 255 }),
 
   razorpayPaymentId: varchar('razorpay_payment_id', { length: 255 }).unique().notNull(),
   razorpayOrderId: varchar('razorpay_order_id', { length: 255 }),

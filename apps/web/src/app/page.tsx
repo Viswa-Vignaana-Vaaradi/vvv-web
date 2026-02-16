@@ -2,6 +2,7 @@
 
 import { AboutUs } from "@/components/about-us";
 import { ContactUs } from "@/components/contact-us";
+import { DonationSection } from "@/components/donation-section";
 import { GalleryIntro } from "@/components/gallery-intro";
 import { Hero } from "@/components/hero-section";
 import { Missions } from "@/components/missions";
@@ -17,6 +18,7 @@ export default function Home() {
       <div id="missions"><Missions /></div>
       <NumbersSection />
       <div id="gallery"><GalleryIntro /></div>
+      <div id="donate"><DonationSection /></div>
       <div id="contact" className="px-10 bg-white">
         <ContactUs />
         <Separator />
