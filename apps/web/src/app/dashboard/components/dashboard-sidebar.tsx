@@ -18,7 +18,7 @@ export const DashboardSidebar = () => {
     const isCollapsed = sidebarState === "collapsed";
 
     return (
-        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-16 bg-white">
+        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-24 bg-white">
             <SidebarHeader>
                 {!isCollapsed && (
                     <p className="flex items-center justify-center font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">

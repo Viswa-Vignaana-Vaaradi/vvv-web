@@ -161,7 +161,7 @@ export const DonationSection = () => {
                                         onBlur={field.handleBlur}
                                         placeholder="Full Name"
                                         required
-                                        className="border-0 border-b border-[#604D004D] text-[#604D004D]/30  rounded-none shadow-none focus-visible:ring-0 px-3 font-poppins font-medium text-[14px] w-full"
+                                        className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-black px-3 font-poppins font-medium text-[14px] leading-8.25"
                                     />
                                     {field.state.meta.errors.map((error) => (
                                         <p key={error?.message} className="text-red-500 font-poppins">
@@ -182,7 +182,7 @@ export const DonationSection = () => {
                                         onBlur={field.handleBlur}
                                         placeholder="Phone No."
                                         required
-                                        className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 px-3 font-poppins font-medium text-[14px] w-full"
+                                        className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-black px-3 font-poppins font-medium text-[14px] leading-8.25"
                                     />
                                     {field.state.meta.errors.map((error) => (
                                         <p key={error?.message} className="text-red-500 font-poppins">
@@ -205,7 +205,7 @@ export const DonationSection = () => {
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     placeholder="E-mail ID"
                                     required
-                                    className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
+                                    className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-black px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
                                 />
                                 {field.state.meta.errors.map((error) => (
                                     <p key={error?.message} className="text-red-500 font-poppins">
@@ -255,12 +255,14 @@ export const DonationSection = () => {
                             )}
                     </form.Field>
 
+                    <div className="flex items-center justify-center">
                     <Button
                         type="submit"
-                        className="w-full border-[0.6px] border-[#CCCCCC] bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer leading-8.25 text-white font-poppins font-bold py-6 rounded-[40px] text-[18px] transition-all"
+                        className="border-[0.6px] border-[#CCCCCC] bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer leading-8.25 text-white font-poppins font-bold py-6 px-6 rounded-[40px] text-[18px] transition-all"
                     >
                         Donate Now <Image src={WhiteLove} width={20} height={20} alt="Love" />
                     </Button>
+                    </div>
                 </form>
             </div>
         </div>

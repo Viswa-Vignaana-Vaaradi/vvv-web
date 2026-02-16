@@ -8,6 +8,13 @@
   --font-poppins: var(--font-poppins);
 }
 
+html {
+  scroll-behavior: smooth;
+  /* Add this to prevent the sticky header from covering your titles */
+  scroll-padding-top: 5rem; 
+}
+
+
 :root {
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
