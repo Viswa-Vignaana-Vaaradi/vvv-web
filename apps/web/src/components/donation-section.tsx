@@ -158,6 +158,7 @@ export const DonationSection = () => {
                                         id={field.name}
                                         name={field.name}
                                         value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
                                         onBlur={field.handleBlur}
                                         placeholder="Full Name"
                                         required
@@ -179,6 +180,7 @@ export const DonationSection = () => {
                                         id={field.name}
                                         name={field.name}
                                         value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
                                         onBlur={field.handleBlur}
                                         placeholder="Phone No."
                                         required
@@ -201,8 +203,8 @@ export const DonationSection = () => {
                                     id={field.name}
                                     name={field.name}
                                     value={field.state.value}
-                                    onBlur={field.handleBlur}
                                     onChange={(e) => field.handleChange(e.target.value)}
+                                    onBlur={field.handleBlur}
                                     placeholder="E-mail ID"
                                     required
                                     className="border-0 border-b border-input rounded-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-black px-3 font-poppins font-medium text-[14px] mt-2 leading-8.25"
@@ -216,52 +218,87 @@ export const DonationSection = () => {
                         )}
                     </form.Field>
 
-                    <div>
-                        <Label className="font-poppins font-medium text-[#0000004D] text-[14px] block mb-3">Select Amount</Label>
-                        <div className="flex flex-row gap-3">
-                            {[100, 500, 1000].map((amt) => (
-                                <Button
-                                    key={amt}
-                                    type="button"
-                                    onClick={() => form.setFieldValue('amount', amt.toString())}
-                                    className="flex-1 hover:cursor-pointer bg-white border-[0.6px] radius-[10px] border-[#CCCCCC] text-[#0000004D] hover:text-black hover:bg-[#F1980F] rounded-[10px] font-poppins font-semibold"
-                                >
-                                    Rs. {amt}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
+                    <form.Subscribe
+                        selector={(state) => [state.values.amount, state.values.customAmount]}
+                    >
+                        {([amountValue, customAmountValue]) => (
+                            <form.Field name="amount">
+                                {(field) => (
+                                    <div>
+                                        <Label className="font-poppins font-medium text-[#0000004D] text-[14px] block mb-3">
+                                            Select Amount
+                                        </Label>
+                                        <div className="flex flex-row gap-3">
+                                            {[99, 499, 999].map((amt) => {
+                                                const isSelected = amountValue === amt.toString();
+                                                const isButtonsDisabled = !!customAmountValue;
 
-                    <form.Field name="customAmount">
-                        {(field) => (
-                            <div className="space-y-0">
-                                <Label className="font-poppins font-medium text-[#0000004D] text-[14px] leading-8.25">Enter Custom Amount</Label>
-                                    <Input
-                                        id={field.name}
-                                        name={field.name}
-                                        value={field.state.value}
-                                        onBlur={field.handleBlur}
-                                        onChange={(e) => field.handleChange(e.target.value)}
-                                        placeholder="Enter Amount"
-                                        required
-                                        className="border-0 text-[#0000001A]/10 rounded-[10px] italic bg-[#F6F6F6] px-3 font-poppins font-medium text-[14px] leading-8.25"
-                                    />
-                                    {field.state.meta.errors.map((error) => (
-                                        <p key={error?.message} className="text-red-500 font-poppins">
-                                            {error?.message}
-                                        </p>
-                                    ))}
-                                </div>
-                            )}
-                    </form.Field>
+                                                return (
+                                                    <Button
+                                                        key={amt}
+                                                        type="button"
+                                                        disabled={isButtonsDisabled}
+                                                        onClick={() => {
+                                                            const newValue = field.state.value === amt.toString() ? "" : amt.toString();
+                                                            field.handleChange(newValue);
+                                                        }}
+                                                        className={`flex-1 rounded-[10px] font-poppins font-semibold border-[0.6px] transition-all ${
+                                                            isSelected
+                                                            ? "bg-[#F1980F] text-white border-[#F1980F] hover:bg-[#F1980D]"
+                                                            : "bg-white text-[#0000004D] border-[#CCCCCC] hover:bg-white"
+                                                        } ${isButtonsDisabled ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"}`}
+                                                    >
+                                                        <span className="font-semibold text-[15px]">Rs. {amt}</span>
+                                                        <span className={`text-[10px] ${isSelected ? "text-white/80" : "text-[#00000033]"}`}>
+                                                            per month
+                                                        </span>
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </form.Field>
+                        )}
+                    </form.Subscribe>
+
+
+                    <form.Subscribe
+                        selector={(state) => [state.values.amount]}
+                    >
+                        {([amountValue]) => (
+                            <form.Field name="customAmount">
+                                {(field) => (
+                                    <div className="space-y-0">
+                                        <Label className="font-poppins font-medium text-[#0000004D] text-[14px] leading-8.25">
+                                            Enter Custom Amount
+                                        </Label>
+                                        <Input
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value}
+                                            disabled={!!amountValue}
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            onBlur={field.handleBlur}
+                                            placeholder="Enter Amount"
+                                            required={!amountValue}
+                                            className={`border-0 rounded-[10px] italic bg-[#F6F6F6] px-3 font-poppins font-medium text-[14px] leading-8.25 transition-all ${
+                                            !!amountValue ? "opacity-50 cursor-not-allowed" : "text-black"
+                                            }`}
+                                        />
+                                    </div>
+                                )}
+                            </form.Field>
+                        )}
+                    </form.Subscribe>
 
                     <div className="flex items-center justify-center">
-                    <Button
-                        type="submit"
-                        className="border-[0.6px] border-[#CCCCCC] bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer leading-8.25 text-white font-poppins font-bold py-6 px-6 rounded-[40px] text-[18px] transition-all"
-                    >
-                        Donate Now <Image src={WhiteLove} width={20} height={20} alt="Love" />
-                    </Button>
+                        <Button
+                            type="submit"
+                            className="border-[0.6px] border-[#CCCCCC] bg-[#F1980F] hover:bg-[#F1980D] hover:cursor-pointer leading-8.25 text-white font-poppins font-bold py-6 px-6 rounded-[40px] text-[18px] transition-all"
+                        >
+                            Donate Now <Image src={WhiteLove} width={20} height={20} alt="Love" />
+                        </Button>
                     </div>
                 </form>
             </div>
