@@ -14,6 +14,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import z from "zod";
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 interface FormSchema {
     fullName: string;
     age: number | undefined;
@@ -71,14 +77,13 @@ const formSchema: z.ZodType<FormSchema> = z.object({
 });
 
 export const VolunteerForm = () => {
-    const { state } = useAuth();
+    const { state, dispatch } = useAuth();
     const userId = state.user?.id;
     const userRole = state.user?.userRole;
     const router = useRouter();
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const queryClient = useQueryClient();
-    const { dispatch } = useAuth();
 
     if (userRole === "PATRON") {
         router.push("/dashboard")
@@ -211,7 +216,7 @@ export const VolunteerForm = () => {
 
                 try {
                     const { data: checkoutSession, error } = await api.payments.checkout.post({
-                        amount: "100",
+                        amount: "99",
                         frequency: "Monthly",
                         otherAmount: "",
                         $query: { userId: userId! },
