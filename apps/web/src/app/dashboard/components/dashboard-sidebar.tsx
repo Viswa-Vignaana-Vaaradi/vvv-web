@@ -2,11 +2,12 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar, SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/auth-context";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AccountSettingIcon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
+import { AccountSettingIcon, LogOut, Logout01Icon, Logout02Icon, Logout04Icon, Logout05Icon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export const DashboardSidebar = () => {
-    const { state: authState } = useAuth();
+    const { state: authState, dispatch } = useAuth();
     const { state: sidebarState } = useSidebar();
     const router = useRouter();
 
@@ -47,12 +48,24 @@ export const DashboardSidebar = () => {
                         <SidebarMenuButton onClick={() => router.push("/dashboard/donations")} className="p-4 cursor-pointer hover:bg-primary">
                             <HugeiconsIcon icon={RupeeCircleIcon} /><div className="font-poppins font-semibold size-4.5">Donations</div>
                         </SidebarMenuButton>
+                        <SidebarMenuButton 
+                            onClick={() => {
+                                authClient.signOut({
+                                    fetchOptions: {
+                                        onSuccess: () => {
+                                            dispatch({ type: "LOGOUT" });
+                                            router.push("/");
+                                        },
+                                    },
+                                });
+                            }}
+                            className="font-poppins text-[#FF0000] rounded-[10px] hover:text-[#FF0000] hover:bg-[#fadcdc] ml-2 hover:cursor-pointer mt-10 flex items-center font-semibold"
+                        >
+                            <HugeiconsIcon icon={Logout05Icon} /> Log Out
+                        </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter className="relative">
-                {/* <div className="font-poppins ">Logout</div> */}
-            </SidebarFooter>
         </Sidebar>
     );
 };

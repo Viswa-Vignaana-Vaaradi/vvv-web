@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
+import posthog from "posthog-js";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -47,6 +48,13 @@ export default function SignUpForm() {
           onSuccess: () => {
             setSuccessMessage("Sign up successful! Redirecting to dashboard...");
             console.log("Sign up successful");
+
+            // Capture sign up event with provided details
+            posthog.capture("user_signed_up", {
+              email: value.email,
+              name: value.name,
+            });
+
             setTimeout(() => {
               router.push("/dashboard");
             }, 500);
@@ -55,6 +63,9 @@ export default function SignUpForm() {
             // toast.error(error.error.message || error.error.statusText);
             console.error(error);
             setErrorMessage(String(error?.response));
+
+            // Capture sign up error
+            posthog.captureException(error);
           },
         },
       );

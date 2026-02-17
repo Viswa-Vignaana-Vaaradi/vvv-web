@@ -18,6 +18,7 @@ import { useState } from "react";
 import Script from 'next/script';
 import z from "zod";
 import { env } from "@repo/env/web";
+import posthog from "posthog-js";
 
 declare global {
   interface Window {
@@ -280,7 +281,19 @@ export const PatronForm = () => {
                         handler: function ( response: any) {
                             console.log("Payment ID: ", response.razorpay_payment_id);
                             setSuccessMessage("Payment is successful!! Redirecting...");
-                            router.push('/dashboard');  
+
+                            // Capture patron payment success event
+                            const patronAmount = data.amount === "Other"
+                                ? Number(data.otherAmount)
+                                : Number(data.amount);
+                            posthog.capture("patron_payment_success", {
+                                amount: patronAmount,
+                                currency: "INR",
+                                frequency: data.frequency,
+                                payment_id: response.razorpay_payment_id,
+                            });
+
+                            router.push('/dashboard');
                         },
                         prefill: {
                             name: data.fullName,
@@ -293,6 +306,18 @@ export const PatronForm = () => {
 
                     rzp.on('payment.failed', function (response: any) {
                         setErrorMessage("Payment failed:" + response.error.description);
+
+                        // Capture patron payment failed event
+                        const failedAmount = data.amount === "Other"
+                            ? Number(data.otherAmount)
+                            : Number(data.amount);
+                        posthog.capture("patron_payment_failed", {
+                            amount: failedAmount,
+                            currency: "INR",
+                            frequency: data.frequency,
+                            error_code: response.error.code,
+                            error_description: response.error.description,
+                        });
                     })
 
                     rzp.open();
@@ -329,6 +354,20 @@ export const PatronForm = () => {
         } as FormSchema,
         onSubmit: async ({ value }) => {
             console.log("submitting", value)
+
+            // Capture patron registration submitted event
+            const patronAmount = value.amount === "Other"
+                ? Number(value.otherAmount)
+                : Number(value.amount);
+            posthog.capture("patron_registration_submitted", {
+                profession: value.profession,
+                frequency: value.frequency,
+                amount: patronAmount,
+                currency: "INR",
+                involvement_count: value.involvement.length,
+                interest_count: value.areaOfInterest.length,
+            });
+
             mutation.mutate(value);
         },
         validators: {

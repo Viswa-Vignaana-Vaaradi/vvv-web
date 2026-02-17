@@ -14,6 +14,7 @@ import { env } from "@repo/env/web";
 import { useState } from "react";
 import Script from "next/script";
 import { useAuth } from "@/context/auth-context";
+import posthog from "posthog-js";
 
 declare global {
   interface Window {
@@ -80,7 +81,27 @@ export const DonationSection = () => {
                 handler: function ( response: any) {
                     console.log("Payment ID: ", response.razorpay_payment_id);
                     setSuccessMessage("Payment is successful!!");
+
+                    // Capture donation payment success event
+                    const donationAmount = variables.amount === "Other"
+                        ? Number(variables.customAmount)
+                        : Number(variables.amount);
+                    posthog.capture("donation_payment_success", {
+                        amount: donationAmount,
+                        currency: "INR",
+                        frequency: isSubscription ? "Monthly" : "One-Time",
+                        payment_id: response.razorpay_payment_id,
+                    });
+
                     router.push('/dashboard');
+                    //TODO: Add verify payment API to verify payments
+                },
+                "modal": {
+                    "ondismiss": function(){
+                        console.log('Checkout form closed by the user');
+                        setSuccessMessage("")
+                        setErrorMessage("")
+                    }
                 },
                 prefill: {
                     name: variables.fullName,
@@ -93,8 +114,20 @@ export const DonationSection = () => {
                 
             rzp.on('payment.failed', function (response: any) {
                 setErrorMessage("Payment failed:" + response.error.description);
+
+                // Capture donation payment failed event
+                const failedAmount = variables.amount === "Other"
+                    ? Number(variables.customAmount)
+                    : Number(variables.amount);
+                posthog.capture("donation_payment_failed", {
+                    amount: failedAmount,
+                    currency: "INR",
+                    frequency: isSubscription ? "Monthly" : "One-Time",
+                    error_code: response.error.code,
+                    error_description: response.error.description,
+                });
             });
-                
+            
             rzp.open();
         },
         onError: (error: Error) => {
@@ -114,6 +147,19 @@ export const DonationSection = () => {
         },
         onSubmit: async ({ value }) => {
             setSuccessMessage("Opening Payment Page...")
+
+            // Capture donation initiated event
+            const donationAmount = value.customAmount
+                ? Number(value.customAmount)
+                : Number(value.amount);
+            const frequency = value.customAmount ? "One-Time" : "Monthly";
+            posthog.capture("donation_initiated", {
+                amount: donationAmount,
+                currency: "INR",
+                frequency: frequency,
+                email: value.email,
+            });
+
             mutation.mutate(value);
         },
         validators: {

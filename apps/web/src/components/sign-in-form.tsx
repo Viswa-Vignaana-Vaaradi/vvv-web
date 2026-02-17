@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import z from "zod";
+import posthog from "posthog-js";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -38,7 +39,20 @@ export default function SignInForm() {
           onSuccess: (ctx) => {
             setSuccessMessage("Sign in successful! Redirecting to dashboard...");
             console.log("Sign in successful");
-            dispatch({ 
+
+            // Identify user in PostHog
+            posthog.identify(ctx.data.user.id, {
+              email: ctx.data.user.email,
+              name: ctx.data.user.name,
+            });
+
+            // Capture sign in event
+            posthog.capture("user_signed_in", {
+              user_id: ctx.data.user.id,
+              email: ctx.data.user.email,
+            });
+
+            dispatch({
               type: "LOGIN",
               payload: ctx.data
             });
@@ -50,6 +64,9 @@ export default function SignInForm() {
             // toast.error(error.error.message || error.error.statusText);
             console.error(error);
             setErrorMessage(String(error?.response));
+
+            // Capture sign in error
+            posthog.captureException(error);
           },
         },
       );

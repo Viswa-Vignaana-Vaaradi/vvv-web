@@ -5,6 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import z from "zod";
+import posthog from "posthog-js";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "./loader";
 import { useState } from "react";
@@ -34,6 +35,10 @@ export default function ResetPasswordForm() {
                 onSuccess: () => {
                     setSuccessMessage("Password reset successful! Redirecting to login...");
                     console.log("Password reset successful");
+
+                    // Capture password reset completed event
+                    posthog.capture("password_reset_completed");
+
                     setTimeout(() => {
                         router.push("/auth/login");
                     }, 500);
@@ -41,6 +46,9 @@ export default function ResetPasswordForm() {
                 onError: (error) => {
                     console.error(error);
                     setErrorMessage(String(error?.response));
+
+                    // Capture password reset error
+                    posthog.captureException(error);
                 }
             },
             );

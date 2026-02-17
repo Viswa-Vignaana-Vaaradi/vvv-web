@@ -24,7 +24,7 @@ const app = new Elysia({ adapter: node() })
     cors({
       origin: env.CORS_ORIGIN,
       methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-razorpay-event-id"],
+      allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-razorpay-event-id", "x-razorpay-request-id"],
       credentials: true,
     }),
   )
