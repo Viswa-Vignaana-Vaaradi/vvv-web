@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import z from "zod";
+import posthog from "posthog-js";
 import Loader from "./loader";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -26,6 +27,10 @@ export default function ForgotPasswordForm () {
                 onSuccess: () => {
                     setSuccessMessage("OTP sent successfully! Please check your email.");
                     console.log("OTP sent successfully");
+
+                    // Capture password reset requested event
+                    posthog.capture("password_reset_requested");
+
                     setTimeout(() => {
                         router.push(`/auth/forgot-password/verify-otp?email=${encodeURIComponent(value.email)}`);
                     });
@@ -33,6 +38,9 @@ export default function ForgotPasswordForm () {
                 onError: (error) => {
                     console.error(error);
                     setErrorMessage(String(error?.response));
+
+                    // Capture password reset error
+                    posthog.captureException(error);
                 }
             },
             );

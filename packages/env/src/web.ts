@@ -4,11 +4,15 @@ import { z } from "zod";
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_SERVER_URL: z.url(),
-    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(5)
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(5),
+    NEXT_PUBLIC_POSTHOG_KEY: z.string().min(5),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().min(5)
   },
   runtimeEnv: {
     NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
-    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
   emptyStringAsUndefined: true,
 });

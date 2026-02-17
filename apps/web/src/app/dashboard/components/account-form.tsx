@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import z from "zod";
+import posthog from "posthog-js";
 
 export const AccountForm = () => {
     const { state } = useAuth();
@@ -33,6 +34,12 @@ export const AccountForm = () => {
                 onSuccess: (ctx) => {
                     setSuccessMessage("Saved Successfully!!");
                     console.log("Sign up successful");
+
+                    // Capture account updated event
+                    posthog.capture("account_updated", {
+                        updated_fields: ["username"],
+                    });
+
                     dispatch({
                         type: "UPDATE_USER",
                         payload: ctx.data
@@ -42,6 +49,10 @@ export const AccountForm = () => {
                 onError: (error) => {
                     console.error(error);
                     setErrorMessage(String(error?.response));
+
+                    // Capture account update error
+                    posthog.captureException(error);
+
                     setTimeout(() => setErrorMessage(""), 5000);
                 },
             },

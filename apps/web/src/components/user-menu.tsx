@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 
 import {
   DropdownMenu,
@@ -50,6 +51,10 @@ export default function UserMenu() {
               authClient.signOut({
                 fetchOptions: {
                   onSuccess: () => {
+                    // Capture sign out event before resetting PostHog
+                    posthog.capture("user_signed_out");
+                    posthog.reset();
+
                     dispatch({ type: "LOGOUT" });
                     router.push("/");
                   },

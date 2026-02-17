@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form"
 import z from "zod"
+import posthog from "posthog-js"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
@@ -26,6 +27,11 @@ export const ContactUs = () => {
                 $query: {},
                 $headers: {},
             })
+
+            // Capture contact form submitted event
+            posthog.capture("contact_form_submitted", {
+                message_length: value.message.length,
+            });
         },
         validators: {
             onSubmit: z.object({

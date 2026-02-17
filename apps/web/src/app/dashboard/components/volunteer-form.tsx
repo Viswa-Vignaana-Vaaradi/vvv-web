@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import z from "zod";
+import posthog from "posthog-js";
 
 declare global {
   interface Window {
@@ -238,7 +239,16 @@ export const VolunteerForm = () => {
                         handler: function ( response: any) {
                             console.log("Payment ID: ", response.razorpay_payment_id);
                             setSuccessMessage("Payment is successful!! Redirecting...");
-                            router.push('/dashboard');  
+
+                            // Capture volunteer payment success event
+                            posthog.capture("volunteer_payment_success", {
+                                amount: 99,
+                                currency: "INR",
+                                frequency: "Monthly",
+                                payment_id: response.razorpay_payment_id,
+                            });
+
+                            router.push('/dashboard');
                         },
                         prefill: {
                             name: data.fullName,
@@ -251,6 +261,15 @@ export const VolunteerForm = () => {
                 
                     rzp.on('payment.failed', function (response: any) {
                         setErrorMessage("Payment failed:" + response.error.description);
+
+                        // Capture volunteer payment failed event
+                        posthog.capture("volunteer_payment_failed", {
+                            amount: 99,
+                            currency: "INR",
+                            frequency: "Monthly",
+                            error_code: response.error.code,
+                            error_description: response.error.description,
+                        });
                     });
                 
                     rzp.open();
@@ -290,6 +309,19 @@ export const VolunteerForm = () => {
         } as FormSchema,
         onSubmit: async ({ value }) => {
             console.log("submitting", value)
+
+            // Capture volunteer registration submitted event
+            posthog.capture("volunteer_registration_submitted", {
+                profession: value.profession,
+                gender: value.gender,
+                city: value.city,
+                state: value.state,
+                education: value.education,
+                involvement_count: value.involvement.length,
+                interest_count: value.areaOfInterest.length,
+                wants_to_contribute: value.contribute === "yes",
+            });
+
             mutation.mutate(value);
         },
         validators: {
