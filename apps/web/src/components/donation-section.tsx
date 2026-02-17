@@ -81,6 +81,14 @@ export const DonationSection = () => {
                     console.log("Payment ID: ", response.razorpay_payment_id);
                     setSuccessMessage("Payment is successful!!");
                     router.push('/dashboard');
+                    //TODO: Add verify payment API to verify payments
+                },
+                "modal": {
+                    "ondismiss": function(){
+                        console.log('Checkout form closed by the user');
+                        setSuccessMessage("")
+                        setErrorMessage("")
+                    }
                 },
                 prefill: {
                     name: variables.fullName,
@@ -94,7 +102,7 @@ export const DonationSection = () => {
             rzp.on('payment.failed', function (response: any) {
                 setErrorMessage("Payment failed:" + response.error.description);
             });
-                
+            
             rzp.open();
         },
         onError: (error: Error) => {
