@@ -12,51 +12,54 @@ export const AboutUs = () => {
             <div className="font-poppins font-medium text-[17px] leading-[100%] text-center px-10 mt-8 text-[#604D00]">Viswa Vignana Vaaradhi is a community-driven non-profit organisation uplifting rural communities through education, legal awareness, nutrition, mental health, and livelihoods, empowering people with knowledge, support, and opportunities to build self-reliant futures.</div>
 
             <div className="flex flex-row items-center gap-4 mt-8 px-6">
-                <Card className="bg-white flex py-5 flex-col w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D]">
-                    <CardHeader>
+                <Card className="bg-white w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D] border-none flex flex-col text-center">
+                    <CardHeader className="p-0 flex flex-col items-center justify-center grid-cols-none grid-rows-none auto-rows-auto">
                         <Image
                             src={QuestionMark}
                             width={40}
                             height={40}
                             alt="Question Mark"
+                            className="block"
                         />
                     </CardHeader>
                     <CardContent className="font-poppins font-semibold text-[18px] text-[#0D857c]">
                         Who We Are ?
                     </CardContent>
-                    <CardContent className="font-poppins font-medium text-[14px] text-[#604D00] leading-[100%] text-wrap">
+                    <CardContent className="font-poppins font-medium text-[13.14px] text-[#604D00] leading-[100%] text-wrap">
                         A dedicated team of volunteers and professionals focused on rural upliftment and bridging the urban- rural divide.
                     </CardContent>
                 </Card>
-                <Card className="bg-white flex flex-col w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D]">
-                    <CardHeader>
+                <Card className="bg-white w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D] border-none flex flex-col text-center">
+                    <CardHeader className="p-0 flex flex-col items-center justify-center grid-cols-none grid-rows-none auto-rows-auto">
                         <Image
                             src={Vision}
                             width={40}
                             height={40}
                             alt="Vision"
+                            className="block"
                         />
                     </CardHeader>
                     <CardContent className="font-poppins font-semibold text-[18px] text-[#0D857c]">
                         Our Vision
                     </CardContent>
-                    <CardContent className="font-poppins font-medium text-[14px] text-[#604D00] leading-[100%] text-wrap">
+                    <CardContent className="font-poppins font-medium text-[15px] text-[#604D00] leading-[100%] text-wrap">
                         To create a self-sustainable and empowered rural India where every individual has access to quality life resources.
                     </CardContent>
                 </Card>
-                <Card className="bg-white flex flex-col w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D]">
-                    <CardHeader>
+                <Card className="bg-white w-80 rounded-[30px] shadow-[0px_2px_8px_5px_#0000000D] border-none flex flex-col text-center">
+                    <CardHeader className="p-0 flex flex-col items-center justify-center grid-cols-none grid-rows-none auto-rows-auto">
                         <Image
                             src={Approach}
                             width={40}
                             height={40}
                             alt="Approach"
+                            className="block"
                         />
                     </CardHeader>
                     <CardContent className="font-poppins font-semibold text-[18px] text-[#0D857c]">
                         Our Approach
                     </CardContent>
-                    <CardContent className="font-poppins font-medium text-[14px] text-[#604D00] leading-[100%] text-wrap">
+                    <CardContent className="font-poppins font-medium text-[14.6px] text-[#604D00] leading-[100%] text-wrap">
                         Holistic development through targeted missions in education, health, justice, and basic necessities.
                     </CardContent>
                 </Card>
