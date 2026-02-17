@@ -37,9 +37,12 @@ export const DonationSection = () => {
 
     const mutation = useMutation({
         mutationFn: async (value: DonationFormValues) => {
+            const isCustom = value.amount === "Other" || !value.amount;
+            const selectedFrequency = isCustom ? "One-Time" : "Monthly";
+
             const { data, error } = await api.payments.checkout.post({
-                amount: value.amount,
-                frequency: "Monthly",
+                amount: value.customAmount ? "Other" : value.amount, 
+                frequency: selectedFrequency,
                 otherAmount: value.customAmount,
                 $query: { userId: state.user?.id ?? "" },
                 $headers: {},
@@ -59,6 +62,8 @@ export const DonationSection = () => {
                 return;
             }
 
+            const isSubscription = checkoutSession.type === "subscription";
+
             const options = {
                 key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: variables.amount === "Other" 
@@ -66,12 +71,16 @@ export const DonationSection = () => {
                 : Number(variables.amount) * 100,
                 currency: "INR",
                 name: variables.fullName,
-                frequency: "Monthly",
-                ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
+                frequency: isSubscription ? "Monthly" : "One-Time",
+                ...(!isSubscription && {
+                amount: variables.amount === "Other" 
+                    ? Number(variables.customAmount) * 100 
+                    : Number(variables.amount) * 100,
+                }),
                 handler: function ( response: any) {
                     console.log("Payment ID: ", response.razorpay_payment_id);
-                    setSuccessMessage("Payment is successful!! Redirecting...");
-                    router.push('/dashboard');  
+                    setSuccessMessage("Payment is successful!!");
+                    router.push('/dashboard');
                 },
                 prefill: {
                     name: variables.fullName,
@@ -277,7 +286,7 @@ export const DonationSection = () => {
                                 {(field) => (
                                     <div className="space-y-0">
                                         <Label className="font-poppins font-medium text-[#0000004D] text-[14px] leading-8.25">
-                                            Enter Custom Amount
+                                            Enter Custom Amount (One-time)
                                         </Label>
                                         <Input
                                             id={field.name}
