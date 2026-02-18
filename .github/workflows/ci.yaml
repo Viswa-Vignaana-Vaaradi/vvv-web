@@ -36,6 +36,7 @@ jobs:
       QSTASH_NEXT_SIGNING_KEY: ${{ secrets.QSTASH_NEXT_SIGNING_KEY }}
       AXIOM_API_TOKEN: ${{ secrets.AXIOM_API_TOKEN }}
       AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
+      AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
 
     steps:
       - name: Checkout code

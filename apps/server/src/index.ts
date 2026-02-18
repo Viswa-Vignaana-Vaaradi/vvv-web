@@ -3,6 +3,10 @@ import { node } from "@elysiajs/node";
 import { auth } from "@repo/auth";
 import { env } from "@repo/env/server";
 import { Elysia } from "elysia";
+import { opentelemetry } from '@elysiajs/opentelemetry';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+
 import { professionsOptions } from "./routes/profession-options";
 import { getUserLocation } from "./user/user-location";
 import { aboutMe } from "./user/about-me";
@@ -27,6 +31,21 @@ const app = new Elysia({ adapter: node() })
       allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-razorpay-event-id", "x-razorpay-request-id"],
       credentials: true,
     }),
+  )
+  .use(
+    opentelemetry({
+      spanProcessors: [
+        new BatchSpanProcessor(
+          new OTLPTraceExporter({
+            url: 'https://api.axiom.co/v1/traces',
+            headers: {
+              'Authorization': `Bearer ${env.AXIOM_API_TOKEN}`,
+              'X-Axiom-Dataset': env.AXIOM_DATASET
+            }
+          })
+        )
+      ]
+    })
   )
   .all("/api/auth/*", async (context) => {
     const { request, status } = context;

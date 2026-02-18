@@ -48,30 +48,33 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
                 if (event === "payment.captured" || event === "order.paid") {
-                    const order = payload.order.entity;
-                    const email = order.notes.email;
                     const payment = payload.payment.entity;
-                    const userId = order.notes.userId;
+                    const userId = payment.notes?.userId;
+                    const email = payment.notes?.email;
+                    const orderId = payment.order_id;
 
                      await tx.insert(transactions).values({
                         userId: userId,
                         guestEmail: !userId ? email : null,
                         razorpayPaymentId: payment.id,
-                        razorpayOrderId: order.id,
-                        amount: String(order.amount / 100),
+                        razorpayOrderId: orderId || null,
+                        amount: String(payment.amount / 100),
                         status: "SUCCESS",
                         // Using Razorpay's receipt or falling back to Payment ID
-                        receiptNumber: order.receipt || `${payment.id}`,
+                        receiptNumber: payment.receipt || `${payment.id}`,
                         createdAt: new Date(),
                     });
 
                     // Activate the contribution record created in PatronForm
-                    await tx.update(patronContributions)
+                    if (userId) {
+                        await tx.update(patronContributions)
                         .set({ isActive: true })
                         .where(and(
                             eq(patronContributions.userId, userId),
                             eq(patronContributions.isActive, false)
                         ));
+                    }
+                    console.log(`Successfully processed ${event} for ${payment.id}`);
                 }
 
                 // CASE 2: NEW SUBSCRIPTION ACTIVATED
