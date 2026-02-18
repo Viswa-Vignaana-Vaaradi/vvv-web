@@ -17,7 +17,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         }]);
 
         const isValid = validateWebhookSignature(
-            JSON.stringify(rawBody),
+            rawBody,
             signature as string,
             secret
         );
@@ -29,7 +29,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         
         const { event, payload } = body as any;
         console.log("Event Details:" , event);
-        axiom.flush();
+        await axiom.flush();
 
         try {
             await db.transaction(async (tx) => {
@@ -39,7 +39,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 }]);
                 
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
-                if (event === "order.paid") {
+                if (event === "payment.captured" || event === "order.paid") {
                     const order = payload.order.entity;
                     const email = order.notes.email;
                     const payment = payload.payment.entity;
