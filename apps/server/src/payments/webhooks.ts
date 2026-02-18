@@ -5,12 +5,17 @@ import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils.js"
 import { axiom } from "../utils/axiom";
 
 export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
+    .onParse(async ({ request, contentType }) => {
+        if (contentType === 'application/json') {
+            return await request.text(); // Return raw string to be used for signature
+        }
+    })
     .post("/", async ({ request, body, headers, set }) => {
-        const rawBody = await request.text();
+        const rawBody = body as string;
         const signature = headers['x-razorpay-signature'];
         const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
-        axiom.ingest('vvv-web-logs', [{ 
+        await axiom.ingest('vvv-web-logs', [{ 
             event: 'received', 
             headers, 
             body: JSON.stringify(body).slice(0, 500) // Log snippet
@@ -28,15 +33,19 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         }
         
         const { event, payload } = body as any;
+        const jsonBody = JSON.parse(rawBody);
+        console.log("JSON Body:", jsonBody);
         console.log("Event Details:" , event);
+        console.log("Raw body:", rawBody);
         await axiom.flush();
 
         try {
             await db.transaction(async (tx) => {
-                axiom.ingest('vvv-web-logs', [{ 
+                await axiom.ingest('vvv-web-logs', [{ 
                     type: 'db_transaction_start', 
                     razorpay_event: (body as any).event 
                 }]);
+                console.log(`Processing ${event}`);
                 
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
                 if (event === "payment.captured" || event === "order.paid") {
@@ -142,7 +151,7 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
             return { received: true };
 
         } catch (error: any) {
-            axiom.ingest('vvv-web-logs', [{
+            await axiom.ingest('vvv-web-logs', [{
                 level: 'error', 
                 message: error.message, 
                 stack: error.stack 
