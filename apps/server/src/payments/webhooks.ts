@@ -6,9 +6,7 @@ import { axiom } from "../utils/axiom";
 
 export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
     .onParse(async ({ request, contentType }) => {
-        if (contentType === 'application/json') {
-            return await request.text(); // Return raw string to be used for signature
-        }
+        return await request.text();
     })
     .post("/", async ({ request, body, headers, set }) => {
         const rawBody = body as string;
@@ -32,11 +30,12 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
             return { error: "Invalid signature" };
         }
         
-        const { event, payload } = body as any;
         const jsonBody = JSON.parse(rawBody);
         console.log("JSON Body:", jsonBody);
-        console.log("Event Details:" , event);
         console.log("Raw body:", rawBody);
+        const event = jsonBody.event; 
+        const payload = jsonBody.payload;
+        console.log("Event Details:" , event);
         await axiom.flush();
 
         try {
