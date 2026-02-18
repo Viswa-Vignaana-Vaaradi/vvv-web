@@ -28,6 +28,8 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         }
         
         const { event, payload } = body as any;
+        console.log("Event Details:" , event);
+        axiom.flush();
 
         try {
             await db.transaction(async (tx) => {
