@@ -30,6 +30,7 @@ export const MultiSelect = ({
   className,
 }: MultiSelectProps) => {
   const [open, setOpen] = React.useState(false)
+  const listboxId = React.useId()
 
   const handleSelect = (optionValue: string) => {
     const currentValues = Array.isArray(value) ? value : []
@@ -45,6 +46,7 @@ export const MultiSelect = ({
         <Button
           variant="outline"
           role="combobox"
+          aria-controls={listboxId}
           aria-expanded={open}
           className={cn(
             "w-full justify-between border-0 border-b rounded-none shadow-none px-0 bg-primary font-poppins font-medium text-[14px] h-10", 
@@ -62,7 +64,7 @@ export const MultiSelect = ({
       <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
         <Command>
           <CommandInput placeholder="Search..." className="font-poppins h-9" />
-          <CommandList className="max-h-75">
+          <CommandList id={listboxId} className="max-h-75">
             <CommandEmpty>No results found.</CommandEmpty>
             <h2 className="font-poppins flex justify-start mt-2 text-sm">Select in the order of priority</h2>
             <CommandGroup>

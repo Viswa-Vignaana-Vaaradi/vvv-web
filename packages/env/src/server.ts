@@ -21,7 +21,8 @@ export const env = createEnv({
     QSTASH_CURRENT_SIGNING_KEY: z.string().min(5),
     QSTASH_NEXT_SIGNING_KEY: z.string().min(5),
     AXIOM_API_TOKEN: z.string().min(5),
-    AXIOM_ORG_ID: z.string().min(5)
+    AXIOM_ORG_ID: z.string().min(5),
+    AXIOM_DATASET: z.string().min(5)
   },
   client: {},
   clientPrefix: "",

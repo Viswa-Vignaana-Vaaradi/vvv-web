@@ -14,7 +14,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useForm, type StandardSchemaV1 } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from 'next/script';
 import z from "zod";
 import { env } from "@repo/env/web";
@@ -91,10 +91,11 @@ export const PatronForm = () => {
     const queryClient = useQueryClient();
     const { dispatch } = useAuth();
 
-    if (userRole === "VOLUNTEER") {
-        router.push("/dashboard");
-        return null;
-    }
+    useEffect(() => {
+        if (userRole === "VOLUNTEER") {
+            router.push("/dashboard");
+        }
+    }, [userRole, router]);
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['professionOptions', userId],
@@ -257,11 +258,15 @@ export const PatronForm = () => {
                 setSuccessMessage("Initiating Payment process...");
                 const amount = data.amount === "Other" ? data.otherAmount : data.amount;
 
+                const checkoutAmount = data.amount || "";
+                const checkoutOtherAmount = data.otherAmount || "";
+                const userEmail = state.user?.email;
+
                 try {
                     const { data: checkoutSession, error } = await api.payments.checkout.post({
-                        amount: data.amount ?? "",
+                        amount: checkoutAmount,
                         frequency: data.frequency,
-                        otherAmount: data.otherAmount ?? "",
+                        otherAmount: checkoutOtherAmount,
                         $query: { userId: userId! },
                         $headers: {},
                         $fetch: {
@@ -269,23 +274,45 @@ export const PatronForm = () => {
                         }
                     });
 
-                    if (error) throw new Error(error.message);
+                    if (error) {
+                        let errMsg = "Could not initiate payment";
+                        if (error.message) {
+                            errMsg = error.message;
+                        }
+                        setErrorMessage(errMsg);
+                        return;
+                    }
+
+                    let razorpayAmount: number | undefined;
+                    if (data.amount === "Other") {
+                        razorpayAmount = Number(data.otherAmount) * 100;
+                    }
+
+                    let paymentIdConfig: Record<string, string | undefined>;
+                    if (checkoutSession.type === "subscription") {
+                        paymentIdConfig = { subscription_id: checkoutSession.id };
+                    } else {
+                        paymentIdConfig = { order_id: checkoutSession.id };
+                    }
 
                     const options = {
                         key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-                        amount: data.amount === "Other" ? Number(data.otherAmount) * 100 : undefined,
+                        amount: razorpayAmount,
                         currency: "INR",
                         name: data.fullName,
                         frequency: data.frequency,
-                        ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
+                        ...paymentIdConfig,
                         handler: function ( response: any) {
                             console.log("Payment ID: ", response.razorpay_payment_id);
                             setSuccessMessage("Payment is successful!! Redirecting...");
 
                             // Capture patron payment success event
-                            const patronAmount = data.amount === "Other"
-                                ? Number(data.otherAmount)
-                                : Number(data.amount);
+                            let patronAmount: number;
+                            if (data.amount === "Other") {
+                                patronAmount = Number(data.otherAmount);
+                            } else {
+                                patronAmount = Number(data.amount);
+                            }
                             posthog.capture("patron_payment_success", {
                                 amount: patronAmount,
                                 currency: "INR",
@@ -298,7 +325,7 @@ export const PatronForm = () => {
                         prefill: {
                             name: data.fullName,
                             contact: data.contactNumber,
-                            email: state.user?.email
+                            email: userEmail
                         }
                     };
 
@@ -308,9 +335,12 @@ export const PatronForm = () => {
                         setErrorMessage("Payment failed:" + response.error.description);
 
                         // Capture patron payment failed event
-                        const failedAmount = data.amount === "Other"
-                            ? Number(data.otherAmount)
-                            : Number(data.amount);
+                        let failedAmount: number;
+                        if (data.amount === "Other") {
+                            failedAmount = Number(data.otherAmount);
+                        } else {
+                            failedAmount = Number(data.amount);
+                        }
                         posthog.capture("patron_payment_failed", {
                             amount: failedAmount,
                             currency: "INR",
@@ -323,7 +353,11 @@ export const PatronForm = () => {
                     rzp.open();
                 } catch (error: any) {
                     console.error(error);
-                    setErrorMessage(error.message || "Could not initiate payment");
+                    let catchMsg = "Could not initiate payment";
+                    if (error.message) {
+                        catchMsg = error.message;
+                    }
+                    setErrorMessage(catchMsg);
                 }
             } else {
                 form.reset();

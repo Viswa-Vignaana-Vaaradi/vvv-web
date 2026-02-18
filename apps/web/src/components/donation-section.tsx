@@ -73,6 +73,7 @@ export const DonationSection = () => {
                 currency: "INR",
                 name: variables.fullName,
                 frequency: isSubscription ? "Monthly" : "One-Time",
+                order_id: checkoutSession.id,
                 ...(!isSubscription && {
                 amount: variables.amount === "Other" 
                     ? Number(variables.customAmount) * 100 

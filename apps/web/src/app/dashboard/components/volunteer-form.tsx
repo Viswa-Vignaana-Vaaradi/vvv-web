@@ -215,6 +215,8 @@ export const VolunteerForm = () => {
             if (contribuationData) {
                 setSuccessMessage("Initiating Payment process...");
 
+                const userEmail = state.user?.email;
+
                 try {
                     const { data: checkoutSession, error } = await api.payments.checkout.post({
                         amount: "99",
@@ -227,15 +229,30 @@ export const VolunteerForm = () => {
                         }
                     });
                 
-                    if (error) throw new Error(error.message);
+                    if (error) {
+                        let errMsg = "Could not initiate payment";
+                        if (error.message) {
+                            errMsg = error.message;
+                        }
+                        setErrorMessage(errMsg);
+                        return;
+                    }
                 
+                    let paymentIdConfig: Record<string, string | undefined>;
+                    if (checkoutSession.type === "subscription") {
+                        paymentIdConfig = { subscription_id: checkoutSession.id };
+                    } else {
+                        paymentIdConfig = { order_id: checkoutSession.id };
+                    }
+
                     const options = {
                         key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                         amount: 99 * 100,
                         currency: "INR",
                         name: data.fullName,
                         frequency: "Monthly",
-                        ...(checkoutSession.type === "subscription" ? { subscription_id: checkoutSession.id } : { order_id: checkoutSession.id }),
+                        order_id: checkoutSession.id,
+                        ...paymentIdConfig,
                         handler: function ( response: any) {
                             console.log("Payment ID: ", response.razorpay_payment_id);
                             setSuccessMessage("Payment is successful!! Redirecting...");
@@ -253,7 +270,7 @@ export const VolunteerForm = () => {
                         prefill: {
                             name: data.fullName,
                             contact: data.contactNumber,
-                            email: state.user?.email
+                            email: userEmail
                         }
                     };
                 
@@ -275,7 +292,11 @@ export const VolunteerForm = () => {
                     rzp.open();
                 } catch (error: any) {
                     console.error(error);
-                    setErrorMessage(error.message || "Could not initiate payment");
+                    let catchMsg = "Could not initiate payment";
+                    if (error.message) {
+                        catchMsg = error.message;
+                    }
+                    setErrorMessage(catchMsg);
                 }
             } else {
                 form.reset();
