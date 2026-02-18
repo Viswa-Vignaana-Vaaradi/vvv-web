@@ -9,7 +9,6 @@
       "env": [
         "NODE_ENV",
         "DATABASE_URL",
-        "NEXT_PUBLIC_SERVER_URL",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
         "CORS_ORIGIN",
@@ -17,7 +16,20 @@
         "UPLOADTHING_APP_ID",
         "RESEND_API_KEY",
         "GOOGLE_CLIENT_ID",
-        "GOOGLE_CLIENT_SECRET"
+        "GOOGLE_CLIENT_SECRET",
+        "RAZORPAY_KEY_ID",
+        "RAZOORPAY_KEY_SECRET",
+        "RAZORPAY_WEBHOOK_SECRET",
+        "QSTASH_URL",
+        "QSTASH_TOKEN",
+        "QSTASH_CURRENT_SIGNING_KEY",
+        "QSTASH_NEXT_SIGNING_KEY",
+        "AXIOM_API_TOKEN",
+        "AXIOM_ORG_ID",
+        "NEXT_PUBLIC_SERVER_URL",
+        "NEXT_PUBLIC_RAZORPAY_KEY_ID",
+        "NEXT_PUBLIC_POSTHOG_KEY",
+        "NEXT_PUBLIC_POSTHOG_HOST"
       ]
     },
     "lint": {
