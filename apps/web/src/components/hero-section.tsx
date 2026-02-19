@@ -21,6 +21,14 @@ export const Hero = ()  => {
                 <Button onClick={() => router.push('/auth/signup')} className="mt-8 hover:cursor-pointer font-poppins rounded-[40px] bg-linear-to-r from-[#F1980F] to-[#DB7A04] px-8 py-6 text-lg">
                     Join Now
                 </Button>
+                {/* <div className="flex flex-row">
+                    <Button className="mt-8 hover:cursor-pointer font-poppins font-semibold rounded-[40px] bg-linear-to-r from-[#F1980F] to-[#DB7A04] px-8 py-6 text-lg">
+                        Be a Patron
+                    </Button>
+                    <Button className="mt-8 ml-4 hover:cursor-pointer font-poppins font-semibold rounded-[40px] bg-linear-to-r from-[#F1980F] to-[#DB7A04] px-8 py-6 text-lg">
+                        Be a Volunteer
+                    </Button>
+                </div> */}
             </div>
         </div>
     )

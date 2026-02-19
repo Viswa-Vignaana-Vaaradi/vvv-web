@@ -3,6 +3,7 @@
 import { AboutUs } from "@/components/about-us";
 import { ContactUs } from "@/components/contact-us";
 import { DonationSection } from "@/components/donation-section";
+import { Footer } from "@/components/footer";
 import { GalleryIntro } from "@/components/gallery-intro";
 import { Hero } from "@/components/hero-section";
 import { Missions } from "@/components/missions";
@@ -24,6 +25,7 @@ export default function Home() {
         <Separator />
         <Reason />
       </div>
+      <Footer />
     </div>
   );
 }
