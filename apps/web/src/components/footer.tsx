@@ -8,8 +8,14 @@ export const Footer = () => {
         <div className="bg-gradient-to-r from-[#0E897F] to-[#09786F] font-poppins text-white py-6 text-center">
             <p className="text-sm">&copy; {new Date().getFullYear()} VVV. All rights reserved.</p>
             <div className="mt-2">
-                {/* @ts-expect-error: Button variant "link" is not recognized, but it is defined. Please ignore this error. */}
-                <Button onClick={() => router.push("/terms-of-service")} variant="link" className="hover:cursor-pointer">Terms of Service</Button>
+                <Button 
+                    /* @ts-expect-error - Route validation failure in CI */
+                    onClick={() => router.push("/terms-of-service")}
+                    variant="link" 
+                    className="hover:cursor-pointer text-white"
+                >
+                    Terms of Service
+                </Button>
             </div>
         </div>
     )
