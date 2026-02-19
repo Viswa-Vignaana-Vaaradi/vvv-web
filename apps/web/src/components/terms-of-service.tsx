@@ -100,7 +100,7 @@ export const TermsOfService = () => {
                     <p className="text-sm">We reserve the right to approve, refuse, or suspend accounts.</p>
                 </div>
 
-                <div>
+                <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-2">4.2 Login Security</h3>
                     <p className="mb-3">You are responsible for:</p>
                     <ul className="list-disc list-inside ml-4 space-y-1">
