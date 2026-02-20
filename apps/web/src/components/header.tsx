@@ -41,7 +41,7 @@ export default function Header() {
           onClick={() => router.push("/")}
         >
           <Image src="/icon.png" alt="VVV Logo" width={60} height={60} priority />
-          <span className="text-white font-poppins text-[22px] leading-[85%] font-semibold whitespace-nowrap">
+          <span className="text-white text-center font-poppins text-[22px] leading-[85%] font-semibold whitespace-nowrap">
             VISWA VIGNANA <br /> VAARADHI
           </span>
         </div>
