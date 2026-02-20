@@ -161,7 +161,7 @@ export default function SignInForm() {
             {(state) => (
               <Button
                 type="submit"
-                className="bg-[linear-gradient(90deg,#F1980F_0%,#DB7A04_100%)] text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins"
+                className="bg-[linear-gradient(90deg,#F1980F_0%,#DB7A04_100%)] hover:cursor-pointer text-white font-semibold text-[15px] rounded-[40px] py-5 w-full font-poppins"
                 disabled={!state.canSubmit || state.isSubmitting}
               >
                 {state.isSubmitting ? "Submitting..." : "Sign In"}

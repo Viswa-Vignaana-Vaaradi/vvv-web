@@ -1,5 +1,4 @@
-import { useRouter } from "next/navigation"
-import { Button } from "./ui/button"
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export const Footer = () => {
