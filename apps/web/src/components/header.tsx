@@ -18,7 +18,6 @@ export default function Header() {
 
   const handleScroll = (e: React.MouseEvent, href: string) => {
   const isHomePage = pathname === "/";
-  // Extract ID even if href is "/#about" or "#about"
   const targetId = href.includes("#") ? href.split("#")[1] : "";
 
   if (isHomePage && targetId) {
@@ -29,52 +28,53 @@ export default function Header() {
       window.history.pushState(null, "", `#${targetId}`);
     }
   } else {
-    // If not home or no hash, use the router
     router.push(href as any);
   }
 };
 
   return (
-    <header className="h-22 flex flex-col justify-center bg-[linear-gradient(90.2deg,#00A295_0.04%,#09786F_100%)]">
-      <div className="flex flex-row items-center justify-between px-2 py-1">
-        <nav className="flex gap-4 text-lg">
-          <Image
-            src="/icon.png"
-            alt="VVV Logo"
-            width={60}
-            height={60}
-            onClick={() => router.push("/")}
-            className="cursor-pointer"
-          />
-          <span onClick={() => router.push("/")} className="self-center hover:cursor-pointer text-center mr-10 text-white font-poppins text-[25px] leading-[85%] font-bold whitespace-nowrap">
+    <header className="h-22 sticky top-0 z-50 flex items-center bg-[linear-gradient(90.2deg,#00A295_0.04%,#09786F_100%)] shadow-md">
+      <div className="flex w-full items-center justify-between px-10">
+        
+        <div 
+          className="flex items-center gap-4 cursor-pointer shrink-0" 
+          onClick={() => router.push("/")}
+        >
+          <Image src="/icon.png" alt="VVV Logo" width={60} height={60} priority />
+          <span className="text-white font-poppins text-[22px] leading-[85%] font-semibold whitespace-nowrap">
             VISWA VIGNANA <br /> VAARADHI
           </span>
+        </div>
 
+        <nav className="flex items-center gap-2">
           {navLinks.map((link) => (
             <Button
               variant="link"
               key={link.label}
               onClick={(e) => handleScroll(e as any, link.href)}
-              className="text-white/80 flex items-center justify-center mt-3 text-[18px] hover:text-white font-poppins font-semibold transition-colors cursor-pointer"
+              className="text-white/80 text-[18px] hover:text-white font-poppins font-semibold transition-colors cursor-pointer"
             >
               {link.label}
             </Button>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          {/* <ModeToggle /> */}
+
+        <div className="flex items-center gap-4 shrink-0">
           <Button
             onClick={(e) => handleScroll(e as any, "/#donate")}
-            className="bg-gradient-to-r hover:cursor-pointer font-poppins from-[#F1980F] to-[#DB7A04] text-white rounded-[40px] p-5 font-semibold text-[17px] leading-[100%]"
+            className="bg-gradient-to-r from-[#F1980F] to-[#DB7A04] hover:opacity-90 text-white rounded-[40px] px-8 py-6 h-12 font-semibold text-[17px] font-poppins shadow-lg cursor-pointer"
           >
             Donate
           </Button>
 
-          {/* <UserMenu /> */}
-          <Button onClick={() => state.isAuthenticated ? router.push("/dashboard") : router.push("/auth/signup")} className="font-poppins hover:cursor-pointer p-5 text-white bg-gradient-to-r from-[rgba(204,204,204,0.5)] to-[rgba(255,255,255,0.5)] font-semibold text-[17px] leading-[100%] border-[0.5px] border-white rounded-[40px]">
+          <Button 
+            onClick={() => state.isAuthenticated ? router.push("/dashboard") : router.push("/auth/signup")} 
+            className="font-poppins h-12 px-8 py-6 text-white bg-white/20 hover:bg-white/30 font-semibold text-[17px] border-[0.5px] border-white rounded-[40px] backdrop-blur-sm cursor-pointer"
+          >
             {state.isAuthenticated ? "Profile" : "Sign Up"}
           </Button>
         </div>
+
       </div>
     </header>
   );
