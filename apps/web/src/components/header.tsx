@@ -62,14 +62,14 @@ export default function Header() {
         <div className="flex items-center gap-4 shrink-0">
           <Button
             onClick={(e) => handleScroll(e as any, "/#donate")}
-            className="bg-gradient-to-r from-[#F1980F] to-[#DB7A04] hover:opacity-90 text-white rounded-[40px] px-8 py-6 h-12 font-semibold text-[17px] font-poppins shadow-lg cursor-pointer"
+            className="bg-gradient-to-r from-[#F1980F] to-[#DB7A04] hover:opacity-90 text-white rounded-[40px] px-5 py-5 h-12 font-semibold text-[17px] font-poppins shadow-lg cursor-pointer"
           >
             Donate
           </Button>
 
           <Button 
             onClick={() => state.isAuthenticated ? router.push("/dashboard") : router.push("/auth/signup")} 
-            className="font-poppins h-12 px-8 py-6 text-white bg-white/20 hover:bg-white/30 font-semibold text-[17px] border-[0.5px] border-white rounded-[40px] backdrop-blur-sm cursor-pointer"
+            className="font-poppins h-12 px-5 py-5 text-white bg-white/20 hover:bg-white/30 font-semibold text-[17px] border-[0.5px] border-white rounded-[40px] backdrop-blur-sm cursor-pointer"
           >
             {state.isAuthenticated ? "Profile" : "Sign Up"}
           </Button>
