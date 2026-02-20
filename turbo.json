@@ -30,7 +30,8 @@
         "NEXT_PUBLIC_SERVER_URL",
         "NEXT_PUBLIC_RAZORPAY_KEY_ID",
         "NEXT_PUBLIC_POSTHOG_KEY",
-        "NEXT_PUBLIC_POSTHOG_HOST"
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "NEXT_PUBLIC_CALLBACK_URL"
       ]
     },
     "lint": {
