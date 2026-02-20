@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { useState } from "react";
 import { useAuth } from "@/context/auth-context";
+import { env } from "@repo/env/web";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -81,7 +82,8 @@ export default function SignInForm() {
 
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
-      provider: "google"
+      provider: "google",
+      callbackURL: `${env.NEXT_PUBLIC_CALLBACK_URL}/dashboard`,
     })
   }
 
@@ -178,7 +180,7 @@ export default function SignInForm() {
             </div>
           </div>
 
-          {/* <form.Subscribe>
+          <form.Subscribe>
             {(state) => (
               <Button
                 variant="outline"
@@ -209,7 +211,7 @@ export default function SignInForm() {
                 {state.isSubmitting ? "Submitting..." : "Login with Google"}
               </Button>
             )}
-          </form.Subscribe> */}
+          </form.Subscribe>
 
           {successMessage && (
             <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>

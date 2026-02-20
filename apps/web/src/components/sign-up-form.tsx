@@ -12,6 +12,7 @@ import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { useState } from "react";
 import { useAuth } from "@/context/auth-context";
+import { env } from "@repo/env/web";
 
 const emailPasswordSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -96,7 +97,8 @@ export default function SignUpForm() {
 
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
-      provider: "google"
+      provider: "google",
+      callbackURL: `${env.NEXT_PUBLIC_CALLBACK_URL}/dashboard`,
     })
   }
 
@@ -231,7 +233,7 @@ export default function SignUpForm() {
             </div>
           </div>
 
-          {/* <form.Subscribe>
+          <form.Subscribe>
             {(state) => (
               <Button
                 variant="outline"
@@ -263,7 +265,7 @@ export default function SignUpForm() {
               {state.isSubmitting ? "Submitting..." : "Signup with Google"}
               </Button>
             )}
-          </form.Subscribe> */}
+          </form.Subscribe>
 
           {successMessage && (
             <p className="text-xs text-green-600 font-poppins mt-2 flex justify-center items-center">{successMessage}</p>
