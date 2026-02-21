@@ -31,11 +31,9 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
         }
         
         const jsonBody = JSON.parse(rawBody);
-        console.log("JSON Body:", jsonBody);
-        console.log("Raw body:", rawBody);
         const event = jsonBody.event; 
         const payload = jsonBody.payload;
-        console.log("Event Details:" , event);
+
         await axiom.flush();
 
         try {
@@ -48,20 +46,22 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                 
                 // CASE 1: ONE-TIME PAYMENT (OR FIRST PAYMENT OF ORDER)
                 if (event === "payment.captured" || event === "order.paid") {
-                    const payment = payload.payment.entity;
-                    const userId = payment.notes?.userId;
-                    const email = payment.notes?.email;
-                    const orderId = payment.order_id;
+                    const entity = event === "order.paid" ? payload.order.entity : payload.payment.entity;
+                    const notes = entity.notes || {};
+                    const userId = notes.userId;
+                    const email = notes.email;
 
-                     await tx.insert(transactions).values({
+                    const razorpayPaymentId = event === "order.paid" ? payload.payment?.entity?.id || entity.id : entity.id;
+                    const payment = payload.payment.entity;
+
+                    await tx.insert(transactions).values({
                         userId: userId,
                         guestEmail: !userId ? email : null,
-                        razorpayPaymentId: payment.id,
-                        razorpayOrderId: orderId || null,
+                        razorpayPaymentId: razorpayPaymentId,
+                        razorpayOrderId: event === "order.paid" ? entity.id : entity.order_id,
                         amount: String(payment.amount / 100),
                         status: "SUCCESS",
-                        // Using Razorpay's receipt or falling back to Payment ID
-                        receiptNumber: payment.receipt || `${payment.id}`,
+                        receiptNumber: entity.receipt || `${razorpayPaymentId}`,
                         createdAt: new Date(),
                     });
 
