@@ -65,6 +65,13 @@ export const DonationSection = () => {
 
             const isSubscription = checkoutSession.type === "subscription";
 
+            let paymentIdConfig: Record<string, string | undefined>;
+            if (checkoutSession.type === "subscription") {
+                paymentIdConfig = { subscription_id: checkoutSession.id };
+            } else {
+                paymentIdConfig = { order_id: checkoutSession.id };
+            }
+
             const options = {
                 key: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: variables.amount === "Other" 
@@ -73,7 +80,7 @@ export const DonationSection = () => {
                 currency: "INR",
                 name: variables.fullName,
                 frequency: isSubscription ? "Monthly" : "One-Time",
-                order_id: checkoutSession.id,
+                ...paymentIdConfig,
                 ...(!isSubscription && {
                 amount: variables.amount === "Other" 
                     ? Number(variables.customAmount) * 100 

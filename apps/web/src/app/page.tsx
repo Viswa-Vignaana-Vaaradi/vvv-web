@@ -21,8 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { env } from "@repo/env/web";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { GoogleIcon } from "@hugeicons/core-free-icons";
+
 
 export default function Home() {
   const [activeView, setActiveView] = useState<"patron" | "volunteer" | null>(null);

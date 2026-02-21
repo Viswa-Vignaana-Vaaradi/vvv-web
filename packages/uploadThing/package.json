@@ -17,8 +17,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "typescript": "*",
+    "tsdown": "^0.16.5"
+  },
   "dependencies": {
     "@uploadthing/react": "^7.3.3",
-    "uploadthing": "^7.7.4"
+    "uploadthing": "^7.7.4",
+    "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/env": "workspace:*"
   }
 }

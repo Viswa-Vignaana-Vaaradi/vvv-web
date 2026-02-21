@@ -19,12 +19,12 @@
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-table": "^8.21.3",
     "babel-plugin-react-compiler": "^1.0.0",
-    "better-auth": "catalog:",
+    "better-auth": "*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "dotenv": "catalog:",
+    "dotenv": "*",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.546.0",
     "next": "^16.1.1",
@@ -37,7 +37,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.4",
-    "zod": "catalog:"
+    "zod": "*"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
@@ -47,6 +47,6 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "tailwindcss": "^4.1.10",
-    "typescript": "catalog:"
+    "typescript": "*"
   }
 }

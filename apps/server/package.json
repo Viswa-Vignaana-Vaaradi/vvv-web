@@ -20,19 +20,19 @@
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
     "@upstash/workflow": "^1.1.0",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
+    "better-auth": "*",
+    "dotenv": "*",
     "elysia": "^1.3.21",
     "puppeteer-core": "^24.37.3",
     "razorpay": "^2.9.6",
     "resend": "^6.8.0",
-    "zod": "catalog:"
+    "zod": "*"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
     "@types/node": "^22.13.11",
     "tsdown": "^0.16.5",
     "tsx": "^4.21.0",
-    "typescript": "catalog:"
+    "typescript": "*"
   }
 }

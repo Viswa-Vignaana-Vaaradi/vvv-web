@@ -88,12 +88,8 @@ export default function Dashboard() {
                 <p className="text-gray-400">Loading...</p>
               ) : donationData?.totalAmount && donationData.totalAmount > 0 ? (
                 <div className="text-center">
-                  <p className="text-sm text-gray-500 font-poppins">Total Contributed</p>
                   <p className="text-4xl leading-[100%] font-bold text-[#43C000] font-poppins">
                     Rs. {donationData.totalAmount}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-2 italic">
-                    {donationData.count} successful transactions
                   </p>
                 </div>
               ) : (
