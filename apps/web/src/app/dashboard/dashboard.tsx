@@ -37,8 +37,12 @@ export default function Dashboard() {
     queryFn: async () => {
       const { data, error } = await api.user.donations.get({ 
         $query: { userId: userId! },
-        $headers: {}
+        $headers: {},
+        $fetch: {
+          credentials: "include"
+        }
       });
+      console.log("Donation Data:", data);
       if (error) throw new Error(error.message);
       return data;
     },
@@ -85,8 +89,8 @@ export default function Dashboard() {
               ) : donationData?.totalAmount && donationData.totalAmount > 0 ? (
                 <div className="text-center">
                   <p className="text-sm text-gray-500 font-poppins">Total Contributed</p>
-                  <p className="text-4xl font-bold text-[#0E897F] font-poppins">
-                    ₹{donationData.totalAmount}
+                  <p className="text-4xl leading-[100%] font-bold text-[#43C000] font-poppins">
+                    Rs. {donationData.totalAmount}
                   </p>
                   <p className="text-xs text-gray-400 mt-2 italic">
                     {donationData.count} successful transactions

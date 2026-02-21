@@ -34,7 +34,6 @@ export const DonationsAmount = new Elysia({ prefix: "/user/donations" })
         });
 
         const totalAmount = userDonations.reduce((sum, tx) => {
-            // Only sum successful transactions
             if (tx.status === "SUCCESS") {
                 return sum + Number(tx.amount);
             }
