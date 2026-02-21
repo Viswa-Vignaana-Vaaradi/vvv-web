@@ -1,5 +1,7 @@
 {
   "name": "@repo/auth",
+  "version": "0.0.0",
+  "private": true,
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -21,15 +23,15 @@
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
-    "typescript": "catalog:",
+    "typescript": "*",
     "tsdown": "^0.16.5"
   },
   "dependencies": {
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
+    "better-auth": "*",
+    "dotenv": "*",
     "resend": "^6.8.0",
-    "zod": "catalog:"
+    "zod": "*"
   }
 }

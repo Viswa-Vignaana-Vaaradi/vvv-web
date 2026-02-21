@@ -46,15 +46,15 @@
   "devDependencies": {
     "@repo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
-    "typescript": "catalog:"
+    "typescript": "*"
   },
   "dependencies": {
     "@repo/env": "workspace:*",
     "@types/pg": "^8.16.0",
-    "dotenv": "catalog:",
+    "dotenv": "*",
     "drizzle-orm": "^0.45.1",
     "pg": "^8.16.3",
-    "zod": "catalog:",
+    "zod": "*",
     "tsdown": "^0.16.5"
   }
 }

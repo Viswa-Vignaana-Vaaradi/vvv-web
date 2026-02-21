@@ -38,13 +38,13 @@
     "build": "pnpm exec tsdown src/server.ts src/web.ts --outDir dist"
   },
   "dependencies": {
-    "zod": "catalog:",
+    "zod": "*",
     "@t3-oss/env-nextjs": "^0.13.1",
     "@t3-oss/env-core": "^0.13.1",
-    "dotenv": "catalog:"
+    "dotenv": "*"
   },
   "devDependencies": {
-    "typescript": "catalog:",
+    "typescript": "*",
     "@types/node": "^22.13.11",
     "@repo/config": "workspace:*",
     "tsdown": "^0.16.5"

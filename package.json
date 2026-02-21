@@ -19,14 +19,14 @@
     "db:migrate": "turbo -F @repo/db db:migrate"
   },
   "dependencies": {
-    "dotenv": "catalog:",
-    "zod": "catalog:",
+    "dotenv": "*",
+    "zod": "*",
     "@repo/env": "workspace:*"
   },
   "packageManager": "pnpm@9.0.0",
   "devDependencies": {
     "turbo": "^2.6.3",
-    "typescript": "catalog:",
+    "typescript": "*",
     "@types/node": "^22.13.11",
     "@repo/config": "workspace:*"
   }
