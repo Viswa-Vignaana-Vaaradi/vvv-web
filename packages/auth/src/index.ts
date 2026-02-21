@@ -4,7 +4,7 @@ import * as coreSchema from "@repo/db/schema/core-schema";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { customSession, emailOTP, lastLoginMethod, username } from "better-auth/plugins";
+import { admin, customSession, emailOTP, lastLoginMethod, username } from "better-auth/plugins";
 import { Resend } from "resend";
 
 export const auth = betterAuth({
@@ -76,11 +76,18 @@ export const auth = betterAuth({
   },
   account: {
     accountLinking: {
-      enabled: true,
       trustedProviders: ["google"],
     },
   },
   plugins: [
+    admin({
+      defaultRole: "user",
+      adminRoles: ["admin"],
+      adminUserIds: ["NWpGUiKvmwyqBq8kpzgk9brxpOLaYDZS"],
+      defaultBanReason: "Spamming or abusive behavior",
+      defaultBanExpiresIn: undefined,
+      bannedUserMessage: "You have been banned from accessing this application.",
+    }),
     username(),
     lastLoginMethod({
       storeInDatabase: true,

@@ -1,6 +1,6 @@
 import { env } from "@repo/env/web";
 import { createAuthClient } from "better-auth/react";
-import { customSessionClient, emailOTPClient, lastLoginMethodClient, usernameClient } from "better-auth/client/plugins";
+import { customSessionClient, emailOTPClient, lastLoginMethodClient, usernameClient, adminClient } from "better-auth/client/plugins";
 import type { auth } from "@repo/auth";
 
 export const authClient = createAuthClient({
@@ -18,6 +18,7 @@ export const authClient = createAuthClient({
     usernameClient(),
     lastLoginMethodClient(),
     emailOTPClient(),
-    customSessionClient<typeof auth>()
+    customSessionClient<typeof auth>(),
+    adminClient()
   ]
 });
