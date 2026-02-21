@@ -63,7 +63,8 @@ export const WebhookRoutes = new Elysia({ prefix: '/payments/webhook' })
                         status: "SUCCESS",
                         receiptNumber: entity.receipt || `${razorpayPaymentId}`,
                         createdAt: new Date(),
-                    });
+                    })
+                    .onConflictDoNothing({ target: transactions.razorpayPaymentId });
 
                     // Activate the contribution record created in PatronForm
                     if (userId) {
