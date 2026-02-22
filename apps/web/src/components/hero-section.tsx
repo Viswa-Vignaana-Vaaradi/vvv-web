@@ -1,7 +1,4 @@
-import Image from "next/image";
-import HeroImage from "../public/hero.jpeg";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import { Video } from "@imagekit/next";
 
 export const Hero = ({ onAction, onTriggerAuth }: { onAction: (val: "patron" | "volunteer") => void; onTriggerAuth: () => void }) => {
