@@ -2,13 +2,14 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar, SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/auth-context";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AccountSettingIcon, LogOut, Logout01Icon, Logout02Icon, Logout04Icon, Logout05Icon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
+import { AccountSettingIcon, LogOut, Logout01FreeIcons, Logout01Icon, Logout02FreeIcons, Logout02Icon, Logout03FreeIcons, Logout03Icon, Logout04FreeIcons, Logout04Icon, Logout05Icon, LogoutIcon, LogoutSquareIcon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import ProfileIcon from "../../../public/profile.svg";
 import AccountIcon from "../../../public/account-icon.svg";
 import DonationIcon from "../../../public/donation-icon.svg";
+import { LogOutIcon } from "lucide-react";
 
 export const DashboardSidebar = () => {
     const { state: authState, dispatch } = useAuth();
@@ -42,8 +43,8 @@ export const DashboardSidebar = () => {
                             <Image 
                                 src={ProfileIcon}
                                 alt="Profile Icon"
-                                width={30}
-                                height={30}
+                                width={28}
+                                height={28}
                                 className="shrink-0"
                             />
                             <div className="font-poppins ml-2 font-semibold text-[18px] text-black leading-[100%]">
@@ -57,8 +58,8 @@ export const DashboardSidebar = () => {
                             <Image 
                                 src={AccountIcon}
                                 alt="Account Icon"
-                                width={30}
-                                height={30}
+                                width={28}
+                                height={28}
                                 className="shrink-0"
                             />
                             <div className="font-poppins ml-2 font-semibold text-[18px] leading-[100%]">
@@ -79,8 +80,8 @@ export const DashboardSidebar = () => {
                             <Image 
                                 src={DonationIcon}
                                 alt="Donation Icon"
-                                width={30}
-                                height={30}
+                                width={28}
+                                height={28}
                                 className="shrink-0"
                             />
                             <div className="font-poppins ml-2 font-semibold text-[18px] leading-[100%]">
@@ -98,10 +99,10 @@ export const DashboardSidebar = () => {
                                     },
                                 });
                             }}
-                            className="px-10 py-6 font-poppins text-[#FF0000] rounded-[10px] hover:text-[#FF0000] hover:bg-[#fadcdc] hover:cursor-pointer mt-10 flex items-center font-semibold"
+                            className="px-3 py-6 font-poppins text-[#FF0000] rounded-[10px] hover:text-[#FF0000] hover:bg-[#fadcdc] hover:cursor-pointer mt-10 font-semibold [&>svg]:size-5"
                         >
-                            <HugeiconsIcon icon={Logout05Icon} /> 
-                            <div className="font-poppins font-semibold text-[18px] leading-[100%]">Logout</div>
+                            <LogOutIcon />
+                            <div className="font-poppins ml-3 font-semibold text-[18px] leading-[100%]">Logout</div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
