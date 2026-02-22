@@ -24,6 +24,7 @@ export const uploadRouter: FileRouter = {
             ses = await auth.api.getSession({
                 headers: req.headers,
             });
+            console.log("Session in upload middleware:", ses);
 
             if (!ses) throw new Error("Not authenticated");
 
@@ -34,12 +35,22 @@ export const uploadRouter: FileRouter = {
             throw new UploadThingError("Internal server error in upload middleware");
         }
     })
-    .onUploadComplete(async ({ metadata, file }) => {
-        await auth.api.updateUser({
-            body: {
-                image: file.key,
-            }
-        })
+    .onUploadComplete(async ({ file, metadata }) => {
+        try {
+            console.log("Upload complete:", { fileKey: file.key, fileUrl: file.url, metadata });
+            
+            const result = await auth.api.updateUser({
+                body: {
+                    image: file.ufsUrl,
+                },
+            });
+            
+            console.log("User updated with image:", result);
+            return { success: true, fileUrl: file.url };
+        } catch (error) {
+            console.error("Error updating user with image:", error);
+            throw new UploadThingError("Failed to update user profile");
+        }
     })
 } satisfies FileRouter;
 

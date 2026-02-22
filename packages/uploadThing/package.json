@@ -2,16 +2,26 @@
   "name": "@repo/uploadthing",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "default": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./*": {
-      "default": "./src/*.ts"
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "require": "./dist/*.js",
+      "default": "./dist/*.js"
     }
   },
   "scripts": {
+    "build": "tsc src/index.ts --outDir dist --declaration --sourceMap --moduleResolution node --target es2020 --module es2020 --lib es2020,dom,dom.iterable --skipLibCheck",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,9 +34,6 @@
   },
   "dependencies": {
     "@uploadthing/react": "^7.3.3",
-    "uploadthing": "^7.7.4",
-    "@repo/auth": "workspace:*",
-    "@repo/db": "workspace:*",
-    "@repo/env": "workspace:*"
+    "uploadthing": "^7.7.4"
   }
 }

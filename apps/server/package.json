@@ -19,6 +19,7 @@
     "@repo/auth": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
+    "@repo/uploadthing": "workspace:*",
     "@upstash/workflow": "^1.1.0",
     "better-auth": "*",
     "dotenv": "*",
@@ -26,6 +27,7 @@
     "puppeteer-core": "^24.37.3",
     "razorpay": "^2.9.6",
     "resend": "^6.8.0",
+    "uploadthing": "^7.7.4",
     "zod": "*"
   },
   "devDependencies": {
