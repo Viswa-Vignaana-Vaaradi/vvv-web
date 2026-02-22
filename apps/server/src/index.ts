@@ -22,14 +22,21 @@ import { WebhookRoutes } from "./payments/webhooks";
 import { ContactUs } from "./routes/contact-us";
 import { memberCode } from "./user/member-code";
 import { DonationsAmount } from "./user/donations-amount";
+import { createRouteHandler } from "uploadthing/server";
+// import { uploadRouter } from "@repo/uploadthing";
+
+// const handler = createRouteHandler({
+//   router: uploadRouter,
+// });
+
 
 const app = new Elysia({ adapter: node() })
   .use(
     cors({
       origin: env.CORS_ORIGIN,
-      methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-razorpay-event-id", "x-razorpay-request-id"],
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-razorpay-event-id", "x-razorpay-request-id", "x-uploadthing-version", "x-uploadthing-package"],
     }),
   )
   .use(
@@ -49,7 +56,7 @@ const app = new Elysia({ adapter: node() })
   )
   .all("/api/auth/*", async (context) => {
     const { request, status } = context;
-    if (["POST", "GET"].includes(request.method)) {
+    if (["POST", "GET", "OPTIONS", "PUT", "DELETE"].includes(request.method)) {
       console.log(`Handling ${request.method} request for ${request.url}`);
       return auth.handler(request);
     }
@@ -72,6 +79,8 @@ const app = new Elysia({ adapter: node() })
   .use(ContactUs)
   .use(memberCode)
   .use(DonationsAmount)
+  // .get("/api/uploadthing", (ev) => handler(ev.request))
+  // .post("/api/uploadthing", (ev) => handler(ev.request))
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

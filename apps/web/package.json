@@ -15,9 +15,11 @@
     "@imagekit/next": "^2.1.4",
     "@repo/auth": "workspace:*",
     "@repo/env": "workspace:*",
+    "@repo/uploadthing": "workspace:*",
     "@tanstack/react-form": "^1.27.3",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-table": "^8.21.3",
+    "@uploadthing/react": "^7.3.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "*",
     "class-variance-authority": "^0.7.1",
@@ -37,6 +39,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.4",
+    "uploadthing": "^7.7.4",
     "zod": "*"
   },
   "devDependencies": {

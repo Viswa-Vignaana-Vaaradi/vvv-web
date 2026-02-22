@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   images: {
     "remotePatterns": [
       { hostname: 'lh3.googleusercontent.com' },
+      { hostname: "m0wvv07my7.ufs.sh" }
     ]
   }
 };
