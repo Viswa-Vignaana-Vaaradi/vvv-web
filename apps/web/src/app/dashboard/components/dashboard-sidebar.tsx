@@ -5,6 +5,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { AccountSettingIcon, LogOut, Logout01Icon, Logout02Icon, Logout04Icon, Logout05Icon, Person, Profile, RupeeCircleIcon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
+import ProfileIcon from "../../../public/profile.svg";
+import AccountIcon from "../../../public/account-icon.svg";
+import DonationIcon from "../../../public/donation-icon.svg";
 
 export const DashboardSidebar = () => {
     const { state: authState, dispatch } = useAuth();
@@ -19,34 +23,69 @@ export const DashboardSidebar = () => {
     const isCollapsed = sidebarState === "collapsed";
 
     return (
-        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-24 bg-white">
-            <SidebarHeader>
+        <Sidebar side="left" variant="sidebar" collapsible="icon" className="top-22 bg-white">
+            <SidebarHeader className="flex flex-row items-center justify-around mt-10">
                 {!isCollapsed && (
-                    <p className="flex items-center justify-center font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
+                    <p className="font-poppins font-bold text-2xl leading-tight text-[#FF9B00] whitespace-nowrap">
                         {"Hi "}{authState.user?.name}{" !"}
                     </p>
                 )}
                 <SidebarTrigger />
             </SidebarHeader>
-            <SidebarContent className="flex gap-2 items-center">
+            <SidebarContent className="flex gap-2">
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton onClick={() => router.push("/dashboard")} className="p-4 cursor-pointer hover:bg-primary">
-                           <HugeiconsIcon icon={Profile} size={24} /> <div className="font-poppins font-semibold size-4.5 ">Profile</div>
+                    <SidebarMenuItem className="flex flex-col gap-4 p-6">
+                        <SidebarMenuButton 
+                            onClick={() => router.push("/dashboard")}
+                            className="rounded-none px-2 py-6 cursor-pointer hover:bg-primary border-b-[0.5px] border-[#00000080]"
+                        >
+                            <Image 
+                                src={ProfileIcon}
+                                alt="Profile Icon"
+                                width={30}
+                                height={30}
+                                className="shrink-0"
+                            />
+                            <div className="font-poppins ml-2 font-semibold text-[18px] text-black leading-[100%]">
+                                Profile
+                            </div>
                         </SidebarMenuButton>
-                        <SidebarMenuButton onClick={() => router.push('/dashboard/account')} className="p-4 cursor-pointer hover:bg-primary">
-                            <HugeiconsIcon icon={AccountSettingIcon}/><div className="font-poppins font-semibold size-4.5">Account</div>
+                        <SidebarMenuButton 
+                            onClick={() => router.push('/dashboard/account')}
+                            className="rounded-none px-2 py-6 cursor-pointer hover:bg-primary border-b-[0.5px] border-[#00000080]"
+                        >
+                            <Image 
+                                src={AccountIcon}
+                                alt="Account Icon"
+                                width={30}
+                                height={30}
+                                className="shrink-0"
+                            />
+                            <div className="font-poppins ml-2 font-semibold text-[18px] leading-[100%]">
+                                Account
+                            </div>
                         </SidebarMenuButton>
                         {/* <SidebarMenuButton
                             // disabled={authState.user.userRole === null}
-                            // TODO: implement redirect based on userRole
                             className="p-4 cursor-pointer hover:bg-primary"
                         >
                             <HugeiconsIcon icon={Person} size={24} />
-                            <div className="font-poppins font-semibold size-4.5">Personal</div>
+                            <div className="font-poppins font-semibold text-[18px] leading-[100%]">Personal</div>
                         </SidebarMenuButton> */}
-                        <SidebarMenuButton onClick={() => router.push("/dashboard/donations")} className="p-4 cursor-pointer hover:bg-primary">
-                            <HugeiconsIcon icon={RupeeCircleIcon} /><div className="font-poppins font-semibold size-4.5">Donations</div>
+                        <SidebarMenuButton
+                            onClick={() => router.push("/dashboard/donations")}
+                            className="rounded-none px-2 py-6 cursor-pointer hover:bg-primary"
+                        >
+                            <Image 
+                                src={DonationIcon}
+                                alt="Donation Icon"
+                                width={30}
+                                height={30}
+                                className="shrink-0"
+                            />
+                            <div className="font-poppins ml-2 font-semibold text-[18px] leading-[100%]">
+                                Donations
+                            </div>
                         </SidebarMenuButton>
                         <SidebarMenuButton 
                             onClick={() => {
@@ -59,9 +98,10 @@ export const DashboardSidebar = () => {
                                     },
                                 });
                             }}
-                            className="font-poppins text-[#FF0000] rounded-[10px] hover:text-[#FF0000] hover:bg-[#fadcdc] ml-2 hover:cursor-pointer mt-10 flex items-center font-semibold"
+                            className="px-10 py-6 font-poppins text-[#FF0000] rounded-[10px] hover:text-[#FF0000] hover:bg-[#fadcdc] hover:cursor-pointer mt-10 flex items-center font-semibold"
                         >
-                            <HugeiconsIcon icon={Logout05Icon} /> Log Out
+                            <HugeiconsIcon icon={Logout05Icon} /> 
+                            <div className="font-poppins font-semibold text-[18px] leading-[100%]">Logout</div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

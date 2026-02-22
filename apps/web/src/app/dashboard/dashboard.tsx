@@ -82,7 +82,7 @@ export default function Dashboard() {
           <div className="font-poppins mb-4 font-bold text-[#604D00] text-2xl">
             Donations
           </div>
-          <Card className="bg-white rounded-3xl border-none w-full min-h-[150px]">
+          <Card className="bg-white rounded-3xl border-none w-full min-h-37.5">
             <CardContent className="flex flex-col items-center justify-center h-full py-8">
               {isDonationLoading ? (
                 <p className="text-gray-400">Loading...</p>
@@ -109,8 +109,8 @@ export default function Dashboard() {
             </div>
             {!isEditingAbout && (
               <Button 
-                variant="ghost" 
-                size="sm" 
+                variant="ghost"
+                size="sm"
                 className="text-[#0E897F] font-semibold"
                 onClick={() => setIsEditingAbout(true)}
               >
@@ -119,7 +119,7 @@ export default function Dashboard() {
             )}
           </div>
 
-          <Card className="bg-white rounded-3xl border-none p-6 min-h-[150px]">
+          <Card className="bg-white rounded-3xl border-none p-6 min-h-37.5">
             <CardContent className="p-0">
               {isEditingAbout ? (
                 <div className="space-y-4 font-poppins">
@@ -127,7 +127,7 @@ export default function Dashboard() {
                     value={tempAboutText}
                     onChange={(e) => setTempAboutText(e.target.value)}
                     placeholder="Tell us about yourself..."
-                    className="min-h-[100px] font-poppins rounded-xl border-gray-200 focus:ring-[#0E897F]"
+                    className="min-h-25 font-poppins rounded-xl border-gray-200 focus:ring-[#0E897F]"
                   />
                   <div className="flex gap-2 justify-end">
                     <Button variant="outline" className="font-poppins" onClick={() => setIsEditingAbout(false)}>Cancel</Button>
