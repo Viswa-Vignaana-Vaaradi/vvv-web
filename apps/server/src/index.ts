@@ -23,11 +23,11 @@ import { ContactUs } from "./routes/contact-us";
 import { memberCode } from "./user/member-code";
 import { DonationsAmount } from "./user/donations-amount";
 import { createRouteHandler } from "uploadthing/server";
-import { uploadRouter } from "@repo/uploadthing";
+// import { uploadRouter } from "@repo/uploadthing";
 
-const handler = createRouteHandler({
-  router: uploadRouter,
-});
+// const handler = createRouteHandler({
+//   router: uploadRouter,
+// });
 
 
 const app = new Elysia({ adapter: node() })
@@ -79,8 +79,8 @@ const app = new Elysia({ adapter: node() })
   .use(ContactUs)
   .use(memberCode)
   .use(DonationsAmount)
-  .get("/api/uploadthing", (ev) => handler(ev.request))
-  .post("/api/uploadthing", (ev) => handler(ev.request))
+  // .get("/api/uploadthing", (ev) => handler(ev.request))
+  // .post("/api/uploadthing", (ev) => handler(ev.request))
   
   .listen(5050, () => {
     console.log("Server is running on http://localhost:5050");

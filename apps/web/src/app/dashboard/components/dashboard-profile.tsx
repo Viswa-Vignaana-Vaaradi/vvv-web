@@ -7,9 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/eden";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Edit03Icon } from "@hugeicons/core-free-icons";
-import { UploadButton } from "@/lib/uploadthing";
 
 export default function DashboardProfile() {
     const { state, dispatch } = useAuth();

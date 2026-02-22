@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "build": "tsc src/index.ts --outDir dist --declaration --sourceMap --moduleResolution node --target es2020 --module es2020 --lib es2020,dom,dom.iterable --skipLibCheck",
+    "build": "pnpm exec tsdown src/index.ts --outDir dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@uploadthing/react": "^7.3.3",
-    "uploadthing": "^7.7.4"
+    "uploadthing": "^7.7.4",
+    "@repo/auth": "workspace:*"
   }
 }
