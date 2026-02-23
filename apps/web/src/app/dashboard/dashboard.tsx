@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/eden";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import posthog from "posthog-js";
 
 export default function Dashboard() {
   const { state } = useAuth();
@@ -65,6 +66,9 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['aboutMe', userId] });
       setIsEditingAbout(false);
+
+      // Capture about me updated event
+      posthog.capture("about_me_updated");
     },
   });
 

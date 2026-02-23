@@ -7,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/eden";
 import { useRouter } from "next/navigation";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Edit03Icon } from "@hugeicons/core-free-icons";
+import { UploadButton } from "@/lib/uploadthing";
 
 export default function DashboardProfile() {
     const { state, dispatch } = useAuth();
@@ -116,7 +119,7 @@ export default function DashboardProfile() {
                     height={200}
                     className="rounded-full shrink-0"
                 />
-                {/* <UploadButton
+                <UploadButton
                     endpoint="profilePicture"
                     onClientUploadComplete={(res) => {
                         if (res && res.length > 0) {
@@ -140,7 +143,7 @@ export default function DashboardProfile() {
                     content={{
                         button: () => <HugeiconsIcon icon={Edit03Icon} />,
                     }}
-                /> */}
+                />
             </div>
 
             <div className="grid grid-cols-[1fr_minmax(0,auto)] grid-rows-3 w-full gap-4">
