@@ -243,8 +243,8 @@ export const PrivacyPolicy = () => {
                         <div className="space-y-4">
                             <div>
                                 <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">Email Support</p>
-                                <a href="mailto:viswavignanavaaradi@gmail.com" className="text-blue-600 hover:underline font-medium">
-                                    viswavignanavaaradi@gmail.com
+                                <a href="mailto:contact@viswavignanavaardhi.org" className="text-blue-600 hover:underline font-medium">
+                                    contact@viswavignanavaardhi.org
                                 </a>
                             </div>
                             <div>

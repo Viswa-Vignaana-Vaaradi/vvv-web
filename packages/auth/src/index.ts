@@ -44,7 +44,7 @@ export const auth = betterAuth({
       maxAge: 10 * 60, // 10 minutes In seconds
     },
     cookieOptions: {
-      domain: env.NODE_ENV === "production" ? ".viswavignanavaaradhi.org" : "localhost",
+      domain: env.NODE_ENV === "production" ? ".viswavignanavaardhi.org" : "localhost",
     },
   },
   advanced: {
@@ -100,7 +100,7 @@ export const auth = betterAuth({
         if (type === "forget-password") {
           const resend = new Resend(env.RESEND_API_KEY as string);
           const {data, error} = await resend.emails.send({
-            from: "contact@viswavignanavaaradhi.org",
+            from: "contact@viswavignanavaardhi.org",
             to: email,
             subject: "Reset Password request for Viswa Vignana Vaardhi",
             html: `<p>Your OTP for resetting your password is: <strong>${otp}</strong></p>`,

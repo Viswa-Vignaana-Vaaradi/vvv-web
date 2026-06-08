@@ -153,7 +153,7 @@ export const ContactUs = () => {
                         <div className="space-y-1">
                             <p className="font-poppins font-bold text-[16px] leading-tight text-[#604D00]">Email Address</p>
                             <p className="font-poppins font-medium text-[12px] leading-tight text-[#604D00]/70">
-                                viswavignanavaaradi@gmail.com
+                                contact@viswavignanavaardhi.org
                             </p>
                         </div>
                     </div>

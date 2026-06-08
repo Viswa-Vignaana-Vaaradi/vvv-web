@@ -5,7 +5,7 @@ export const ContactUs = new Elysia({ prefix: "/contact-us" })
     .post("/", async ({ body, set, status }) => {
         
         const { data, error } = await resend.emails.send({
-            from: "contact@viswavignanavaaradhi.org",
+            from: "contact@viswavignanavaardhi.org",
             to: body.email,
             subject: "Contact Form Submission",
             html: `From: ${body.email} - ${body.name}:
