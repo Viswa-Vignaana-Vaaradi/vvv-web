@@ -24,7 +24,6 @@ export const uploadRouter: FileRouter = {
             ses = await auth.api.getSession({
                 headers: req.headers,
             });
-            console.log("Session in upload middleware:", ses);
 
             if (!ses) throw new Error("Not authenticated");
 
